@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Komunikasi Tumbuh Kembang</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <style>
+        .communication-header {
+            background: var(--orange-light);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .communication-header h1 {
+            margin: 0 0 7px;
+            font-size: 25px;
+            color: var(--text);
+        }
+
+        .communication-header p {
+            margin: 0;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .note-form-card,
+        .note-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 18px;
+        }
+
+        .note-form-card h2,
+        .note-list-title {
+            margin: 0 0 15px;
+            font-size: 19px;
+            color: var(--text);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text);
+            background: var(--ivory);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--orange);
+        }
+
+        .send-note {
+            border: none;
+            background: var(--orange);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+        }
+
+        .send-note:hover {
+            background: var(--orange-dark);
+        }
+
+        .note-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .note-category {
+            background: var(--orange-light);
+            color: var(--orange-dark);
+            padding: 5px 9px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .note-date {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .note-content {
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .teacher-response {
+            margin-top: 16px;
+            padding: 15px;
+            background: #F8F5F0;
+            border-radius: 12px;
+        }
+
+        .teacher-response strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .teacher-response p {
+            margin: 0;
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .status-label {
+            margin-top: 10px;
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .empty-note {
+            text-align: center;
+            padding: 35px 20px;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 600px) {
+            .communication-header {
+                padding: 20px;
+            }
+
+            .communication-header h1 {
+                font-size: 21px;
+            }
+
+            .note-form-card,
+            .note-card {
+                padding: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="images/logo.png" alt="Logo">
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <a href="parent-dashboard.html" class="menu-item">
+                ⌂ Dashboard
+            </a>
+
+            <a href="child.html" class="menu-item">
+                👧 Anak Saya
+            </a>
+
+            <a href="buku-penghubung.html" class="menu-item">
+                📖 Buku Penghubung
+            </a>
+
+            <a href="perkembangan.html" class="menu-item">
+                📊 Perkembangan
+            </a>
+
+            <a href="bintang-prestasi.html" class="menu-item">
+                ⭐ Bintang Prestasi
+            </a>
+
+            <a href="absensi.html" class="menu-item">
+                📅 Absensi
+            </a>
+
+            <a href="pengumuman.html" class="menu-item">
+                📢 Pengumuman
+            </a>
+
+            <a href="komunikasi.html" class="menu-item active">
+                💬 Komunikasi
+            </a>
+
+            <a href="pengaturan.html" class="menu-item">
+                ⚙ Pengaturan
+            </a>
+
+            <a href="index.html" class="menu-item logout">
+                ↪ Keluar
+            </a>
+
+        </nav>
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <button class="menu-toggle" type="button">
+                ☰
+            </button>
+
+            <div class="topbar-title">
+                Komunikasi Tumbuh Kembang
+            </div>
+
+            <div class="profile-wrapper">
+
+                <button class="profile-mini" id="profileButton" type="button">
+
+                    <div class="profile-avatar">
+                        A
+                    </div>
+
+                    <div class="profile-info">
+                        <strong>Ayah/Bunda</strong>
+                        <span>Orang Tua</span>
+                    </div>
+
+                    <span class="profile-arrow">⌄</span>
+
+                </button>
+
+                <div class="profile-dropdown" id="profileDropdown">
+
+                    <a href="pengaturan.html">
+                        ⚙ Pengaturan
+                    </a>
+
+                    <a href="index.html" class="dropdown-logout">
+                        ↪ Keluar
+                    </a>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <section class="dashboard-content">
+
+            <div class="communication-header">
+
+                <h1>Komunikasi Tumbuh Kembang</h1>
+
+                <p>
+                    Ruang berbagi antara orang tua dan guru untuk saling
+                    menyampaikan informasi tentang tumbuh kembang anak.
+                </p>
+
+            </div>
+
+
+            <div class="note-form-card">
+
+                <h2>Bagikan informasi tentang anak</h2>
+
+                <div class="form-group">
+
+                    <label for="childSelect">
+                        Anak
+                    </label>
+
+                    <select id="childSelect">
+                        <option value="">
+                            Memuat data anak...
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="category">
+                        Topik
+                    </label>
+
+                    <select id="category">
+
+                        <option value="Perkembangan di Rumah">
+                            Perkembangan di Rumah
+                        </option>
+
+                        <option value="Perilaku & Emosi">
+                            Perilaku & Emosi
+                        </option>
+
+                        <option value="Kebiasaan">
+                            Kebiasaan
+                        </option>
+
+                        <option value="Hafalan & Ibadah">
+                            Hafalan & Ibadah
+                        </option>
+
+                        <option value="Lainnya">
+                            Lainnya
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="noteContent">
+                        Ceritakan kepada guru
+                    </label>
+
+                    <textarea
+                        id="noteContent"
+                        placeholder="Contoh: Di rumah akhir-akhir ini..."
+                    ></textarea>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="send-note"
+                    id="sendNote"
+                >
+                    Kirim kepada Guru
+                </button>
+
+            </div>
+
+
+            <h2 class="note-list-title">
+                Riwayat Komunikasi
+            </h2>
+
+            <div id="notesList">
+
+                <div class="empty-note">
+                    Memuat komunikasi...
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+
+
+    <script>
+
+        const childSelect =
+            document.querySelector('#childSelect');
+
+        const notesList =
+            document.querySelector('#notesList');
+
+        const sendNote =
+            document.querySelector('#sendNote');
+
+
+        async function getCurrentParent() {
+
+            const {
+                data: { user },
+                error
+            } = await supabaseClient.auth.getUser();
+
+            if (error || !user) {
+                throw new Error('Sesi login tidak ditemukan.');
+            }
+
+            const {
+                data: parent,
+                error: parentError
+            } = await supabaseClient
+                .from('users')
+                .select('id, nama')
+                .eq('auth_id', user.id)
+                .single();
+
+            if (parentError || !parent) {
+                throw new Error('Profil orang tua tidak ditemukan.');
+            }
+
+            return parent;
+        }
+
+
+        async function loadChildren() {
+
+            const parent =
+                await getCurrentParent();
+
+            const {
+                data: children,
+                error
+            } = await supabaseClient
+                .from('children')
+                .select('id, nama, kelas')
+                .eq('parent_id', parent.id)
+                .order('nama');
+
+            if (error) {
+
+                console.error(error);
+
+                childSelect.innerHTML = `
+                    <option value="">
+                        Gagal memuat data anak
+                    </option>
+                `;
+
+                return;
+            }
+
+            childSelect.innerHTML = `
+                <option value="">
+                    Pilih anak
+                </option>
+            `;
+
+            children.forEach(child => {
+
+                const option =
+                    document.createElement('option');
+
+                option.value = child.id;
+
+                option.textContent =
+                    `${child.nama} — ${child.kelas}`;
+
+                childSelect.appendChild(option);
+
+            });
+
+        }
+
+
+        async function loadNotes() {
+
+            const parent =
+                await getCurrentParent();
+
+            const {
+                data: notes,
+                error
+            } = await supabaseClient
+                .from('parent_notes')
+                .select(`
+                    id,
+                    tanggal,
+                    isi,
+                    status,
+                    tanggapan_guru,
+                    created_at,
+                    children (
+                        nama,
+                        kelas
+                    )
+                `)
+                .eq('parent_id', parent.id)
+                .order('created_at', {
+                    ascending: false
+                });
+
+            if (error) {
+
+                console.error(error);
+
+                notesList.innerHTML = `
+                    <div class="empty-note">
+                        Gagal memuat komunikasi.
+                    </div>
+                `;
+
+                return;
+            }
+
+            if (!notes || notes.length === 0) {
+
+                notesList.innerHTML = `
+                    <div class="empty-note">
+                        Belum ada komunikasi dengan guru.
+                    </div>
+                `;
+
+                return;
+            }
+
+            notesList.innerHTML = '';
+
+            notes.forEach(note => {
+
+                const date =
+                    new Date(note.tanggal)
+                    .toLocaleDateString('id-ID', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                    });
+
+                notesList.innerHTML += `
+
+                    <div class="note-card">
+
+                        <div class="note-meta">
+
+                            <span class="note-category">
+                                ${note.children?.nama || 'Anak'}
+                            </span>
+
+                            <span class="note-date">
+                                ${date}
+                            </span>
+
+                        </div>
+
+                        <div class="note-content">
+                            ${note.isi}
+                        </div>
+
+                        ${
+                            note.tanggapan_guru
+                            ? `
+                                <div class="teacher-response">
+
+                                    <strong>
+                                        💬 Tanggapan Guru
+                                    </strong>
+
+                                    <p>
+                                        ${note.tanggapan_guru}
+                                    </p>
+
+                                </div>
+                            `
+                            : `
+                                <div class="status-label">
+                                    ⏳ Menunggu tanggapan guru
+                                </div>
+                            `
+                        }
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+
+        sendNote.addEventListener(
+            'click',
+            async () => {
+
+                const childId =
+                    childSelect.value;
+
+                const category =
+                    document.querySelector('#category').value;
+
+                const content =
+                    document.querySelector('#noteContent')
+                    .value
+                    .trim();
+
+
+                if (!childId) {
+
+                    alert('Silakan pilih anak.');
+
+                    return;
+                }
+
+
+                if (!content) {
+
+                    alert('Silakan tuliskan informasi yang ingin disampaikan.');
+
+                    return;
+                }
+
+
+                try {
+
+                    const parent =
+                        await getCurrentParent();
+
+
+                    const {
+                        error
+                    } = await supabaseClient
+                        .from('parent_notes')
+                        .insert({
+
+                            child_id: childId,
+
+                            parent_id: parent.id,
+
+                            tanggal:
+                                new Date()
+                                .toISOString()
+                                .split('T')[0],
+
+                            isi:
+                                `[${category}] ${content}`,
+
+                            status: 'baru'
+
+                        });
+
+
+                    if (error) {
+
+                        console.error(error);
+
+                        alert(
+                            'Gagal mengirim: ' +
+                            error.message
+                        );
+
+                        return;
+                    }
+
+
+                    document.querySelector(
+                        '#noteContent'
+                    ).value = '';
+
+
+                    alert(
+                        'Informasi berhasil dikirim kepada guru.'
+                    );
+
+
+                    loadNotes();
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    alert(error.message);
+
+                }
+
+            }
+        );
+
+
+        loadChildren();
+        loadNotes();
+
+    </script>
+
+
+    <script>
+
+        const menuToggle =
+            document.querySelector('.menu-toggle');
+
+        const sidebar =
+            document.querySelector('.sidebar');
+
+        if (menuToggle && sidebar) {
+
+            menuToggle.addEventListener(
+                'click',
+                () => {
+                    sidebar.classList.toggle('show');
+                }
+            );
+
+        }
+
+
+        const profileButton =
+            document.querySelector('#profileButton');
+
+        const profileDropdown =
+            document.querySelector('#profileDropdown');
+
+        if (profileButton && profileDropdown) {
+
+            profileButton.addEventListener(
+                'click',
+                (e) => {
+
+                    e.stopPropagation();
+
+                    profileDropdown.classList.toggle('show');
+
+                }
+            );
+
+
+            document.addEventListener(
+                'click',
+                () => {
+
+                    profileDropdown.classList.remove('show');
+
+                }
+            );
+
+        }
+
+    </script>
+
+</body>
+</html>

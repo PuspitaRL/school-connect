@@ -1,0 +1,2373 @@
+1<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Absensi | TAUD SAQU DARUL IMAN</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js?v=2"></script>
+
+    <style>
+        .page-content {
+            padding: 30px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header .greeting {
+            color: var(--orange);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin: 0 0 8px;
+            color: var(--text);
+        }
+
+        .page-header p {
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        /* ================================
+           FILTER
+        ================================= */
+
+        .filter-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 7px;
+        }
+
+        .form-control {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 11px 12px;
+            background: var(--white);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--orange);
+        }
+
+        .btn-primary {
+            border: none;
+            background: var(--orange);
+            color: white;
+            border-radius: 11px;
+            padding: 12px 18px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--orange-dark);
+        }
+
+        .btn-primary:disabled {
+            opacity: .65;
+            cursor: not-allowed;
+        }
+
+        /* ================================
+           SECTION HEADING
+        ================================= */
+
+        .section-heading {
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2 {
+            margin: 0 0 5px;
+            font-size: 19px;
+            color: var(--text);
+        }
+
+        .section-heading p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        /* ================================
+           STUDENT INFO
+        ================================= */
+
+        .student-card {
+            display: none;
+            background: var(--orange-light);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 25px;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .student-card.show {
+            display: flex;
+        }
+
+        .student-avatar {
+            width: 52px;
+            height: 52px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: var(--white);
+            color: var(--orange-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .student-info {
+            flex: 1;
+        }
+
+        .student-info span {
+            display: block;
+            font-size: 11px;
+            color: var(--text-light);
+            margin-bottom: 3px;
+        }
+
+        .student-info strong {
+            display: block;
+            color: var(--text);
+            font-size: 18px;
+            margin-bottom: 3px;
+        }
+
+        .student-info small {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        /* ================================
+           ATTENDANCE FORM
+        ================================= */
+
+        .attendance-form-card {
+            display: none;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .attendance-form-card.show {
+            display: block;
+        }
+
+        .status-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .status-option {
+            position: relative;
+        }
+
+        .status-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .status-option label {
+            display: block;
+            text-align: center;
+            padding: 14px 10px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: .2s ease;
+        }
+
+        .status-option label:hover {
+            border-color: var(--orange);
+        }
+
+        .status-option input:checked + label {
+            border-color: var(--orange);
+            background: var(--orange-light);
+            color: var(--orange-dark);
+        }
+
+        .status-icon {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+
+        .btn-save {
+            min-width: 150px;
+        }
+
+        /* ================================
+           SUMMARY
+        ================================= */
+
+        .summary-section {
+            display: none;
+            margin-bottom: 25px;
+        }
+
+        .summary-section.show {
+            display: block;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        .summary-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 17px;
+        }
+
+        .summary-card span {
+            display: block;
+            font-size: 11px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .summary-card strong {
+            font-size: 22px;
+            color: var(--text);
+        }
+
+        /* ================================
+           HISTORY
+        ================================= */
+
+        .history-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .history-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .history-header h2 {
+            margin: 0 0 4px;
+            font-size: 18px;
+            color: var(--text);
+        }
+
+        .history-header p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        .attendance-row {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr auto;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .attendance-row:last-child {
+            border-bottom: none;
+        }
+
+        .attendance-date strong {
+            display: block;
+            font-size: 14px;
+            color: var(--text);
+            margin-bottom: 3px;
+        }
+
+        .attendance-date span {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .attendance-note {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .attendance-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-width: 70px;
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-present {
+            background: #EAF7EF;
+            color: #38845A;
+        }
+
+        .status-permission {
+            background: #FFF4DF;
+            color: #B7791F;
+        }
+
+        .status-sick {
+            background: #FDECEC;
+            color: #B64C4C;
+        }
+
+        .status-absent {
+            background: #F1F0EE;
+            color: #81796F;
+        }
+
+        .status-dot-small {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .empty-state {
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        /* ================================
+           RESPONSIVE
+        ================================= */
+
+        @media (max-width: 768px) {
+
+            .page-content {
+                padding: 22px 17px;
+            }
+
+            .page-header h1 {
+                font-size: 23px;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-primary {
+                width: 100%;
+            }
+
+            .status-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .attendance-row {
+                grid-template-columns: 1fr auto;
+            }
+
+            .attendance-note {
+                grid-column: 1 / 2;
+            }
+
+            .attendance-status {
+                grid-column: 2 / 3;
+                grid-row: 1 / 3;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .page-content {
+                padding: 18px 14px;
+            }
+
+            .page-header h1 {
+                font-size: 21px;
+            }
+
+            .filter-card,
+            .attendance-form-card {
+                padding: 16px;
+            }
+
+            .student-card {
+                padding: 16px;
+            }
+
+            .summary-grid {
+                gap: 10px;
+            }
+
+            .summary-card {
+                padding: 14px;
+            }
+
+            .summary-card strong {
+                font-size: 20px;
+            }
+
+            .attendance-row {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- =========================================
+         SIDEBAR GURU
+    ========================================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+
+            <img
+                src="images/logo.png"
+                alt="Logo TAUD SAQU DARUL IMAN"
+            >
+
+            <div>
+                <strong>TAUD SAQU</strong>
+                <span>DARUL IMAN</span>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-menu">
+
+            <a href="guru-dashboard.html" class="menu-item">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a href="guru-child.html" class="menu-item">
+                <span>👧</span>
+                Data Anak
+            </a>
+
+            <a href="guru-buku-penghubung.html" class="menu-item">
+                <span>📖</span>
+                Buku Penghubung
+            </a>
+
+            <a href="guru-perkembangan.html" class="menu-item">
+                <span>📊</span>
+                Perkembangan
+            </a>
+
+            <a href="guru-bintang-prestasi.html" class="menu-item">
+                <span>⭐</span>
+                Bintang Prestasi
+            </a>
+
+            <a href="guru-absensi.html" class="menu-item active">
+                <span>📅</span>
+                Absensi
+            </a>
+
+            <a href="guru-pengumuman.html" class="menu-item">
+                <span>📢</span>
+                Pengumuman
+            </a>
+
+            <a href="guru-komunikasi.html" class="menu-item">
+                <span>💬</span>
+                Komunikasi
+            </a>
+
+            <div class="menu-divider"></div>
+
+            <a href="pengaturan.html" class="menu-item">
+                <span>⚙</span>
+                Pengaturan
+            </a>
+
+            <a href="index.html" class="menu-item logout">
+                <span>↪</span>
+                Keluar
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+
+    <main class="main-content">
+
+
+        <!-- =====================================
+             TOPBAR
+        ====================================== -->
+
+        <header class="topbar">
+
+            <button
+                class="menu-toggle"
+                type="button"
+                aria-label="Buka menu"
+            >
+                ☰
+            </button>
+
+
+            <div class="topbar-title">
+                Absensi
+            </div>
+
+
+            <div class="topbar-right">
+
+                <div class="profile-wrapper">
+
+                    <button
+                        class="profile-mini"
+                        id="profileButton"
+                        type="button"
+                    >
+
+                        <div
+                            class="profile-avatar"
+                            id="guruAvatar"
+                        >
+                            G
+                        </div>
+
+                        <div class="profile-info">
+
+                            <strong id="guruName">
+                                Memuat...
+                            </strong>
+
+                            <span id="guruRole">
+                                Guru
+                            </span>
+
+                        </div>
+
+                        <span class="profile-arrow">
+                            ⌄
+                        </span>
+
+                    </button>
+
+
+                    <div
+                        class="profile-dropdown"
+                        id="profileDropdown"
+                    >
+
+                        <a href="pengaturan.html">
+                            ⚙ Pengaturan
+                        </a>
+
+                        <a
+                            href="index.html"
+                            class="dropdown-logout"
+                        >
+                            ↪ Keluar
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================
+             CONTENT
+        ====================================== -->
+
+        <section class="page-content">
+
+
+            <!-- HEADER -->
+
+            <div class="page-header">
+
+                <p class="greeting">
+                    Assalamu'alaikum 👋
+                </p>
+
+                <h1>
+                    Absensi Siswa 📅
+                </h1>
+
+                <p>
+                    Kelola dan perbarui kehadiran siswa setiap hari.
+                </p>
+
+            </div>
+
+
+            <!-- =================================
+                 FILTER
+            ================================== -->
+
+            <div class="filter-card">
+
+                <div class="section-heading">
+
+                    <h2>
+                        Pilih Siswa &amp; Tanggal
+                    </h2>
+
+                    <p>
+                        Pilih siswa untuk mengisi atau mengubah absensi.
+                    </p>
+
+                </div>
+
+
+                <div class="filter-grid">
+
+                    <div class="form-group">
+
+                        <label for="childSelect">
+                            Siswa
+                        </label>
+
+                        <select
+                            id="childSelect"
+                            class="form-control"
+                        >
+
+                            <option value="">
+                                Memuat siswa...
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="attendanceDate">
+                            Tanggal
+                        </label>
+
+                        <input
+                            type="date"
+                            id="attendanceDate"
+                            class="form-control"
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="btn-primary"
+                        id="loadAttendanceButton"
+                    >
+                        Tampilkan
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+                 STUDENT INFO
+            ================================== -->
+
+            <div
+                class="student-card"
+                id="studentCard"
+            >
+
+                <div
+                    class="student-avatar"
+                    id="studentAvatar"
+                >
+                    S
+                </div>
+
+
+                <div class="student-info">
+
+                    <span>
+                        Siswa
+                    </span>
+
+                    <strong id="studentName">
+                        -
+                    </strong>
+
+                    <small id="studentClass">
+                        -
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+                 ATTENDANCE FORM
+            ================================== -->
+
+            <div
+                class="attendance-form-card"
+                id="attendanceFormCard"
+            >
+
+                <div class="section-heading">
+
+                    <h2 id="formTitle">
+                        Input Absensi
+                    </h2>
+
+                    <p id="formDateText">
+                        -
+                    </p>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="status-options">
+
+
+                    <div class="status-option">
+
+                        <input
+                            type="radio"
+                            name="attendanceStatus"
+                            id="statusHadir"
+                            value="hadir"
+                        >
+
+                        <label for="statusHadir">
+
+                            <span class="status-icon">
+                                ✅
+                            </span>
+
+                            Hadir
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="status-option">
+
+                        <input
+                            type="radio"
+                            name="attendanceStatus"
+                            id="statusIzin"
+                            value="izin"
+                        >
+
+                        <label for="statusIzin">
+
+                            <span class="status-icon">
+                                🟡
+                            </span>
+
+                            Izin
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="status-option">
+
+                        <input
+                            type="radio"
+                            name="attendanceStatus"
+                            id="statusSakit"
+                            value="sakit"
+                        >
+
+                        <label for="statusSakit">
+
+                            <span class="status-icon">
+                                🤒
+                            </span>
+
+                            Sakit
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="status-option">
+
+                        <input
+                            type="radio"
+                            name="attendanceStatus"
+                            id="statusAlpa"
+                            value="alpa"
+                        >
+
+                        <label for="statusAlpa">
+
+                            <span class="status-icon">
+                                ⚪
+                            </span>
+
+                            Alpa
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- KETERANGAN -->
+
+                <div class="form-group">
+
+                    <label for="attendanceNote">
+                        Keterangan
+                    </label>
+
+                    <textarea
+                        id="attendanceNote"
+                        class="form-control textarea"
+                        placeholder="Contoh: Demam, izin keluarga, atau mengikuti kegiatan sekolah."
+                    ></textarea>
+
+                </div>
+
+
+                <!-- SAVE -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn-primary btn-save"
+                        id="saveAttendanceButton"
+                    >
+                        Simpan Absensi
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+                 SUMMARY
+            ================================== -->
+
+            <div
+                class="summary-section"
+                id="summarySection"
+            >
+
+                <div class="section-heading">
+
+                    <h2>
+                        Rekap Kehadiran
+                    </h2>
+
+                    <p>
+                        Rekap absensi siswa berdasarkan data yang tersimpan.
+                    </p>
+
+                </div>
+
+
+                <div class="summary-grid">
+
+                    <div class="summary-card">
+
+                        <span>
+                            Hadir
+                        </span>
+
+                        <strong id="summaryHadir">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <span>
+                            Izin
+                        </span>
+
+                        <strong id="summaryIzin">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <span>
+                            Sakit
+                        </span>
+
+                        <strong id="summarySakit">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <span>
+                            Alpa
+                        </span>
+
+                        <strong id="summaryAlpa">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+                 HISTORY
+            ================================== -->
+
+            <div class="history-card">
+
+                <div class="history-header">
+
+                    <h2>
+                        Riwayat Kehadiran
+                    </h2>
+
+                    <p>
+                        Riwayat absensi siswa yang telah tersimpan.
+                    </p>
+
+                </div>
+
+
+                <div id="attendanceHistory">
+
+                    <div class="empty-state">
+                        Pilih siswa untuk melihat riwayat absensi.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================
+         SCRIPT
+    ========================================== -->
+
+    <script>
+
+        /* =========================================
+           STATE
+        ========================================== */
+
+        let currentGuruId = null;
+        let currentChildId = null;
+
+
+        /* =========================================
+           ELEMENT
+        ========================================== */
+
+        const childSelect =
+            document.querySelector('#childSelect');
+
+        const attendanceDate =
+            document.querySelector('#attendanceDate');
+
+        const loadAttendanceButton =
+            document.querySelector('#loadAttendanceButton');
+
+        const studentCard =
+            document.querySelector('#studentCard');
+
+        const studentName =
+            document.querySelector('#studentName');
+
+        const studentClass =
+            document.querySelector('#studentClass');
+
+        const studentAvatar =
+            document.querySelector('#studentAvatar');
+
+        const attendanceFormCard =
+            document.querySelector('#attendanceFormCard');
+
+        const formTitle =
+            document.querySelector('#formTitle');
+
+        const formDateText =
+            document.querySelector('#formDateText');
+
+        const attendanceNote =
+            document.querySelector('#attendanceNote');
+
+        const saveAttendanceButton =
+            document.querySelector('#saveAttendanceButton');
+
+        const summarySection =
+            document.querySelector('#summarySection');
+
+        const attendanceHistory =
+            document.querySelector('#attendanceHistory');
+
+        const guruName =
+            document.querySelector('#guruName');
+
+        const guruRole =
+            document.querySelector('#guruRole');
+
+        const guruAvatar =
+            document.querySelector('#guruAvatar');
+
+
+        /* =========================================
+           DEFAULT DATE
+        ========================================== */
+
+        function getTodayLocal() {
+
+            const now = new Date();
+
+            const year =
+                now.getFullYear();
+
+            const month =
+                String(
+                    now.getMonth() + 1
+                ).padStart(2, '0');
+
+            const day =
+                String(
+                    now.getDate()
+                ).padStart(2, '0');
+
+            return `${year}-${month}-${day}`;
+        }
+
+
+        attendanceDate.value =
+            getTodayLocal();
+
+
+        /* =========================================
+           FORMAT DATE
+        ========================================== */
+
+        function formatDate(dateString) {
+
+            if (!dateString) {
+                return '-';
+            }
+
+            const date =
+                new Date(
+                    dateString + 'T00:00:00'
+                );
+
+            return date.toLocaleDateString(
+                'id-ID',
+                {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }
+            );
+
+        }
+
+
+        function formatDateOnly(dateString) {
+
+            const date =
+                new Date(
+                    dateString + 'T00:00:00'
+                );
+
+            return date.toLocaleDateString(
+                'id-ID',
+                {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }
+            );
+
+        }
+
+
+        function getDayName(dateString) {
+
+            const date =
+                new Date(
+                    dateString + 'T00:00:00'
+                );
+
+            return date.toLocaleDateString(
+                'id-ID',
+                {
+                    weekday: 'long'
+                }
+            );
+
+        }
+
+
+        /* =========================================
+           GURU PROFILE
+        ========================================== */
+
+        async function loadGuruProfile() {
+
+            try {
+
+                const {
+                    data: authData,
+                    error: authError
+                } =
+                    await supabaseClient.auth.getUser();
+
+
+                if (
+                    authError ||
+                    !authData ||
+                    !authData.user
+                ) {
+
+                    window.location.href =
+                        'login.html';
+
+                    return false;
+
+                }
+
+
+                const authUser =
+                    authData.user;
+
+
+                console.log(
+                    'Auth Guru:',
+                    authUser.id
+                );
+
+
+                const {
+                    data: profile,
+                    error: profileError
+                } =
+                    await supabaseClient
+                        .from('users')
+                        .select(
+                            'id, nama, role, auth_id'
+                        )
+                        .eq(
+                            'auth_id',
+                            authUser.id
+                        )
+                        .maybeSingle();
+
+
+                if (profileError) {
+
+                    console.error(
+                        'Profile error:',
+                        profileError
+                    );
+
+                    throw profileError;
+
+                }
+
+
+                if (!profile) {
+
+                    alert(
+                        'Profil pengguna tidak ditemukan.'
+                    );
+
+                    window.location.href =
+                        'login.html';
+
+                    return false;
+
+                }
+
+
+                /* Hanya Guru */
+
+                if (profile.role !== 'guru') {
+
+                    alert(
+                        'Halaman ini hanya dapat diakses oleh Guru.'
+                    );
+
+                    window.location.href =
+                        'login.html';
+
+                    return false;
+
+                }
+
+
+                currentGuruId =
+                    profile.id;
+
+
+                /* =================================
+                   TAMPILKAN PROFIL GURU
+                ================================= */
+
+                guruName.textContent =
+                    profile.nama || 'Guru';
+
+                guruRole.textContent =
+                    'Guru';
+
+                guruAvatar.textContent =
+                    (
+                        profile.nama || 'G'
+                    )
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase();
+
+
+                return true;
+
+            } catch (error) {
+
+                console.error(
+                    'Gagal memuat profil Guru:',
+                    error
+                );
+
+                alert(
+                    'Profil Guru tidak dapat dimuat.'
+                );
+
+                window.location.href =
+                    'login.html';
+
+                return false;
+
+            }
+
+        }
+
+
+        /* =========================================
+           LOAD CHILDREN
+        ========================================== */
+
+        async function loadChildren() {
+
+            childSelect.innerHTML =
+                '<option value="">Memuat siswa...</option>';
+
+
+            try {
+
+                const {
+                    data: children,
+                    error
+                } =
+                    await supabaseClient
+                        .from('children')
+                        .select(
+                            'id, nama, kelas, tahun_ajaran'
+                        )
+                        .order(
+                            'nama',
+                            {
+                                ascending: true
+                            }
+                        );
+
+
+                if (error) {
+                    throw error;
+                }
+
+
+                childSelect.innerHTML =
+                    '<option value="">Pilih siswa</option>';
+
+
+                if (
+                    !children ||
+                    children.length === 0
+                ) {
+
+                    childSelect.innerHTML =
+                        '<option value="">Belum ada data siswa</option>';
+
+                    return;
+
+                }
+
+
+                children.forEach(child => {
+
+                    const option =
+                        document.createElement(
+                            'option'
+                        );
+
+
+                    option.value =
+                        child.id;
+
+
+                    option.textContent =
+                        child.kelas
+                            ? `${child.nama} — ${child.kelas}`
+                            : child.nama;
+
+
+                    option.dataset.nama =
+                        child.nama;
+
+
+                    option.dataset.kelas =
+                        child.kelas || '';
+
+
+                    option.dataset.tahun =
+                        child.tahun_ajaran || '';
+
+
+                    childSelect.appendChild(
+                        option
+                    );
+
+                });
+
+
+                /* =================================
+                   CHILD ID DARI URL
+                ================================= */
+
+                const params =
+                    new URLSearchParams(
+                        window.location.search
+                    );
+
+
+                const urlChildId =
+                    params.get('child_id');
+
+
+                if (urlChildId) {
+
+                    const childExists =
+                        children.some(
+                            child =>
+                                child.id === urlChildId
+                        );
+
+
+                    if (childExists) {
+
+                        childSelect.value =
+                            urlChildId;
+
+                    }
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    'Gagal mengambil data siswa:',
+                    error
+                );
+
+
+                childSelect.innerHTML =
+                    '<option value="">Gagal memuat siswa</option>';
+
+
+                alert(
+                    'Gagal memuat data siswa: ' +
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        /* =========================================
+           GET SELECTED CHILD
+        ========================================== */
+
+        function getSelectedChild() {
+
+            const selectedOption =
+                childSelect.options[
+                    childSelect.selectedIndex
+                ];
+
+
+            if (
+                !selectedOption ||
+                !childSelect.value
+            ) {
+
+                return null;
+
+            }
+
+
+            return {
+
+                id: childSelect.value,
+
+                nama:
+                    selectedOption.dataset.nama ||
+                    selectedOption.textContent,
+
+                kelas:
+                    selectedOption.dataset.kelas ||
+                    '',
+
+                tahun:
+                    selectedOption.dataset.tahun ||
+                    ''
+
+            };
+
+        }
+
+
+        /* =========================================
+           RESET FORM
+        ========================================== */
+
+        function resetAttendanceForm() {
+
+            document
+                .querySelectorAll(
+                    'input[name="attendanceStatus"]'
+                )
+                .forEach(input => {
+
+                    input.checked = false;
+
+                });
+
+
+            attendanceNote.value = '';
+
+
+            formTitle.textContent =
+                'Input Absensi';
+
+
+            saveAttendanceButton.textContent =
+                'Simpan Absensi';
+
+        }
+
+
+        /* =========================================
+           LOAD ATTENDANCE
+        ========================================== */
+
+        async function loadAttendance() {
+
+            const child =
+                getSelectedChild();
+
+
+            const tanggal =
+                attendanceDate.value;
+
+
+            if (!child) {
+
+                alert(
+                    'Silakan pilih siswa terlebih dahulu.'
+                );
+
+                return;
+
+            }
+
+
+            if (!tanggal) {
+
+                alert(
+                    'Silakan pilih tanggal.'
+                );
+
+                return;
+
+            }
+
+
+            currentChildId =
+                child.id;
+
+
+            /* Student card */
+
+            studentName.textContent =
+                child.nama;
+
+
+            studentClass.textContent =
+                `${child.kelas}${
+                    child.tahun
+                        ? ' • ' + child.tahun
+                        : ''
+                }`;
+
+
+            studentAvatar.textContent =
+                child.nama
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase();
+
+
+            studentCard.classList.add(
+                'show'
+            );
+
+
+            /* Form */
+
+            formDateText.textContent =
+                formatDate(tanggal);
+
+
+            attendanceFormCard.classList.add(
+                'show'
+            );
+
+
+            summarySection.classList.add(
+                'show'
+            );
+
+
+            resetAttendanceForm();
+
+
+            /* =================================
+               CARI DATA TANGGAL
+            ================================= */
+
+            const {
+                data: existing,
+                error
+            } =
+                await supabaseClient
+                    .from('attendance')
+                    .select(
+                        'id, status, keterangan'
+                    )
+                    .eq(
+                        'child_id',
+                        child.id
+                    )
+                    .eq(
+                        'tanggal',
+                        tanggal
+                    )
+                    .maybeSingle();
+
+
+            if (error) {
+
+                console.error(
+                    'Gagal mengambil absensi:',
+                    error
+                );
+
+                alert(
+                    'Gagal mengambil data absensi: ' +
+                    error.message
+                );
+
+                return;
+
+            }
+
+
+            if (existing) {
+
+                const radio =
+                    document.querySelector(
+                        `input[name="attendanceStatus"][value="${existing.status}"]`
+                    );
+
+
+                if (radio) {
+                    radio.checked = true;
+                }
+
+
+                attendanceNote.value =
+                    existing.keterangan || '';
+
+
+                formTitle.textContent =
+                    'Edit Absensi';
+
+
+                saveAttendanceButton.textContent =
+                    'Perbarui Absensi';
+
+            }
+
+
+            await loadAttendanceHistory(
+                child.id
+            );
+
+        }
+
+
+        /* =========================================
+           SAVE / UPDATE
+        ========================================== */
+
+        async function saveAttendance() {
+
+            if (!currentGuruId) {
+
+                alert(
+                    'Data Guru belum siap. Silakan refresh halaman.'
+                );
+
+                return;
+
+            }
+
+
+            if (!currentChildId) {
+
+                alert(
+                    'Silakan pilih siswa terlebih dahulu.'
+                );
+
+                return;
+
+            }
+
+
+            const tanggal =
+                attendanceDate.value;
+
+
+            if (!tanggal) {
+
+                alert(
+                    'Silakan pilih tanggal.'
+                );
+
+                return;
+
+            }
+
+
+            const selectedStatus =
+                document.querySelector(
+                    'input[name="attendanceStatus"]:checked'
+                );
+
+
+            if (!selectedStatus) {
+
+                alert(
+                    'Silakan pilih status kehadiran.'
+                );
+
+                return;
+
+            }
+
+
+            const status =
+                selectedStatus.value;
+
+
+            const keterangan =
+                attendanceNote.value.trim() ||
+                null;
+
+
+            saveAttendanceButton.disabled =
+                true;
+
+
+            saveAttendanceButton.textContent =
+                'Menyimpan...';
+
+
+            try {
+
+                /* =============================
+                   CEK DATA LAMA
+                ============================== */
+
+                const {
+                    data: existing,
+                    error: findError
+                } =
+                    await supabaseClient
+                        .from('attendance')
+                        .select('id')
+                        .eq(
+                            'child_id',
+                            currentChildId
+                        )
+                        .eq(
+                            'tanggal',
+                            tanggal
+                        )
+                        .maybeSingle();
+
+
+                if (findError) {
+                    throw findError;
+                }
+
+
+                /* =============================
+                   UPDATE
+                ============================== */
+
+                if (existing) {
+
+                    const {
+                        error: updateError
+                    } =
+                        await supabaseClient
+                            .from('attendance')
+                            .update({
+                                status: status,
+                                keterangan: keterangan
+                            })
+                            .eq(
+                                'id',
+                                existing.id
+                            );
+
+
+                    if (updateError) {
+                        throw updateError;
+                    }
+
+
+                    alert(
+                        'Absensi berhasil diperbarui.'
+                    );
+
+                }
+
+
+                /* =============================
+                   INSERT
+                ============================== */
+
+                else {
+
+                    const {
+                        error: insertError
+                    } =
+                        await supabaseClient
+                            .from('attendance')
+                            .insert({
+                                child_id:
+                                    currentChildId,
+
+                                tanggal:
+                                    tanggal,
+
+                                status:
+                                    status,
+
+                                keterangan:
+                                    keterangan
+                            });
+
+
+                    if (insertError) {
+                        throw insertError;
+                    }
+
+
+                    alert(
+                        'Absensi berhasil disimpan.'
+                    );
+
+                }
+
+
+                formTitle.textContent =
+                    'Edit Absensi';
+
+
+                saveAttendanceButton.textContent =
+                    'Perbarui Absensi';
+
+
+                await loadAttendanceHistory(
+                    currentChildId
+                );
+
+            } catch (error) {
+
+                console.error(
+                    'Gagal menyimpan absensi:',
+                    error
+                );
+
+
+                alert(
+                    'Gagal menyimpan absensi: ' +
+                    error.message
+                );
+
+            } finally {
+
+                saveAttendanceButton.disabled =
+                    false;
+
+                if (
+                    formTitle.textContent ===
+                    'Edit Absensi'
+                ) {
+
+                    saveAttendanceButton.textContent =
+                        'Perbarui Absensi';
+
+                } else {
+
+                    saveAttendanceButton.textContent =
+                        'Simpan Absensi';
+
+                }
+
+            }
+
+        }
+
+
+        /* =========================================
+           LOAD HISTORY
+        ========================================== */
+
+        async function loadAttendanceHistory(
+            childId
+        ) {
+
+            attendanceHistory.innerHTML = `
+                <div class="empty-state">
+                    Memuat riwayat absensi...
+                </div>
+            `;
+
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .from('attendance')
+                    .select(
+                        'id, tanggal, status, keterangan'
+                    )
+                    .eq(
+                        'child_id',
+                        childId
+                    )
+                    .order(
+                        'tanggal',
+                        {
+                            ascending: false
+                        }
+                    );
+
+
+            if (error) {
+
+                console.error(
+                    'Gagal memuat riwayat:',
+                    error
+                );
+
+
+                attendanceHistory.innerHTML = `
+                    <div class="empty-state">
+                        Gagal memuat riwayat absensi.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            if (
+                !data ||
+                data.length === 0
+            ) {
+
+                attendanceHistory.innerHTML = `
+                    <div class="empty-state">
+                        Belum ada data absensi siswa.
+                    </div>
+                `;
+
+
+                updateSummary([]);
+
+                return;
+
+            }
+
+
+            attendanceHistory.innerHTML =
+                '';
+
+
+            data.forEach(item => {
+
+                const row =
+                    document.createElement(
+                        'div'
+                    );
+
+
+                row.className =
+                    'attendance-row';
+
+
+                const statusInfo =
+                    getStatusInfo(
+                        item.status
+                    );
+
+
+                row.innerHTML = `
+
+                    <div class="attendance-date">
+
+                        <strong>
+                            ${formatDateOnly(
+                                item.tanggal
+                            )}
+                        </strong>
+
+                        <span>
+                            ${getDayName(
+                                item.tanggal
+                            )}
+                        </span>
+
+                    </div>
+
+
+                    <div class="attendance-note">
+
+                        ${
+                            item.keterangan ||
+                            'Tidak ada keterangan'
+                        }
+
+                    </div>
+
+
+                    <div class="attendance-status ${
+                        statusInfo.className
+                    }">
+
+                        <span class="status-dot-small"></span>
+
+                        ${statusInfo.label}
+
+                    </div>
+
+                `;
+
+
+                attendanceHistory.appendChild(
+                    row
+                );
+
+            });
+
+
+            updateSummary(data);
+
+        }
+
+
+        /* =========================================
+           STATUS INFO
+        ========================================== */
+
+        function getStatusInfo(status) {
+
+            const statuses = {
+
+                hadir: {
+                    label: 'Hadir',
+                    className: 'status-present'
+                },
+
+                izin: {
+                    label: 'Izin',
+                    className: 'status-permission'
+                },
+
+                sakit: {
+                    label: 'Sakit',
+                    className: 'status-sick'
+                },
+
+                alpa: {
+                    label: 'Alpa',
+                    className: 'status-absent'
+                }
+
+            };
+
+
+            return statuses[status] || {
+
+                label: status,
+                className: 'status-absent'
+
+            };
+
+        }
+
+
+        /* =========================================
+           SUMMARY
+        ========================================== */
+
+        function updateSummary(data) {
+
+            const summary = {
+
+                hadir: 0,
+                izin: 0,
+                sakit: 0,
+                alpa: 0
+
+            };
+
+
+            data.forEach(item => {
+
+                if (
+                    summary[item.status] !==
+                    undefined
+                ) {
+
+                    summary[item.status]++;
+
+                }
+
+            });
+
+
+            document.querySelector(
+                '#summaryHadir'
+            ).textContent =
+                summary.hadir;
+
+
+            document.querySelector(
+                '#summaryIzin'
+            ).textContent =
+                summary.izin;
+
+
+            document.querySelector(
+                '#summarySakit'
+            ).textContent =
+                summary.sakit;
+
+
+            document.querySelector(
+                '#summaryAlpa'
+            ).textContent =
+                summary.alpa;
+
+        }
+
+
+        /* =========================================
+           EVENTS
+        ========================================== */
+
+        childSelect.addEventListener(
+            'change',
+            () => {
+
+                const child =
+                    getSelectedChild();
+
+
+                if (!child) {
+                    return;
+                }
+
+
+                currentChildId =
+                    child.id;
+
+
+                loadAttendance();
+
+            }
+        );
+
+
+        loadAttendanceButton.addEventListener(
+            'click',
+            loadAttendance
+        );
+
+
+        saveAttendanceButton.addEventListener(
+            'click',
+            saveAttendance
+        );
+
+
+        /* =========================================
+           MOBILE MENU
+        ========================================== */
+
+        const menuToggle =
+            document.querySelector(
+                '.menu-toggle'
+            );
+
+
+        const sidebar =
+            document.querySelector(
+                '.sidebar'
+            );
+
+
+        if (
+            menuToggle &&
+            sidebar
+        ) {
+
+            menuToggle.addEventListener(
+                'click',
+                () => {
+
+                    sidebar.classList.toggle(
+                        'show'
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =========================================
+           PROFILE DROPDOWN
+        ========================================== */
+
+        const profileButton =
+            document.querySelector(
+                '#profileButton'
+            );
+
+
+        const profileDropdown =
+            document.querySelector(
+                '#profileDropdown'
+            );
+
+
+        if (
+            profileButton &&
+            profileDropdown
+        ) {
+
+            profileButton.addEventListener(
+                'click',
+                (e) => {
+
+                    e.stopPropagation();
+
+                    profileDropdown.classList.toggle(
+                        'show'
+                    );
+
+                }
+            );
+
+
+            document.addEventListener(
+                'click',
+                () => {
+
+                    profileDropdown.classList.remove(
+                        'show'
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =========================================
+           INIT
+        ========================================== */
+
+        async function init() {
+
+            const profileLoaded =
+                await loadGuruProfile();
+
+
+            if (!profileLoaded) {
+                return;
+            }
+
+
+            await loadChildren();
+
+
+            /*
+             * Kalau dibuka dari Data Anak:
+             * guru-absensi.html?child_id=...
+             */
+
+            if (childSelect.value) {
+
+                await loadAttendance();
+
+            }
+
+        }
+
+
+        init();
+
+    </script>
+
+</body>
+
+</html>

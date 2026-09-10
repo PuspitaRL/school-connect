@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pengumuman | TAUD SAQU DARUL IMAN</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <style>
+        /* ================================
+           PENGUMUMAN
+        ================================= */
+
+        .page-content {
+            padding: 30px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header .greeting {
+            color: var(--orange);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin: 0 0 8px;
+            color: var(--text);
+        }
+
+        .page-header p {
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        /* FILTER */
+
+        .announcement-filter {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 3px;
+        }
+
+        .filter-btn {
+            border: 1px solid var(--border);
+            background: var(--white);
+            color: var(--text-light);
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .filter-btn.active {
+            background: var(--orange);
+            border-color: var(--orange);
+            color: white;
+        }
+
+        /* ANNOUNCEMENT CARD */
+
+        .announcement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .announcement-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+            transition: .2s ease;
+        }
+
+        .announcement-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(61, 55, 47, .06);
+        }
+
+        .announcement-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .announcement-icon {
+            width: 45px;
+            height: 45px;
+            flex-shrink: 0;
+            border-radius: 13px;
+            background: var(--orange-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .announcement-main {
+            flex: 1;
+        }
+
+        .announcement-title-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .announcement-title {
+            margin: 0;
+            color: var(--text);
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .new-badge {
+            flex-shrink: 0;
+            background: var(--orange-light);
+            color: var(--orange-dark);
+            font-size: 9px;
+            font-weight: 700;
+            padding: 5px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+
+        .announcement-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .announcement-content {
+            margin: 15px 0 0;
+            padding-left: 59px;
+            color: var(--text-light);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .announcement-content strong {
+            color: var(--text);
+        }
+
+        .announcement-footer {
+            margin-top: 15px;
+            padding-top: 13px;
+            border-top: 1px solid var(--border);
+            padding-left: 59px;
+        }
+
+        .read-more {
+            color: var(--orange-dark);
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .read-more:hover {
+            text-decoration: underline;
+        }
+
+        /* IMPORTANT CARD */
+
+        .announcement-card.important {
+            border-left: 4px solid var(--orange);
+        }
+
+        /* EMPTY / INFO */
+
+        .announcement-info {
+            margin-top: 25px;
+            background: var(--orange-light);
+            border-radius: 16px;
+            padding: 16px 18px;
+            color: var(--text-light);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .announcement-info strong {
+            color: var(--orange-dark);
+        }
+
+        /* FOOTER */
+
+        .page-footer {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 11px;
+            padding: 25px 0 20px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 768px) {
+
+            .page-content {
+                padding: 22px 17px;
+            }
+
+            .page-header h1 {
+                font-size: 23px;
+            }
+
+            .announcement-card {
+                padding: 17px;
+            }
+
+            .announcement-content,
+            .announcement-footer {
+                padding-left: 0;
+            }
+
+            .announcement-content {
+                margin-top: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .page-content {
+                padding: 18px 14px;
+            }
+
+            .page-header h1 {
+                font-size: 21px;
+            }
+
+            .announcement-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .announcement-title {
+                font-size: 14px;
+            }
+
+            .announcement-title-row {
+                gap: 8px;
+            }
+
+            .new-badge {
+                font-size: 8px;
+                padding: 4px 6px;
+            }
+
+            .announcement-content {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+
+            <img src="images/logo.png" alt="Logo TAUD SAQU DARUL IMAN">
+
+            <div>
+                <strong>TAUD SAQU</strong>
+                <span>DARUL IMAN</span>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-menu">
+
+            <a href="parent-dashboard.html" class="menu-item">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a href="child.html" class="menu-item">
+                <span>👧</span>
+                Anak Saya
+            </a>
+
+            <a href="buku-penghubung.html" class="menu-item">
+                <span>📖</span>
+                Buku Penghubung
+            </a>
+
+            <a href="perkembangan.html" class="menu-item">
+                <span>📊</span>
+                Perkembangan
+            </a>
+
+            <a href="bintang-prestasi.html" class="menu-item">
+                <span>⭐</span>
+                Bintang Prestasi
+            </a>
+
+            <a href="absensi.html" class="menu-item">
+                <span>📅</span>
+                Absensi
+            </a>
+
+            <a href="pengumuman.html" class="menu-item active">
+                <span>📢</span>
+                Pengumuman
+            </a>
+
+            <a href="komunikasi.html" class="menu-item">
+                <span>💬</span>
+                komunikasi
+            </a>
+
+            <div class="menu-divider"></div>
+
+            <a href="#" class="menu-item">
+                <span>⚙</span>
+                Pengaturan
+            </a>
+
+            <a href="index.html" class="menu-item logout">
+                <span>↪</span>
+                Keluar
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <button class="menu-toggle" type="button">
+                ☰
+            </button>
+
+            <div class="topbar-title">
+                Pengumuman
+            </div>
+
+            <div class="topbar-right">
+
+                <button class="notification" type="button">
+                    🔔
+                    <span class="notification-dot"></span>
+                </button>
+
+                <div class="profile-mini">
+
+                    <div class="profile-avatar">
+                        A
+                    </div>
+
+                    <div class="profile-info">
+                        <strong>Ayah/Bunda</strong>
+                        <span>Orang Tua</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+
+        <section class="page-content">
+
+
+            <!-- HEADER -->
+
+            <div class="page-header">
+
+                <p class="greeting">
+                    Assalamu'alaikum 👋
+                </p>
+
+                <h1>
+                    Pengumuman 📢
+                </h1>
+
+                <p>
+                    Informasi terbaru dari sekolah untuk Ayah/Bunda.
+                </p>
+
+            </div>
+
+
+            <!-- FILTER -->
+
+           <div class="announcement-filter">
+
+    <button class="filter-btn active" type="button" data-filter="semua">
+        Semua
+    </button>
+
+    <button class="filter-btn" type="button" data-filter="penting">
+        Penting
+    </button>
+
+    <button class="filter-btn" type="button" data-filter="kegiatan">
+        Kegiatan
+    </button>
+
+    <button class="filter-btn" type="button" data-filter="akademik">
+        Akademik
+    </button>
+
+</div>
+
+
+            <!-- LIST -->
+
+            <div class="announcement-list">
+
+
+                <!-- ANNOUNCEMENT 1 -->
+
+                <article class="announcement-card important" data-category="penting">
+
+                    <div class="announcement-top">
+
+                        <div class="announcement-icon">
+                            📢
+                        </div>
+
+                        <div class="announcement-main">
+
+                            <div class="announcement-title-row">
+
+                                <h2 class="announcement-title">
+                                    Informasi Kegiatan Parenting
+                                </h2>
+
+                                <span class="new-badge">
+                                    Baru
+                                </span>
+
+                            </div>
+
+                            <div class="announcement-meta">
+
+                                <span>
+                                    📅 10 September 2026
+                                </span>
+
+                                <span>
+                                    •
+                                </span>
+
+                                <span>
+                                    Sekolah
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="announcement-content">
+
+                        Ayah/Bunda diharapkan dapat mengikuti kegiatan
+                        <strong>Parenting & Silaturahmi Wali Murid</strong>
+                        yang akan dilaksanakan sesuai jadwal yang telah
+                        diinformasikan oleh sekolah.
+
+                    </div>
+
+
+                    <div class="announcement-footer">
+
+                       <a href="detail-pengumuman.html" class="read-more">
+						Lihat selengkapnya →
+						</a>
+                    </div>
+
+                </article>
+
+
+                <!-- ANNOUNCEMENT 2 -->
+
+                <article class="announcement-card" data-category="kegiatan">
+
+                    <div class="announcement-top">
+
+                        <div class="announcement-icon">
+                            🕌
+                        </div>
+
+                        <div class="announcement-main">
+
+                            <div class="announcement-title-row">
+
+                                <h2 class="announcement-title">
+                                    Pembiasaan Shalat Dhuha
+                                </h2>
+
+                                <span class="new-badge">
+                                    Baru
+                                </span>
+
+                            </div>
+
+                            <div class="announcement-meta">
+
+                                <span>
+                                    📅 8 September 2026
+                                </span>
+
+                                <span>
+                                    •
+                                </span>
+
+                                <span>
+                                    Ibadah
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="announcement-content">
+
+                        Sekolah mengingatkan Ayah/Bunda untuk membantu
+                        membiasakan anak melaksanakan shalat dhuha dan
+                        menjaga adab sebelum berangkat ke sekolah.
+
+                    </div>
+
+
+                    <div class="announcement-footer">
+
+                       <a href="detail-pengumuman.html" class="read-more">
+						Lihat selengkapnya →
+						</a>
+
+                    </div>
+
+                </article>
+
+
+                <!-- ANNOUNCEMENT 3 -->
+
+                <article class="announcement-card" data-category="akademik">
+
+                    <div class="announcement-top">
+
+                        <div class="announcement-icon">
+                            📚
+                        </div>
+
+                        <div class="announcement-main">
+
+                            <div class="announcement-title-row">
+
+                                <h2 class="announcement-title">
+                                    Program Murajaah Pekanan
+                                </h2>
+
+                            </div>
+
+                            <div class="announcement-meta">
+
+                                <span>
+                                    📅 5 September 2026
+                                </span>
+
+                                <span>
+                                    •
+                                </span>
+
+                                <span>
+                                    Akademik
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="announcement-content">
+
+                        Pekan ini anak-anak akan fokus pada murajaah
+                        surat yang telah dipelajari. Ayah/Bunda dapat
+                        mendampingi anak melakukan murajaah di rumah
+                        sesuai target yang diberikan.
+
+                    </div>
+
+
+                    <div class="announcement-footer">
+
+                        <a href="detail-pengumuman.html" class="read-more">
+                            Lihat selengkapnya →
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+                <!-- ANNOUNCEMENT 4 -->
+
+                <article class="announcement-card" data-category="kegiatan">
+
+                    <div class="announcement-top">
+
+                        <div class="announcement-icon">
+                            🏫
+                        </div>
+
+                        <div class="announcement-main">
+
+                            <div class="announcement-title-row">
+
+                                <h2 class="announcement-title">
+                                    Agenda Kegiatan Sekolah Bulan September
+                                </h2>
+
+                            </div>
+
+                            <div class="announcement-meta">
+
+                                <span>
+                                    📅 1 September 2026
+                                </span>
+
+                                <span>
+                                    •
+                                </span>
+
+                                <span>
+                                    Kegiatan
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="announcement-content">
+
+                        Berikut beberapa agenda kegiatan sekolah yang
+                        akan dilaksanakan selama bulan September.
+                        Mohon Ayah/Bunda memperhatikan informasi dan
+                        jadwal yang diberikan oleh sekolah.
+
+                    </div>
+
+
+                    <div class="announcement-footer">
+
+                        <a href="detail-pengumuman.html" class="read-more">
+                            Lihat selengkapnya →
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+            </div>
+
+
+            <!-- INFO -->
+
+            <div class="announcement-info">
+
+                💡 <strong>Informasi:</strong>
+                Pengumuman terbaru akan ditampilkan di bagian paling atas.
+                Pastikan Ayah/Bunda rutin membuka halaman ini agar tidak
+                melewatkan informasi penting dari sekolah.
+
+            </div>
+
+
+            <div class="page-footer">
+
+                Semoga komunikasi antara sekolah dan keluarga
+                semakin mudah dan bermanfaat. 🌷
+
+                <br><br>
+
+                TAUD SAQU DARUL IMAN School Connect
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+    <!-- MOBILE MENU -->
+	<script>
+
+    const filterButtons =
+        document.querySelectorAll('.filter-btn');
+
+    const announcementCards =
+        document.querySelectorAll('.announcement-card');
+
+
+    filterButtons.forEach(button => {
+
+        button.addEventListener('click', () => {
+
+            // Hapus active dari semua tombol
+            filterButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Jadikan tombol yang diklik active
+            button.classList.add('active');
+
+
+            const selectedFilter =
+                button.dataset.filter;
+
+
+            // Tampilkan / sembunyikan pengumuman
+            announcementCards.forEach(card => {
+
+                const category =
+                    card.dataset.category;
+
+
+                if (
+                    selectedFilter === 'semua' ||
+                    category === selectedFilter
+                ) {
+
+                    card.style.display = '';
+
+                } else {
+
+                    card.style.display = 'none';
+
+                }
+
+            });
+
+        });
+
+    });
+
+</script>
+
+    <script>
+
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+
+        if (menuToggle && sidebar) {
+
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('show');
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>

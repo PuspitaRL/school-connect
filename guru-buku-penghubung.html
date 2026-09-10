@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Buku Penghubung Guru | TAUD SAQU DARUL IMAN</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <style>
+        .report-content {
+            padding: 30px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 6px;
+            font-size: 26px;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        .selection-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 24px;
+            max-width: 700px;
+        }
+
+        .selection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group label,
+        .report-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group select,
+        .form-group input,
+        .report-field input,
+        .report-field select,
+        .report-field textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--ivory);
+            color: var(--text);
+            font-family: inherit;
+            outline: none;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus,
+        .report-field input:focus,
+        .report-field select:focus,
+        .report-field textarea:focus {
+            border-color: var(--orange);
+        }
+
+        .btn-next {
+            margin-top: 22px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            background: var(--orange);
+            color: white;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-next:hover {
+            background: var(--orange-dark);
+        }
+
+        .report-form {
+            margin-top: 24px;
+            max-width: 900px;
+        }
+
+        .report-section {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 16px;
+        }
+
+        .report-section h2 {
+            margin: 0 0 18px;
+            font-size: 18px;
+            color: var(--text);
+        }
+
+        .report-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .report-field {
+            margin-bottom: 16px;
+        }
+
+        .report-field:last-child {
+            margin-bottom: 0;
+        }
+
+        .report-field textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .report-save {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: var(--orange);
+            color: white;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .report-save:hover {
+            background: var(--orange-dark);
+        }
+
+        .report-save:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .save-status {
+            margin-top: 12px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 600px) {
+            .report-content {
+                padding: 20px 16px;
+            }
+
+            .selection-grid,
+            .report-row {
+                grid-template-columns: 1fr;
+            }
+
+            .selection-card,
+            .report-section {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="images/logo.png" alt="Logo TAUD SAQU DARUL IMAN">
+
+            <div>
+                <strong>TAUD SAQU</strong>
+                <span>DARUL IMAN</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <a href="guru-dashboard.html" class="menu-item">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a href="guru-child.html" class="menu-item">
+                <span>👧</span>
+                Data Anak
+            </a>
+
+            <a href="guru-buku-penghubung.html" class="menu-item active">
+                <span>📖</span>
+                Buku Penghubung
+            </a>
+
+            <a href="guru-perkembangan.html" class="menu-item">
+                <span>📊</span>
+                Perkembangan
+            </a>
+
+            <a href="guru-bintang-prestasi.html" class="menu-item">
+                <span>⭐</span>
+                Bintang Prestasi
+            </a>
+
+            <a href="guru-absensi.html" class="menu-item">
+                <span>📅</span>
+                Absensi
+            </a>
+
+            <a href="guru-pengumuman.html" class="menu-item">
+                <span>📢</span>
+                Pengumuman
+            </a>
+
+            <a href="guru-Komunikasi.html" class="menu-item">
+                <span>💬</span>
+                Komunikasi
+            </a>
+
+            <div class="menu-divider"></div>
+
+            <a href="pengaturan.html" class="menu-item">
+                <span>⚙</span>
+                Pengaturan
+            </a>
+
+            <a href="index.html" class="menu-item logout">
+                <span>↪</span>
+                Keluar
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <button class="menu-toggle" type="button">
+                ☰
+            </button>
+
+            <div class="topbar-title">
+                Buku Penghubung
+            </div>
+
+            <div class="topbar-right">
+
+                <div class="profile-wrapper">
+
+                    <button
+                        class="profile-mini"
+                        id="profileButton"
+                        type="button"
+                    >
+
+                        <div
+                            class="profile-avatar"
+                            id="guruAvatar"
+                        >
+                            G
+                        </div>
+
+                        <div class="profile-info">
+
+                            <strong id="guruName">
+                                Memuat...
+                            </strong>
+
+                            <span id="guruRole">
+                                Guru
+                            </span>
+
+                        </div>
+
+                        <span class="profile-arrow">⌄</span>
+
+                    </button>
+
+                    <div
+                        class="profile-dropdown"
+                        id="profileDropdown"
+                    >
+
+                        <a href="pengaturan.html">
+                            ⚙ Pengaturan
+                        </a>
+
+                        <a
+                            href="index.html"
+                            class="dropdown-logout"
+                        >
+                            ↪ Keluar
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+        <section class="report-content">
+
+            <div class="page-header">
+
+                <h1>Buku Penghubung</h1>
+
+                <p>
+                    Isi laporan kegiatan harian anak untuk orang tua.
+                </p>
+
+            </div>
+
+
+            <!-- PILIH ANAK DAN TANGGAL -->
+            <div class="selection-card">
+
+                <div class="selection-grid">
+
+                    <div class="form-group">
+
+                        <label for="childSelect">
+                            Pilih Anak
+                        </label>
+
+                        <select id="childSelect">
+
+                            <option value="">
+                                Memuat data anak...
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="reportDate">
+                            Tanggal
+                        </label>
+
+                        <input
+                            type="date"
+                            id="reportDate"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-next"
+                    id="startReport"
+                >
+                    Mulai Isi Buku Penghubung
+                </button>
+
+            </div>
+
+
+            <!-- FORM -->
+            <div
+                class="report-form"
+                id="reportForm"
+                style="display:none;"
+            >
+
+                <!-- IBADAH -->
+                <div class="report-section">
+
+                    <h2>🕌 Ibadah</h2>
+
+                    <div class="report-field">
+
+                        <label for="adabBerdoa">
+                            Adab Berdoa
+                        </label>
+
+                        <select id="adabBerdoa">
+
+                            <option value="false">
+                                Perlu Pendampingan
+                            </option>
+
+                            <option value="true">
+                                Baik
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- HAFALAN -->
+                <div class="report-section">
+
+                    <h2>📖 Hafalan</h2>
+
+                    <div class="report-row">
+
+                        <div class="report-field">
+
+                            <label for="murojaah">
+                                Muraja'ah
+                            </label>
+
+                            <select id="murojaah">
+
+                                <option value="Baik">
+                                    Baik
+                                </option>
+
+                                <option value="Perlu Pendampingan">
+                                    Perlu Pendampingan
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="report-field">
+
+                            <label for="hafalanBaru">
+                                Hafalan Baru
+                            </label>
+
+                            <input
+                                type="text"
+                                id="hafalanBaru"
+                                placeholder="Contoh: Surat Al-Fatihah"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PEMBELAJARAN -->
+                <div class="report-section">
+
+                    <h2>📚 Pembelajaran</h2>
+
+                    <div class="report-field">
+
+                        <label for="memahamiMateri">
+                            Memahami Materi
+                        </label>
+
+                        <select id="memahamiMateri">
+
+                            <option value="Baik">
+                                Baik
+                            </option>
+
+                            <option value="Perlu Pendampingan">
+                                Perlu Pendampingan
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SIKAP -->
+                <div class="report-section">
+
+                    <h2>🌷 Sikap & Akhlak</h2>
+
+                    <div class="report-row">
+
+                        <div class="report-field">
+
+                            <label for="kemandirian">
+                                Kemandirian
+                            </label>
+
+                            <select id="kemandirian">
+
+                                <option value="Baik">
+                                    Baik
+                                </option>
+
+                                <option value="Perlu Pendampingan">
+                                    Perlu Pendampingan
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="report-field">
+
+                            <label for="interaksiTeman">
+                                Interaksi dengan Teman
+                            </label>
+
+                            <select id="interaksiTeman">
+
+                                <option value="Baik">
+                                    Baik
+                                </option>
+
+                                <option value="Perlu Pendampingan">
+                                    Perlu Pendampingan
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="report-row">
+
+                        <div class="report-field">
+
+                            <label for="adabKepadaGuru">
+                                Adab Kepada Guru
+                            </label>
+
+                            <select id="adabKepadaGuru">
+
+                                <option value="Baik">
+                                    Baik
+                                </option>
+
+                                <option value="Perlu Pendampingan">
+                                    Perlu Pendampingan
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="report-field">
+
+                            <label for="tanggungJawab">
+                                Tanggung Jawab
+                            </label>
+
+                            <select id="tanggungJawab">
+
+                                <option value="Baik">
+                                    Baik
+                                </option>
+
+                                <option value="Perlu Pendampingan">
+                                    Perlu Pendampingan
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CATATAN -->
+                <div class="report-section">
+
+                    <h2>📝 Catatan Guru</h2>
+
+                    <div class="report-field">
+
+                        <label for="catatanGuru">
+                            Catatan
+                        </label>
+
+                        <textarea
+                            id="catatanGuru"
+                            placeholder="Tuliskan catatan untuk orang tua..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="report-save"
+                    id="saveReport"
+                >
+                    Simpan Buku Penghubung
+                </button>
+
+                <div
+                    class="save-status"
+                    id="saveStatus"
+                ></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js?v=2"></script>
+
+
+    <script>
+
+        const menuToggle =
+            document.querySelector('.menu-toggle');
+
+        const sidebar =
+            document.querySelector('.sidebar');
+
+        if (menuToggle && sidebar) {
+
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('show');
+            });
+
+        }
+
+
+        const profileButton =
+            document.querySelector('#profileButton');
+
+        const profileDropdown =
+            document.querySelector('#profileDropdown');
+
+        if (profileButton && profileDropdown) {
+
+            profileButton.addEventListener('click', (e) => {
+
+                e.stopPropagation();
+
+                profileDropdown.classList.toggle('show');
+
+            });
+
+            document.addEventListener('click', () => {
+
+                profileDropdown.classList.remove('show');
+
+            });
+
+        }
+
+    </script>
+
+
+    <script>
+
+        let currentGuruId = null;
+
+
+        async function loadGuruProfile() {
+
+            const {
+                data: authData,
+                error: authError
+            } =
+                await supabaseClient.auth.getUser();
+
+
+            if (
+                authError ||
+                !authData ||
+                !authData.user
+            ) {
+
+                alert('Sesi login Guru tidak ditemukan.');
+
+                window.location.href = 'login.html';
+
+                return false;
+
+            }
+
+
+            const {
+                data: guru,
+                error: guruError
+            } =
+                await supabaseClient
+                    .from('users')
+                    .select('id, nama, role, auth_id')
+                    .eq('auth_id', authData.user.id)
+                    .maybeSingle();
+
+
+            if (
+                guruError ||
+                !guru ||
+                guru.role !== 'guru'
+            ) {
+
+                console.error(
+                    'Gagal mengambil profil Guru:',
+                    guruError
+                );
+
+                alert('Profil Guru tidak ditemukan.');
+
+                return false;
+
+            }
+
+
+            currentGuruId = guru.id;
+
+
+            const namaGuru =
+                guru.nama || 'Guru';
+
+
+            document.querySelector('#guruName')
+                .textContent = namaGuru;
+
+
+            document.querySelector('#guruRole')
+                .textContent = 'Guru';
+
+
+            document.querySelector('#guruAvatar')
+                .textContent =
+                namaGuru
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase();
+
+
+            return true;
+
+        }
+
+
+        async function loadChildren() {
+
+            const childSelect =
+                document.querySelector('#childSelect');
+
+
+            const {
+                data: children,
+                error
+            } =
+                await supabaseClient
+                    .from('children')
+                    .select('id, nama, kelas, tahun_ajaran')
+                    .order('nama');
+
+
+            if (error) {
+
+                console.error(
+                    'Gagal mengambil data anak:',
+                    error
+                );
+
+                childSelect.innerHTML = `
+                    <option value="">
+                        Gagal memuat data anak
+                    </option>
+                `;
+
+                return;
+
+            }
+
+
+            childSelect.innerHTML = `
+                <option value="">
+                    Pilih anak
+                </option>
+            `;
+
+
+            (children || []).forEach(child => {
+
+                const option =
+                    document.createElement('option');
+
+                option.value =
+                    child.id;
+
+                option.textContent =
+                    `${child.nama} — ${child.kelas}`;
+
+                childSelect.appendChild(option);
+
+            });
+
+        }
+
+
+        function setDefaultDate() {
+
+            const reportDate =
+                document.querySelector('#reportDate');
+
+            const today =
+                new Date();
+
+            const year =
+                today.getFullYear();
+
+            const month =
+                String(
+                    today.getMonth() + 1
+                ).padStart(2, '0');
+
+            const day =
+                String(
+                    today.getDate()
+                ).padStart(2, '0');
+
+
+            reportDate.value =
+                `${year}-${month}-${day}`;
+
+        }
+
+
+        function resetForm() {
+
+            document.querySelector('#adabBerdoa').value =
+                'false';
+
+            document.querySelector('#murojaah').value =
+                'Baik';
+
+            document.querySelector('#hafalanBaru').value =
+                '';
+
+            document.querySelector('#memahamiMateri').value =
+                'Baik';
+
+            document.querySelector('#kemandirian').value =
+                'Baik';
+
+            document.querySelector('#interaksiTeman').value =
+                'Baik';
+
+            document.querySelector('#adabKepadaGuru').value =
+                'Baik';
+
+            document.querySelector('#tanggungJawab').value =
+                'Baik';
+
+            document.querySelector('#catatanGuru').value =
+                '';
+
+        }
+
+
+        async function loadExistingReport() {
+
+            const childId =
+                document.querySelector('#childSelect').value;
+
+            const tanggal =
+                document.querySelector('#reportDate').value;
+
+
+            resetForm();
+
+
+            const {
+                data: report,
+                error
+            } =
+                await supabaseClient
+                    .from('daily_reports')
+                    .select('*')
+                    .eq('child_id', childId)
+                    .eq('tanggal', tanggal)
+                    .maybeSingle();
+
+
+            if (error) {
+
+                console.error(
+                    'Gagal mengecek laporan:',
+                    error
+                );
+
+                return;
+
+            }
+
+
+            if (!report) {
+
+                return;
+
+            }
+
+
+            document.querySelector('#adabBerdoa').value =
+                String(
+                    report.adab_berdoa ?? false
+                );
+
+
+            document.querySelector('#murojaah').value =
+                report.murojaah || 'Baik';
+
+
+            document.querySelector('#hafalanBaru').value =
+                report.hafalan_baru || '';
+
+
+            document.querySelector('#memahamiMateri').value =
+                report.memahami_materi || 'Baik';
+
+
+            document.querySelector('#kemandirian').value =
+                report.kemandirian || 'Baik';
+
+
+            document.querySelector('#interaksiTeman').value =
+                report.interaksi_teman || 'Baik';
+
+
+            document.querySelector('#adabKepadaGuru').value =
+                report.adab_kepada_guru || 'Baik';
+
+
+            document.querySelector('#tanggungJawab').value =
+                report.tanggung_jawab || 'Baik';
+
+
+            document.querySelector('#catatanGuru').value =
+                report.catatan_guru || '';
+
+        }
+
+
+        document
+            .querySelector('#startReport')
+            .addEventListener('click', async () => {
+
+                const childId =
+                    document.querySelector('#childSelect').value;
+
+                const tanggal =
+                    document.querySelector('#reportDate').value;
+
+
+                if (!childId) {
+
+                    alert(
+                        'Silakan pilih anak terlebih dahulu.'
+                    );
+
+                    return;
+
+                }
+
+
+                if (!tanggal) {
+
+                    alert(
+                        'Silakan pilih tanggal.'
+                    );
+
+                    return;
+
+                }
+
+
+                await loadExistingReport();
+
+
+                const reportForm =
+                    document.querySelector('#reportForm');
+
+
+                reportForm.style.display =
+                    'block';
+
+
+                reportForm.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+            });
+
+
+        document
+            .querySelector('#saveReport')
+            .addEventListener('click', async () => {
+
+                const childId =
+                    document.querySelector('#childSelect').value;
+
+                const tanggal =
+                    document.querySelector('#reportDate').value;
+
+
+                if (!childId || !tanggal) {
+
+                    alert(
+                        'Anak dan tanggal wajib dipilih.'
+                    );
+
+                    return;
+
+                }
+
+
+                const saveButton =
+                    document.querySelector('#saveReport');
+
+                const saveStatus =
+                    document.querySelector('#saveStatus');
+
+
+                saveButton.disabled = true;
+
+                saveButton.textContent =
+                    'Menyimpan...';
+
+                saveStatus.textContent =
+                    '';
+
+
+                try {
+
+                    /*
+                     * Pastikan sesi Guru masih aktif.
+                     */
+                    const {
+                        data: authData,
+                        error: authError
+                    } =
+                        await supabaseClient.auth.getUser();
+
+
+                    if (
+                        authError ||
+                        !authData ||
+                        !authData.user
+                    ) {
+
+                        throw new Error(
+                            'Sesi login tidak ditemukan.'
+                        );
+
+                    }
+
+
+                    /*
+                     * Ambil profil Guru.
+                     */
+                    const {
+                        data: guru,
+                        error: guruError
+                    } =
+                        await supabaseClient
+                            .from('users')
+                            .select('id, nama, role, auth_id')
+                            .eq(
+                                'auth_id',
+                                authData.user.id
+                            )
+                            .maybeSingle();
+
+
+                    if (
+                        guruError ||
+                        !guru ||
+                        guru.role !== 'guru'
+                    ) {
+
+                        throw new Error(
+                            'Profil Guru tidak ditemukan.'
+                        );
+
+                    }
+
+
+                    currentGuruId =
+                        guru.id;
+
+
+                    /*
+                     * Data sesuai dengan kolom
+                     * tabel daily_reports.
+                     */
+                    const reportData = {
+
+                        child_id:
+                            childId,
+
+                        tanggal:
+                            tanggal,
+
+                        guru_id:
+                            guru.id,
+
+                        shalat_dhuha:
+                            false,
+
+                        adab_berdoa:
+                            document
+                                .querySelector('#adabBerdoa')
+                                .value === 'true',
+
+                        murojaah:
+                            document
+                                .querySelector('#murojaah')
+                                .value,
+
+                        hafalan_baru:
+                            document
+                                .querySelector('#hafalanBaru')
+                                .value
+                                .trim(),
+
+                        memahami_materi:
+                            document
+                                .querySelector('#memahamiMateri')
+                                .value,
+
+                        kemandirian:
+                            document
+                                .querySelector('#kemandirian')
+                                .value,
+
+                        interaksi_teman:
+                            document
+                                .querySelector('#interaksiTeman')
+                                .value,
+
+                        adab_kepada_guru:
+                            document
+                                .querySelector('#adabKepadaGuru')
+                                .value,
+
+                        tanggung_jawab:
+                            document
+                                .querySelector('#tanggungJawab')
+                                .value,
+
+                        catatan_guru:
+                            document
+                                .querySelector('#catatanGuru')
+                                .value
+                                .trim()
+
+                    };
+
+
+                    /*
+                     * INSERT jika belum ada.
+                     * UPDATE jika sudah ada.
+                     */
+                    const {
+                        data,
+                        error
+                    } =
+                        await supabaseClient
+                            .from('daily_reports')
+                            .upsert(
+                                reportData,
+                                {
+                                    onConflict:
+                                        'child_id,tanggal'
+                                }
+                            )
+                            .select()
+                            .single();
+
+
+                    if (error) {
+
+                        console.error(
+                            'Supabase error:',
+                            error
+                        );
+
+                        throw new Error(
+                            error.message
+                        );
+
+                    }
+
+
+                    console.log(
+                        'Data Buku Penghubung tersimpan:',
+                        data
+                    );
+
+
+                    saveStatus.textContent =
+                        '✓ Buku Penghubung berhasil disimpan.';
+
+
+                    alert(
+                        'Buku Penghubung berhasil disimpan.'
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        'Gagal menyimpan Buku Penghubung:',
+                        error
+                    );
+
+
+                    saveStatus.textContent =
+                        'Gagal menyimpan data.';
+
+
+                    alert(
+                        'Gagal menyimpan Buku Penghubung:\n\n' +
+                        error.message
+                    );
+
+                } finally {
+
+                    saveButton.disabled = false;
+
+                    saveButton.textContent =
+                        'Simpan Buku Penghubung';
+
+                }
+
+            });
+
+
+        async function initializePage() {
+
+            const guruReady =
+                await loadGuruProfile();
+
+
+            if (!guruReady) {
+
+                return;
+
+            }
+
+
+            await loadChildren();
+
+            setDefaultDate();
+
+        }
+
+
+        initializePage();
+
+    </script>
+
+</body>
+
+</html>

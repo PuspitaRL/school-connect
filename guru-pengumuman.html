@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pengumuman Guru - School Connect</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <style>
+        /* =========================
+           HALAMAN PENGUMUMAN GURU
+        ========================= */
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 6px;
+            font-size: 26px;
+            color: var(--text);
+        }
+
+        .page-header p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* FORM TAMBAH */
+
+        .announcement-form-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .announcement-form-card h2 {
+            margin: 0 0 5px;
+            font-size: 19px;
+            color: var(--text);
+        }
+
+        .announcement-form-card > p {
+            margin: 0 0 20px;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 12px 14px;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text);
+            background: var(--ivory);
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--orange);
+            background: var(--white);
+        }
+
+        .form-group textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .btn-add {
+            border: none;
+            background: var(--orange);
+            color: var(--white);
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .btn-add:hover {
+            background: var(--orange-dark);
+        }
+
+        .btn-add:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* DAFTAR PENGUMUMAN */
+
+        .section-title {
+            margin-bottom: 15px;
+        }
+
+        .section-title h2 {
+            margin: 0 0 4px;
+            font-size: 20px;
+            color: var(--text);
+        }
+
+        .section-title p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .announcement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .announcement-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .announcement-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .announcement-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .announcement-content h3 {
+            margin: 0 0 7px;
+            font-size: 17px;
+            color: var(--text);
+        }
+
+        .announcement-date {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--text-light);
+            font-size: 11px;
+        }
+
+        .announcement-content p {
+            margin: 0;
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.7;
+            white-space: pre-line;
+        }
+
+        .btn-delete {
+            flex-shrink: 0;
+            border: 1px solid #f0d6d2;
+            background: #fff8f7;
+            color: #c0392b;
+            padding: 8px 11px;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .btn-delete:hover {
+            background: #fdecea;
+        }
+
+        .empty-state {
+            background: var(--white);
+            border: 1px dashed var(--border);
+            border-radius: 16px;
+            padding: 35px 20px;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .empty-state .empty-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .loading-state {
+            padding: 25px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 768px) {
+
+            .page-header h1 {
+                font-size: 22px;
+            }
+
+            .announcement-form-card {
+                padding: 18px;
+            }
+
+            .announcement-card {
+                padding: 16px;
+            }
+
+            .announcement-top {
+                flex-direction: column;
+            }
+
+            .btn-delete {
+                align-self: flex-start;
+            }
+
+            .btn-add {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- =========================
+         SIDEBAR GURU
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="images/logo.png" alt="Logo">
+            <div>
+                <strong>School Connect</strong>
+                <small>TAUD SAQU DARUL IMAN</small>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <a href="guru-dashboard.html" class="menu-item">
+                <span>🏠</span>
+                Dashboard
+            </a>
+
+            <a href="guru-child.html" class="menu-item">
+                <span>👧</span>
+                Siswa
+            </a>
+
+            <a href="guru-buku-penghubung.html" class="menu-item">
+                <span>📖</span>
+                Buku Penghubung
+            </a>
+
+            <a href="guru-perkembangan.html" class="menu-item">
+                <span>📊</span>
+                Perkembangan
+            </a>
+
+            <a href="guru-bintang-prestasi.html" class="menu-item">
+                <span>⭐</span>
+                Bintang Prestasi
+            </a>
+
+            <a href="guru-absensi.html" class="menu-item">
+                <span>📅</span>
+                Absensi
+            </a>
+
+            <a href="guru-pengumuman.html" class="menu-item active">
+                <span>📢</span>
+                Pengumuman
+            </a>
+
+            <a href="guru-komunikasi.html" class="menu-item">
+                <span>💬</span>
+                Komunikasi
+            </a>
+
+            <a href="pengaturan.html" class="menu-item">
+                <span>⚙️</span>
+                Pengaturan
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="index.html" class="menu-item logout-item">
+                <span>↪</span>
+                Keluar
+            </a>
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <button class="menu-toggle" type="button" aria-label="Buka menu">
+                ☰
+            </button>
+
+            <div class="topbar-right">
+
+                <button class="notification-button" type="button">
+                    🔔
+                </button>
+
+                <div class="profile-wrapper">
+
+                    <button
+                        class="profile-mini"
+                        id="profileButton"
+                        type="button"
+                    >
+
+                        <div class="profile-avatar" id="guruAvatar">
+                            G
+                        </div>
+
+                        <div class="profile-info">
+
+                            <strong id="guruName">
+                                Guru
+                            </strong>
+
+                            <span id="guruRole">
+                                Guru
+                            </span>
+
+                        </div>
+
+                        <span class="profile-arrow">
+                            ⌄
+                        </span>
+
+                    </button>
+
+                    <div
+                        class="profile-dropdown"
+                        id="profileDropdown"
+                    >
+
+                        <a href="pengaturan.html">
+                            ⚙ Pengaturan
+                        </a>
+
+                        <a
+                            href="index.html"
+                            class="dropdown-logout"
+                        >
+                            ↪ Keluar
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+
+        <div class="content-wrapper">
+
+            <div class="page-header">
+
+                <h1>Pengumuman</h1>
+
+                <p>
+                    Buat dan kelola pengumuman untuk orang tua siswa.
+                </p>
+
+            </div>
+
+
+            <!-- FORM -->
+
+            <section class="announcement-form-card">
+
+                <h2>Buat Pengumuman</h2>
+
+                <p>
+                    Pengumuman yang dibuat akan dapat dilihat oleh orang tua.
+                </p>
+
+                <form id="announcementForm">
+
+                    <div class="form-group">
+
+                        <label for="judul">
+                            Judul Pengumuman
+                        </label>
+
+                        <input
+                            type="text"
+                            id="judul"
+                            placeholder="Contoh: Libur sekolah"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="isi">
+                            Isi Pengumuman
+                        </label>
+
+                        <textarea
+                            id="isi"
+                            placeholder="Tulis isi pengumuman di sini..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn-add"
+                        id="submitButton"
+                    >
+                        + Tambah Pengumuman
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- LIST -->
+
+            <section>
+
+                <div class="section-title">
+
+                    <h2>Pengumuman Terbaru</h2>
+
+                    <p>
+                        Daftar pengumuman yang sudah dibuat.
+                    </p>
+
+                </div>
+
+                <div
+                    id="announcementList"
+                    class="announcement-list"
+                >
+
+                    <div class="loading-state">
+                        Memuat pengumuman...
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+
+
+<script>
+
+    let currentGuruId = null;
+
+
+    /* =========================
+       HELPER TANGGAL
+    ========================== */
+
+    function formatDate(dateString) {
+
+        if (!dateString) {
+            return '';
+        }
+
+        const date = new Date(dateString);
+
+        return date.toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+
+    }
+
+
+    function formatTime(dateString) {
+
+        if (!dateString) {
+            return '';
+        }
+
+        const date = new Date(dateString);
+
+        return date.toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+    }
+
+
+    /* =========================
+       LOAD PROFILE GURU
+    ========================== */
+
+    async function loadGuruProfile() {
+
+        const {
+            data: authData,
+            error: authError
+        } = await supabaseClient.auth.getUser();
+
+
+        if (
+            authError ||
+            !authData ||
+            !authData.user
+        ) {
+
+            window.location.href = 'login.html';
+
+            return false;
+        }
+
+
+        const authUser = authData.user;
+
+
+        const {
+            data: profile,
+            error: profileError
+        } = await supabaseClient
+            .from('users')
+            .select('id, nama, role, auth_id')
+            .eq('auth_id', authUser.id)
+            .maybeSingle();
+
+
+        if (profileError) {
+
+            console.error(
+                'Gagal mengambil profil:',
+                profileError
+            );
+
+            alert('Gagal mengambil profil pengguna.');
+
+            return false;
+        }
+
+
+        if (!profile) {
+
+            alert('Profil pengguna tidak ditemukan.');
+
+            window.location.href = 'login.html';
+
+            return false;
+        }
+
+
+        if (profile.role !== 'guru') {
+
+            alert(
+                'Halaman ini hanya dapat diakses oleh Guru.'
+            );
+
+            window.location.href = 'login.html';
+
+            return false;
+        }
+
+
+        currentGuruId = profile.id;
+
+
+        const guruName =
+            document.getElementById('guruName');
+
+        const guruRole =
+            document.getElementById('guruRole');
+
+        const guruAvatar =
+            document.getElementById('guruAvatar');
+
+
+        guruName.textContent =
+            profile.nama || 'Guru';
+
+        guruRole.textContent =
+            'Guru';
+
+
+        guruAvatar.textContent =
+            (profile.nama || 'G')
+                .trim()
+                .charAt(0)
+                .toUpperCase();
+
+
+        return true;
+    }
+
+
+    /* =========================
+       LOAD PENGUMUMAN
+    ========================== */
+
+    async function loadAnnouncements() {
+
+        const list =
+            document.getElementById(
+                'announcementList'
+            );
+
+
+        list.innerHTML = `
+            <div class="loading-state">
+                Memuat pengumuman...
+            </div>
+        `;
+
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from('announcements')
+            .select(`
+                id,
+                judul,
+                isi,
+                tanggal,
+                created_at,
+                guru_id
+            `)
+            .order('created_at', {
+                ascending: false
+            });
+
+
+        if (error) {
+
+            console.error(
+                'Gagal memuat pengumuman:',
+                error
+            );
+
+
+            list.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">⚠️</div>
+                    <p>
+                        Pengumuman belum dapat dimuat.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        if (!data || data.length === 0) {
+
+            list.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📢</div>
+                    <p>
+                        Belum ada pengumuman.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        list.innerHTML = data
+            .map(announcement => {
+
+                return `
+
+                    <article
+                        class="announcement-card"
+                    >
+
+                        <div class="announcement-top">
+
+                            <div
+                                class="announcement-content"
+                            >
+
+                                <h3>
+                                    ${escapeHtml(
+                                        announcement.judul
+                                    )}
+                                </h3>
+
+                                <span
+                                    class="announcement-date"
+                                >
+                                    ${formatDate(
+                                        announcement.created_at ||
+                                        announcement.tanggal
+                                    )}
+                                    •
+                                    ${formatTime(
+                                        announcement.created_at ||
+                                        announcement.tanggal
+                                    )}
+                                </span>
+
+                                <p>
+                                    ${escapeHtml(
+                                        announcement.isi
+                                    )}
+                                </p>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="btn-delete"
+                                onclick="deleteAnnouncement('${announcement.id}')"
+                            >
+                                🗑 Hapus
+                            </button>
+
+                        </div>
+
+                    </article>
+
+                `;
+
+            })
+            .join('');
+
+    }
+
+
+    /* =========================
+       TAMBAH PENGUMUMAN
+    ========================== */
+
+    document
+        .getElementById('announcementForm')
+        .addEventListener(
+            'submit',
+            async function (e) {
+
+                e.preventDefault();
+
+
+                const judul =
+                    document
+                        .getElementById('judul')
+                        .value
+                        .trim();
+
+
+                const isi =
+                    document
+                        .getElementById('isi')
+                        .value
+                        .trim();
+
+
+                const submitButton =
+                    document.getElementById(
+                        'submitButton'
+                    );
+
+
+                if (!judul || !isi) {
+
+                    alert(
+                        'Judul dan isi pengumuman wajib diisi.'
+                    );
+
+                    return;
+                }
+
+
+                if (!currentGuruId) {
+
+                    alert(
+                        'Profil Guru belum siap.'
+                    );
+
+                    return;
+                }
+
+
+                submitButton.disabled = true;
+
+                submitButton.textContent =
+                    'Menyimpan...';
+
+
+                const {
+                    error
+                } = await supabaseClient
+                    .from('announcements')
+                    .insert([
+                        {
+                            judul: judul,
+                            isi: isi,
+                            guru_id: currentGuruId
+                        }
+                    ]);
+
+
+                if (error) {
+
+                    console.error(
+                        'Gagal menambah pengumuman:',
+                        error
+                    );
+
+
+                    alert(
+                        'Gagal menambahkan pengumuman: ' +
+                        error.message
+                    );
+
+
+                    submitButton.disabled = false;
+
+                    submitButton.textContent =
+                        '+ Tambah Pengumuman';
+
+                    return;
+                }
+
+
+                document
+                    .getElementById(
+                        'announcementForm'
+                    )
+                    .reset();
+
+
+                submitButton.disabled = false;
+
+                submitButton.textContent =
+                    '+ Tambah Pengumuman';
+
+
+                await loadAnnouncements();
+
+
+                alert(
+                    'Pengumuman berhasil ditambahkan.'
+                );
+
+            }
+        );
+
+
+    /* =========================
+       HAPUS PENGUMUMAN
+    ========================== */
+
+    async function deleteAnnouncement(id) {
+
+        const yakin = confirm(
+            'Yakin ingin menghapus pengumuman ini?'
+        );
+
+
+        if (!yakin) {
+            return;
+        }
+
+
+        const {
+            error
+        } = await supabaseClient
+            .from('announcements')
+            .delete()
+            .eq('id', id);
+
+
+        if (error) {
+
+            console.error(
+                'Gagal menghapus pengumuman:',
+                error
+            );
+
+
+            alert(
+                'Gagal menghapus pengumuman: ' +
+                error.message
+            );
+
+            return;
+        }
+
+
+        await loadAnnouncements();
+
+
+        alert(
+            'Pengumuman berhasil dihapus.'
+        );
+
+    }
+
+
+    /* =========================
+       ESCAPE HTML
+       Agar teks aman ditampilkan
+    ========================== */
+
+    function escapeHtml(value) {
+
+        if (value === null || value === undefined) {
+            return '';
+        }
+
+
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+    }
+
+
+    /* =========================
+       HAMBURGER
+    ========================== */
+
+    const menuToggle =
+        document.querySelector('.menu-toggle');
+
+    const sidebar =
+        document.querySelector('.sidebar');
+
+
+    if (menuToggle && sidebar) {
+
+        menuToggle.addEventListener(
+            'click',
+            () => {
+
+                sidebar.classList.toggle(
+                    'show'
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================
+       PROFILE DROPDOWN
+    ========================== */
+
+    const profileButton =
+        document.querySelector(
+            '#profileButton'
+        );
+
+    const profileDropdown =
+        document.querySelector(
+            '#profileDropdown'
+        );
+
+
+    if (
+        profileButton &&
+        profileDropdown
+    ) {
+
+        profileButton.addEventListener(
+            'click',
+            (e) => {
+
+                e.stopPropagation();
+
+                profileDropdown.classList.toggle(
+                    'show'
+                );
+
+            }
+        );
+
+
+        document.addEventListener(
+            'click',
+            () => {
+
+                profileDropdown.classList.remove(
+                    'show'
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================
+       INIT
+    ========================== */
+
+    async function init() {
+
+        const profileReady =
+            await loadGuruProfile();
+
+
+        if (!profileReady) {
+            return;
+        }
+
+
+        await loadAnnouncements();
+
+    }
+
+
+    init();
+
+</script>
+
+</body>
+</html>

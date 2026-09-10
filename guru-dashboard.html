@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard Guru | TAUD SAQU DARUL IMAN</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js?v=2"></script>
+
+    <style>
+        .page-content {
+            padding: 30px;
+        }
+
+        /* ================================
+           WELCOME
+        ================================= */
+
+        .welcome-section {
+            background: var(--orange-light);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 30px;
+        }
+
+        .welcome-section .greeting {
+            color: var(--orange-dark);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .welcome-section h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
+            color: var(--text);
+        }
+
+        .welcome-section p:last-child {
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        /* ================================
+           SECTION
+        ================================= */
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 28px 0 15px;
+        }
+
+        .section-heading h2 {
+            margin: 0 0 4px;
+            font-size: 20px;
+            color: var(--text);
+        }
+
+        .section-heading p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* ================================
+           STATS
+        ================================= */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            background: var(--orange-light);
+            flex-shrink: 0;
+        }
+
+        .stat-card span {
+            display: block;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .stat-card strong {
+            font-size: 25px;
+            color: var(--text);
+        }
+
+        /* ================================
+           CHILD CARD
+        ================================= */
+
+        .child-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .child-avatar {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: var(--orange-light);
+            color: var(--orange-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .child-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .child-info .small-label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-light);
+            letter-spacing: .5px;
+        }
+
+        .child-info h2 {
+            display: block;
+            margin: 3px 0;
+            font-size: 19px;
+            color: var(--text);
+        }
+
+        .child-info p {
+            display: block;
+            margin: 0;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .child-action {
+            flex-shrink: 0;
+        }
+
+        .child-action a {
+            display: inline-block;
+            text-decoration: none;
+            background: var(--orange);
+            color: var(--white);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .child-action a:hover {
+            background: var(--orange-dark);
+        }
+
+        /* ================================
+           QUICK MENU
+        ================================= */
+
+        .quick-menu {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .quick-menu-item {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            text-decoration: none;
+            color: var(--text);
+            transition: .2s ease;
+        }
+
+        .quick-menu-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--orange);
+            box-shadow: 0 8px 20px rgba(0,0,0,.06);
+        }
+
+        .quick-menu-item > span {
+            display: flex;
+            width: 45px;
+            height: 45px;
+            align-items: center;
+            justify-content: center;
+            background: var(--orange-light);
+            border-radius: 12px;
+            font-size: 21px;
+            margin-bottom: 14px;
+        }
+
+        .quick-menu-item strong {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .quick-menu-item small {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        /* ================================
+           EMPTY / LOADING
+        ================================= */
+
+        .loading-box,
+        .empty-box {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        /* ================================
+           RESPONSIVE
+        ================================= */
+
+        @media (max-width: 768px) {
+
+            .page-content {
+                padding: 22px 17px;
+            }
+
+            .welcome-section {
+                padding: 22px;
+            }
+
+            .welcome-section h1 {
+                font-size: 22px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-menu {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .child-card {
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .child-action {
+                width: 100%;
+                margin-left: 74px;
+            }
+
+            .child-action a {
+                display: block;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .page-content {
+                padding: 18px 14px;
+            }
+
+            .quick-menu {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .child-card {
+                padding: 16px;
+            }
+
+            .child-action {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================================
+     SIDEBAR
+================================= -->
+
+<aside class="sidebar">
+
+    <div class="sidebar-logo">
+
+        <img
+            src="images/logo.png"
+            alt="Logo TAUD SAQU DARUL IMAN"
+        >
+
+        <div>
+            <strong>TAUD SAQU</strong>
+            <span>DARUL IMAN</span>
+        </div>
+
+    </div>
+
+    <nav class="sidebar-menu">
+
+        <a href="guru-dashboard.html" class="menu-item active">
+            <span>⌂</span>
+            Dashboard
+        </a>
+
+        <a href="guru-child.html" class="menu-item">
+            <span>👧</span>
+            Data Anak
+        </a>
+
+        <a href="guru-buku-penghubung.html" class="menu-item">
+            <span>📖</span>
+            Buku Penghubung
+        </a>
+
+        <a href="guru-perkembangan.html" class="menu-item">
+            <span>📊</span>
+            Perkembangan
+        </a>
+
+        <a href="guru-bintang-prestasi.html" class="menu-item">
+            <span>⭐</span>
+            Bintang Prestasi
+        </a>
+		<a href="guru-absensi.html" class="menu-item">
+           <span>📅</span>
+            Absensi
+		</a>
+        <a href="guru-pengumuman.html" class="menu-item">
+            <span>📢</span>
+            Pengumuman
+        </a>
+
+        <a href="guru-komunikasi.html" class="menu-item">
+            <span>💬</span>
+            Komunikasi
+        </a>
+
+        <div class="menu-divider"></div>
+
+        <a href="guru-pengaturan.html" class="menu-item">
+            <span>⚙</span>
+            Pengaturan
+        </a>
+
+        <a href="index.html" class="menu-item logout">
+            <span>↪</span>
+            Keluar
+        </a>
+
+    </nav>
+
+</aside>
+
+
+<!-- ================================
+     MAIN
+================================= -->
+
+<main class="main-content">
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <button
+            class="menu-toggle"
+            id="menuToggle"
+            type="button"
+            aria-label="Buka menu"
+        >
+            ☰
+        </button>
+
+        <div class="topbar-title">
+            Dashboard
+        </div>
+
+        <div class="topbar-right">
+
+            <button
+                class="notification"
+                type="button"
+                aria-label="Notifikasi"
+            >
+                🔔
+                <span class="notification-dot"></span>
+            </button>
+
+            <!-- PROFILE GURU -->
+
+            <div class="profile-wrapper">
+
+                <button
+                    class="profile-mini"
+                    id="profileButton"
+                    type="button"
+                >
+
+                    <div
+                        class="profile-avatar"
+                        id="guruAvatar"
+                    >
+                        G
+                    </div>
+
+                    <div class="profile-info">
+
+                        <strong id="guruName">
+                            Memuat...
+                        </strong>
+
+                        <span id="guruRole">
+                            Guru
+                        </span>
+
+                    </div>
+
+                    <span class="profile-arrow">
+                        ⌄
+                    </span>
+
+                </button>
+
+                <div
+                    class="profile-dropdown"
+                    id="profileDropdown"
+                >
+
+                    <a href="pengaturan.html">
+                        ⚙ Pengaturan
+                    </a>
+
+                    <a
+                        href="index.html"
+                        class="dropdown-logout"
+                    >
+                        ↪ Keluar
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================================
+         CONTENT
+    ================================= -->
+
+    <section class="page-content">
+
+        <!-- WELCOME -->
+
+        <div class="welcome-section">
+
+            <p class="greeting">
+                Assalamu'alaikum 👋
+            </p>
+
+            <h1 id="welcomeTitle">
+                Selamat datang, Guru
+            </h1>
+
+            <p>
+                Kelola perkembangan dan informasi siswa
+                dengan mudah melalui School Connect.
+            </p>
+
+        </div>
+
+
+        <!-- STATISTICS -->
+
+        <div class="section-heading">
+
+            <div>
+                <h2>Ringkasan</h2>
+
+                <p>
+                    Data siswa dan komunikasi sekolah.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    👧
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Siswa
+                    </span>
+
+                    <strong id="totalChildren">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    📅
+                </div>
+
+                <div>
+
+                    <span>
+                        Hadir Hari Ini
+                    </span>
+
+                    <strong id="todayPresent">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    💬
+                </div>
+
+                <div>
+
+                    <span>
+                        Komunikasi Baru
+                    </span>
+
+                    <strong id="newMessages">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CHILD LIST -->
+
+        <div class="section-heading">
+
+            <div>
+                <h2>Data Anak</h2>
+
+                <p>
+                    Daftar siswa yang dapat dikelola Guru.
+                </p>
+            </div>
+
+        </div>
+
+        <div id="childrenList">
+
+            <div class="loading-box">
+                Memuat data siswa...
+            </div>
+
+        </div>
+
+
+        <!-- QUICK MENU -->
+
+        <div class="section-heading">
+
+            <div>
+                <h2>Akses Cepat</h2>
+
+                <p>
+                    Kelola data siswa dari menu berikut.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="quick-menu">
+
+            <a
+                href="guru-buku-penghubung.html"
+                class="quick-menu-item"
+            >
+
+                <span>📖</span>
+
+                <strong>
+                    Buku Penghubung
+                </strong>
+
+                <small>
+                    Catatan harian siswa
+                </small>
+
+            </a>
+
+
+            <a
+                href="guru-perkembangan.html"
+                class="quick-menu-item"
+            >
+
+                <span>📊</span>
+
+                <strong>
+                    Perkembangan
+                </strong>
+
+                <small>
+                    Perkembangan anak
+                </small>
+
+            </a>
+
+
+            <a
+                href="guru-absensi.html"
+                class="quick-menu-item"
+            >
+
+                <span>📅</span>
+
+                <strong>
+                    Absensi
+                </strong>
+
+                <small>
+                    Kelola kehadiran
+                </small>
+
+            </a>
+
+
+            <a
+                href="guru-bintang-prestasi.html"
+                class="quick-menu-item"
+            >
+
+                <span>⭐</span>
+
+                <strong>
+                    Bintang Prestasi
+                </strong>
+
+                <small>
+                    Lihat laporan orang tua
+                </small>
+
+            </a>
+
+
+            <a
+                href="pesan.html"
+                class="quick-menu-item"
+            >
+
+                <span>💬</span>
+
+                <strong>
+                    Komunikasi
+                </strong>
+
+                <small>
+                    Pesan dari orang tua
+                </small>
+
+            </a>
+
+
+            <a
+                href="pengumuman.html"
+                class="quick-menu-item"
+            >
+
+                <span>📢</span>
+
+                <strong>
+                    Pengumuman
+                </strong>
+
+                <small>
+                    Informasi sekolah
+                </small>
+
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- ================================
+     JAVASCRIPT
+================================= -->
+
+<script>
+
+    let currentGuruId = null;
+
+
+    /* =====================================
+       TODAY
+    ===================================== */
+
+    function getTodayLocal() {
+
+        const now = new Date();
+
+        const year =
+            now.getFullYear();
+
+        const month =
+            String(now.getMonth() + 1)
+                .padStart(2, '0');
+
+        const day =
+            String(now.getDate())
+                .padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    }
+
+
+    /* =====================================
+       LOAD GURU PROFILE
+    ===================================== */
+
+    async function loadGuruProfile() {
+
+        const {
+            data: authData,
+            error: authError
+        } = await supabaseClient.auth.getUser();
+
+
+        if (
+            authError ||
+            !authData ||
+            !authData.user
+        ) {
+
+            window.location.href =
+                'login.html';
+
+            return false;
+        }
+
+
+        const {
+            data: profile,
+            error: profileError
+        } = await supabaseClient
+            .from('users')
+            .select('id, nama, role, auth_id')
+            .eq(
+                'auth_id',
+                authData.user.id
+            )
+            .maybeSingle();
+
+
+        if (profileError) {
+
+            console.error(
+                'Profile error:',
+                profileError
+            );
+
+            alert(
+                'Gagal memuat profil Guru.'
+            );
+
+            return false;
+        }
+
+
+        if (!profile) {
+
+            alert(
+                'Profil pengguna tidak ditemukan.'
+            );
+
+            window.location.href =
+                'login.html';
+
+            return false;
+        }
+
+
+        /* KHUSUS GURU */
+
+        if (profile.role !== 'guru') {
+
+            alert(
+                'Halaman ini hanya dapat diakses oleh Guru.'
+            );
+
+            window.location.href =
+                'login.html';
+
+            return false;
+        }
+
+
+        currentGuruId =
+            profile.id;
+
+
+        const namaGuru =
+            profile.nama || 'Guru';
+
+
+        document.getElementById(
+            'guruName'
+        ).textContent =
+            namaGuru;
+
+
+        document.getElementById(
+            'guruRole'
+        ).textContent =
+            'Guru';
+
+
+        document.getElementById(
+            'guruAvatar'
+        ).textContent =
+            namaGuru
+                .trim()
+                .charAt(0)
+                .toUpperCase();
+
+
+        document.getElementById(
+            'welcomeTitle'
+        ).textContent =
+            `Selamat datang, ${namaGuru}`;
+
+
+        return true;
+    }
+
+
+    /* =====================================
+       LOAD CHILDREN
+    ===================================== */
+
+    async function loadChildren() {
+
+        const {
+            data: children,
+            error
+        } = await supabaseClient
+            .from('children')
+            .select(
+                'id, nama, kelas, tahun_ajaran'
+            )
+            .order(
+                'nama',
+                {
+                    ascending: true
+                }
+            );
+
+
+        if (error) {
+
+            console.error(
+                'Children error:',
+                error
+            );
+
+            document.getElementById(
+                'childrenList'
+            ).innerHTML = `
+                <div class="empty-box">
+                    Gagal memuat data siswa.
+                </div>
+            `;
+
+            return [];
+        }
+
+
+        document.getElementById(
+            'totalChildren'
+        ).textContent =
+            children
+                ? children.length
+                : 0;
+
+
+        const childrenList =
+            document.getElementById(
+                'childrenList'
+            );
+
+
+        if (
+            !children ||
+            children.length === 0
+        ) {
+
+            childrenList.innerHTML = `
+                <div class="empty-box">
+                    Belum ada data siswa.
+                </div>
+            `;
+
+            return [];
+        }
+
+
+        childrenList.innerHTML = '';
+
+
+        children.forEach(child => {
+
+            const card =
+                document.createElement('div');
+
+            card.className =
+                'child-card';
+
+
+            const initial =
+                (child.nama || 'S')
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase();
+
+
+            card.innerHTML = `
+
+                <div class="child-avatar">
+                    ${initial}
+                </div>
+
+                <div class="child-info">
+
+                    <span class="small-label">
+                        SISWA
+                    </span>
+
+                    <h2>
+                        ${escapeHtml(child.nama)}
+                    </h2>
+
+                    <p>
+                        ${escapeHtml(child.kelas || '-')}
+                        ${child.tahun_ajaran
+                            ? ' • ' + escapeHtml(child.tahun_ajaran)
+                            : ''
+                        }
+                    </p>
+
+                </div>
+
+                <div class="child-action">
+
+                    <a
+                        href="guru-child.html?child_id=${encodeURIComponent(child.id)}"
+                    >
+                        Lihat Data
+                    </a>
+
+                </div>
+            `;
+
+
+            childrenList.appendChild(card);
+
+        });
+
+
+        return children;
+    }
+
+
+    /* =====================================
+       LOAD TODAY ATTENDANCE
+    ===================================== */
+
+    async function loadTodayAttendance() {
+
+        const today =
+            getTodayLocal();
+
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from('attendance')
+            .select('id, status')
+            .eq(
+                'tanggal',
+                today
+            );
+
+
+        if (error) {
+
+            console.error(
+                'Attendance error:',
+                error
+            );
+
+            document.getElementById(
+                'todayPresent'
+            ).textContent =
+                '—';
+
+            return;
+        }
+
+
+        const hadir =
+            (data || []).filter(
+                item =>
+                    item.status === 'hadir'
+            ).length;
+
+
+        document.getElementById(
+            'todayPresent'
+        ).textContent =
+            hadir;
+    }
+
+
+    /* =====================================
+       LOAD NEW COMMUNICATION
+    ===================================== */
+
+    async function loadNewMessages() {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from('parent_notes')
+            .select('id, status')
+            .eq(
+                'status',
+                'baru'
+            );
+
+
+        if (error) {
+
+            console.error(
+                'Parent notes error:',
+                error
+            );
+
+            document.getElementById(
+                'newMessages'
+            ).textContent =
+                '—';
+
+            return;
+        }
+
+
+        document.getElementById(
+            'newMessages'
+        ).textContent =
+            data
+                ? data.length
+                : 0;
+    }
+
+
+    /* =====================================
+       ESCAPE HTML
+       Mencegah data database merusak HTML.
+    ===================================== */
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+
+    /* =====================================
+       PROFILE DROPDOWN
+    ===================================== */
+
+    const profileButton =
+        document.getElementById(
+            'profileButton'
+        );
+
+    const profileDropdown =
+        document.getElementById(
+            'profileDropdown'
+        );
+
+
+    if (
+        profileButton &&
+        profileDropdown
+    ) {
+
+        profileButton.addEventListener(
+            'click',
+            event => {
+
+                event.stopPropagation();
+
+                profileDropdown.classList.toggle(
+                    'show'
+                );
+
+            }
+        );
+
+
+        document.addEventListener(
+            'click',
+            event => {
+
+                if (
+                    !profileDropdown.contains(
+                        event.target
+                    ) &&
+                    !profileButton.contains(
+                        event.target
+                    )
+                ) {
+
+                    profileDropdown.classList.remove(
+                        'show'
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================
+       MOBILE MENU
+    ===================================== */
+
+    const menuToggle =
+        document.getElementById(
+            'menuToggle'
+        );
+
+    const sidebar =
+        document.querySelector(
+            '.sidebar'
+        );
+
+
+    if (
+        menuToggle &&
+        sidebar
+    ) {
+
+        menuToggle.addEventListener(
+            'click',
+            () => {
+
+                sidebar.classList.toggle(
+                    'show'
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================
+       INIT
+    ===================================== */
+
+    async function initPage() {
+
+        const guruReady =
+            await loadGuruProfile();
+
+
+        if (!guruReady) {
+            return;
+        }
+
+
+        await loadChildren();
+
+        await loadTodayAttendance();
+
+        await loadNewMessages();
+
+    }
+
+
+    initPage();
+
+</script>
+
+</body>
+</html>

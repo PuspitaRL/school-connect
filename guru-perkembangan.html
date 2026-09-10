@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Perkembangan Anak - Guru</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <style>
+        .development-header {
+            background: var(--orange-light);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .development-header h1 {
+            margin: 0 0 7px;
+            font-size: 25px;
+            color: var(--text);
+        }
+
+        .development-header p {
+            margin: 0;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .selection-card,
+        .development-form {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+
+        .selection-card h2,
+        .development-form h2 {
+            margin: 0 0 17px;
+            font-size: 19px;
+            color: var(--text);
+        }
+
+        .selection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 14px;
+            align-items: end;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 11px 12px;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text);
+            background: var(--ivory);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--orange);
+        }
+
+        .start-button,
+        .save-button {
+            border: none;
+            background: var(--orange);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .start-button:hover,
+        .save-button:hover {
+            background: var(--orange-dark);
+        }
+
+        .start-button:disabled,
+        .save-button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .aspect-list {
+            display: grid;
+            gap: 17px;
+        }
+
+        .aspect-item {
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: #FFFEFC;
+        }
+
+        .aspect-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .aspect-header strong {
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .percentage-value {
+            color: var(--orange-dark);
+            font-weight: 700;
+            font-size: 14px;
+            min-width: 42px;
+            text-align: right;
+        }
+
+        .aspect-item input[type="range"] {
+            width: 100%;
+            accent-color: var(--orange);
+            cursor: pointer;
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-light);
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .save-area {
+            margin-top: 22px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .form-status {
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .selection-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .start-button {
+                width: 100%;
+            }
+
+            .save-area {
+                justify-content: stretch;
+            }
+
+            .save-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================================
+         SIDEBAR GURU
+    ========================================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="images/logo.png" alt="Logo">
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <a href="guru-dashboard.html" class="menu-item">
+                ⌂ Dashboard
+            </a>
+
+            <a href="guru-child.html" class="menu-item">
+                👧 Data Anak
+            </a>
+
+            <a href="guru-buku-penghubung.html" class="menu-item">
+                📖 Buku Penghubung
+            </a>
+
+            <a href="guru-perkembangan.html" class="menu-item active">
+                📊 Perkembangan
+            </a>
+
+            <a href="guru-bintang-prestasi.html" class="menu-item">
+                ⭐ Bintang Prestasi
+            </a>
+
+            <a href="guru-absensi.html" class="menu-item">
+                📅 Absensi
+            </a>
+
+            <a href="pengumuman.html" class="menu-item">
+                📢 Pengumuman
+            </a>
+
+            <a href="pesan.html" class="menu-item">
+                💬 Komunikasi
+            </a>
+
+            <a href="pengaturan.html" class="menu-item">
+                ⚙ Pengaturan
+            </a>
+
+            <a href="index.html" class="menu-item logout">
+                ↪ Keluar
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <button
+                class="menu-toggle"
+                type="button"
+                aria-label="Buka menu"
+            >
+                ☰
+            </button>
+
+            <div class="topbar-title">
+                Perkembangan Anak
+            </div>
+
+            <div class="topbar-right">
+
+                <div class="profile-wrapper">
+
+                    <button
+                        class="profile-mini"
+                        id="profileButton"
+                        type="button"
+                    >
+
+                        <div
+                            class="profile-avatar"
+                            id="guruAvatar"
+                        >
+                            G
+                        </div>
+
+                        <div class="profile-info">
+
+                            <strong id="guruName">
+                                Guru
+                            </strong>
+
+                            <span id="guruRole">
+                                Guru
+                            </span>
+
+                        </div>
+
+                        <span class="profile-arrow">
+                            ⌄
+                        </span>
+
+                    </button>
+
+
+                    <div
+                        class="profile-dropdown"
+                        id="profileDropdown"
+                    >
+
+                        <a href="pengaturan.html">
+                            ⚙ Pengaturan
+                        </a>
+
+                        <a
+                            href="index.html"
+                            class="dropdown-logout"
+                        >
+                            ↪ Keluar
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+
+        <section class="dashboard-content">
+
+            <div class="development-header">
+
+                <h1>
+                    Perkembangan Anak
+                </h1>
+
+                <p>
+                    Catat perkembangan anak berdasarkan pengamatan guru secara berkala.
+                </p>
+
+            </div>
+
+
+            <!-- PILIH ANAK -->
+
+            <div class="selection-card">
+
+                <h2>
+                    Pilih Anak dan Tanggal
+                </h2>
+
+                <div class="selection-grid">
+
+                    <div class="form-group">
+
+                        <label for="childSelect">
+                            Anak
+                        </label>
+
+                        <select id="childSelect">
+
+                            <option value="">
+                                Memuat data anak...
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="developmentDate">
+                            Tanggal
+                        </label>
+
+                        <input
+                            type="date"
+                            id="developmentDate"
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="start-button"
+                        id="startDevelopment"
+                    >
+                        Mulai Isi
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="form-status"
+                    id="formStatus"
+                ></div>
+
+            </div>
+
+
+            <!-- FORM PERKEMBANGAN -->
+
+            <div
+                class="development-form"
+                id="developmentForm"
+                style="display: none;"
+            >
+
+                <h2>
+                    Aspek Perkembangan
+                </h2>
+
+
+                <div class="aspect-list">
+
+
+                    <!-- IBADAH -->
+
+                    <div class="aspect-item">
+
+                        <div class="aspect-header">
+
+                            <strong>
+                                Ibadah &amp; Pembiasaan
+                            </strong>
+
+                            <span
+                                class="percentage-value"
+                                id="ibadahValue"
+                            >
+                                0%
+                            </span>
+
+                        </div>
+
+                        <input
+                            type="range"
+                            id="ibadah"
+                            min="0"
+                            max="100"
+                            value="0"
+                        >
+
+                        <div class="range-labels">
+                            <span>Perlu Pendampingan</span>
+                            <span>Baik</span>
+                        </div>
+
+                    </div>
+
+
+                    <!-- HAFALAN -->
+
+                    <div class="aspect-item">
+
+                        <div class="aspect-header">
+
+                            <strong>
+                                Hafalan Al-Qur'an
+                            </strong>
+
+                            <span
+                                class="percentage-value"
+                                id="hafalanValue"
+                            >
+                                0%
+                            </span>
+
+                        </div>
+
+                        <input
+                            type="range"
+                            id="hafalan"
+                            min="0"
+                            max="100"
+                            value="0"
+                        >
+
+                        <div class="range-labels">
+                            <span>Perlu Pendampingan</span>
+                            <span>Baik</span>
+                        </div>
+
+                    </div>
+
+
+                    <!-- AKHLAK -->
+
+                    <div class="aspect-item">
+
+                        <div class="aspect-header">
+
+                            <strong>
+                                Akhlak &amp; Adab
+                            </strong>
+
+                            <span
+                                class="percentage-value"
+                                id="akhlakValue"
+                            >
+                                0%
+                            </span>
+
+                        </div>
+
+                        <input
+                            type="range"
+                            id="akhlak"
+                            min="0"
+                            max="100"
+                            value="0"
+                        >
+
+                        <div class="range-labels">
+                            <span>Perlu Pendampingan</span>
+                            <span>Baik</span>
+                        </div>
+
+                    </div>
+
+
+                    <!-- KEMANDIRIAN -->
+
+                    <div class="aspect-item">
+
+                        <div class="aspect-header">
+
+                            <strong>
+                                Kemandirian
+                            </strong>
+
+                            <span
+                                class="percentage-value"
+                                id="kemandirianValue"
+                            >
+                                0%
+                            </span>
+
+                        </div>
+
+                        <input
+                            type="range"
+                            id="kemandirian"
+                            min="0"
+                            max="100"
+                            value="0"
+                        >
+
+                        <div class="range-labels">
+                            <span>Perlu Pendampingan</span>
+                            <span>Baik</span>
+                        </div>
+
+                    </div>
+
+
+                    <!-- PEMBELAJARAN -->
+
+                    <div class="aspect-item">
+
+                        <div class="aspect-header">
+
+                            <strong>
+                                Pembelajaran
+                            </strong>
+
+                            <span
+                                class="percentage-value"
+                                id="pembelajaranValue"
+                            >
+                                0%
+                            </span>
+
+                        </div>
+
+                        <input
+                            type="range"
+                            id="pembelajaran"
+                            min="0"
+                            max="100"
+                            value="0"
+                        >
+
+                        <div class="range-labels">
+                            <span>Perlu Pendampingan</span>
+                            <span>Baik</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CATATAN -->
+
+                <div
+                    class="form-group"
+                    style="margin-top: 22px;"
+                >
+
+                    <label for="catatanGuru">
+                        Catatan Guru
+                    </label>
+
+                    <textarea
+                        id="catatanGuru"
+                        placeholder="Tuliskan perkembangan atau catatan penting tentang anak..."
+                    ></textarea>
+
+                </div>
+
+
+                <!-- SAVE -->
+
+                <div class="save-area">
+
+                    <button
+                        type="button"
+                        class="save-button"
+                        id="saveDevelopment"
+                    >
+                        Simpan Perkembangan
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================
+         SUPABASE
+    ========================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+
+
+    <script>
+
+        /* =========================================
+           ELEMENT
+        ========================================== */
+
+        const childSelect =
+            document.getElementById('childSelect');
+
+        const developmentDate =
+            document.getElementById('developmentDate');
+
+        const developmentForm =
+            document.getElementById('developmentForm');
+
+        const startDevelopment =
+            document.getElementById('startDevelopment');
+
+        const saveDevelopment =
+            document.getElementById('saveDevelopment');
+
+        const catatanGuru =
+            document.getElementById('catatanGuru');
+
+        const formStatus =
+            document.getElementById('formStatus');
+
+
+        /* =========================================
+           STATE
+        ========================================== */
+
+        let currentGuruId = null;
+        let currentDevelopmentId = null;
+
+
+        /* =========================================
+           ASPEK → DATABASE
+        ========================================== */
+
+        const aspectMap = {
+
+            ibadah: {
+                column: 'ibadah_pembiasaan',
+                value: 'ibadahValue'
+            },
+
+            hafalan: {
+                column: 'hafalan_quran',
+                value: 'hafalanValue'
+            },
+
+            akhlak: {
+                column: 'akhlak_adab',
+                value: 'akhlakValue'
+            },
+
+            kemandirian: {
+                column: 'kemandirian',
+                value: 'kemandirianValue'
+            },
+
+            pembelajaran: {
+                column: 'pembelajaran',
+                value: 'pembelajaranValue'
+            }
+
+        };
+
+
+        /* =========================================
+           TANGGAL LOKAL
+        ========================================== */
+
+        function getTodayLocal() {
+
+            const now = new Date();
+
+            const offset =
+                now.getTimezoneOffset() * 60000;
+
+            return new Date(
+                now.getTime() - offset
+            )
+                .toISOString()
+                .slice(0, 10);
+        }
+
+
+        /* =========================================
+           STATUS
+        ========================================== */
+
+        function setStatus(
+            message,
+            isError = false
+        ) {
+
+            formStatus.textContent =
+                message;
+
+            formStatus.style.color =
+                isError
+                    ? '#c0392b'
+                    : 'var(--text-light)';
+        }
+
+
+        /* =========================================
+           RESET FORM
+        ========================================== */
+
+        function resetDevelopmentForm() {
+
+            currentDevelopmentId = null;
+
+            Object.keys(aspectMap)
+                .forEach(name => {
+
+                    const input =
+                        document.getElementById(name);
+
+                    const value =
+                        document.getElementById(
+                            aspectMap[name].value
+                        );
+
+                    input.value = 0;
+
+                    value.textContent = '0%';
+
+                });
+
+            catatanGuru.value = '';
+
+        }
+
+
+        /* =========================================
+           PERCENTAGE
+        ========================================== */
+
+        function updatePercentage(name) {
+
+            const input =
+                document.getElementById(name);
+
+            const value =
+                document.getElementById(
+                    aspectMap[name].value
+                );
+
+            value.textContent =
+                `${input.value}%`;
+
+        }
+
+
+        function updateAllPercentages() {
+
+            Object.keys(aspectMap)
+                .forEach(updatePercentage);
+
+        }
+
+
+        /* =========================================
+           LOAD PROFIL GURU
+        ========================================== */
+
+        async function loadGuruProfile() {
+
+            try {
+
+                const {
+                    data: authData,
+                    error: authError
+                } =
+                    await supabaseClient.auth.getUser();
+
+
+                if (
+                    authError ||
+                    !authData ||
+                    !authData.user
+                ) {
+
+                    window.location.href =
+                        'login.html';
+
+                    return false;
+
+                }
+
+
+                const authUser =
+                    authData.user;
+
+
+                console.log(
+                    'Auth Guru:',
+                    authUser.id
+                );
+
+
+                const {
+                    data: profile,
+                    error: profileError
+                } =
+                    await supabaseClient
+                        .from('users')
+                        .select(
+                            'id, nama, role, auth_id'
+                        )
+                        .eq(
+                            'auth_id',
+                            authUser.id
+                        )
+                        .maybeSingle();
+
+
+                if (profileError) {
+
+                    console.error(
+                        'Profile error:',
+                        profileError
+                    );
+
+                    throw profileError;
+
+                }
+
+
+                if (!profile) {
+
+                    alert(
+                        'Profil pengguna tidak ditemukan.'
+                    );
+
+                    window.location.href =
+                        'login.html';
+
+                    return false;
+
+                }
+
+
+                console.log(
+                    'Profile:',
+                    profile
+                );
+
+
+                /*
+                 * PENGAMAN UTAMA:
+                 * halaman ini hanya boleh dibuka Guru.
+                 */
+
+                if (profile.role !== 'guru') {
+
+                    alert(
+                        'Akun ini bukan akun Guru.'
+                    );
+
+                    window.location.href =
+                        'login.html';
+
+                    return false;
+
+                }
+
+
+                currentGuruId =
+                    profile.id;
+
+
+                /*
+                 * Tampilkan profil Guru.
+                 */
+
+                const guruName =
+                    document.getElementById(
+                        'guruName'
+                    );
+
+                const guruRole =
+                    document.getElementById(
+                        'guruRole'
+                    );
+
+                const guruAvatar =
+                    document.getElementById(
+                        'guruAvatar'
+                    );
+
+
+                guruName.textContent =
+                    profile.nama || 'Guru';
+
+
+                /*
+                 * SENGAJA dibuat tetap Guru.
+                 * Tidak mengambil label role dari
+                 * halaman orang tua.
+                 */
+
+                guruRole.textContent =
+                    'Guru';
+
+
+                guruAvatar.textContent =
+                    (
+                        profile.nama || 'G'
+                    )
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase();
+
+
+                return true;
+
+            } catch (error) {
+
+                console.error(
+                    'Gagal memuat profil Guru:',
+                    error
+                );
+
+                alert(
+                    'Profil Guru tidak dapat dimuat.'
+                );
+
+                window.location.href =
+                    'login.html';
+
+                return false;
+
+            }
+
+        }
+
+
+        /* =========================================
+           LOAD DATA ANAK
+        ========================================== */
+
+        async function loadChildren() {
+
+            childSelect.innerHTML =
+                '<option value="">Memuat data anak...</option>';
+
+
+            try {
+
+                const {
+                    data: children,
+                    error
+                } =
+                    await supabaseClient
+                        .from('children')
+                        .select(
+                            'id, nama, kelas, tahun_ajaran'
+                        )
+                        .order(
+                            'nama',
+                            {
+                                ascending: true
+                            }
+                        );
+
+
+                if (error) {
+                    throw error;
+                }
+
+
+                childSelect.innerHTML =
+                    '<option value="">Pilih anak</option>';
+
+
+                if (
+                    !children ||
+                    children.length === 0
+                ) {
+
+                    childSelect.innerHTML =
+                        '<option value="">Belum ada data anak</option>';
+
+                    return;
+
+                }
+
+
+                children.forEach(child => {
+
+                    const option =
+                        document.createElement(
+                            'option'
+                        );
+
+                    option.value =
+                        child.id;
+
+                    option.textContent =
+                        child.kelas
+                            ? `${child.nama} — ${child.kelas}`
+                            : child.nama;
+
+                    childSelect.appendChild(
+                        option
+                    );
+
+                });
+
+
+                /*
+                 * Baca child_id dari URL.
+                 */
+
+                const params =
+                    new URLSearchParams(
+                        window.location.search
+                    );
+
+                const urlChildId =
+                    params.get('child_id');
+
+
+                if (urlChildId) {
+
+                    const childExists =
+                        children.some(
+                            child =>
+                                child.id === urlChildId
+                        );
+
+
+                    if (childExists) {
+
+                        childSelect.value =
+                            urlChildId;
+
+                    }
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    'Gagal mengambil data anak:',
+                    error
+                );
+
+
+                childSelect.innerHTML =
+                    '<option value="">Gagal memuat data anak</option>';
+
+
+                setStatus(
+                    'Gagal memuat data anak.',
+                    true
+                );
+
+            }
+
+        }
+
+
+        /* =========================================
+           LOAD DATA PERKEMBANGAN
+        ========================================== */
+
+        async function loadExistingDevelopment(
+            childId,
+            tanggal
+        ) {
+
+            resetDevelopmentForm();
+
+
+            try {
+
+                const {
+                    data: existing,
+                    error
+                } =
+                    await supabaseClient
+                        .from('developments')
+                        .select('*')
+                        .eq(
+                            'child_id',
+                            childId
+                        )
+                        .eq(
+                            'tanggal',
+                            tanggal
+                        )
+                        .maybeSingle();
+
+
+                if (error) {
+                    throw error;
+                }
+
+
+                if (!existing) {
+
+                    setStatus(
+                        'Belum ada data untuk tanggal ini. Silakan isi perkembangan.'
+                    );
+
+                    return;
+
+                }
+
+
+                currentDevelopmentId =
+                    existing.id;
+
+
+                Object.keys(aspectMap)
+                    .forEach(name => {
+
+                        const input =
+                            document.getElementById(
+                                name
+                            );
+
+                        const column =
+                            aspectMap[name].column;
+
+                        const numericValue =
+                            Number(
+                                existing[column]
+                            );
+
+
+                        input.value =
+                            Number.isFinite(
+                                numericValue
+                            )
+                                ? Math.max(
+                                    0,
+                                    Math.min(
+                                        100,
+                                        numericValue
+                                    )
+                                )
+                                : 0;
+
+                    });
+
+
+                catatanGuru.value =
+                    existing.catatan_guru || '';
+
+
+                updateAllPercentages();
+
+
+                setStatus(
+                    'Data perkembangan sudah tersimpan. Anda dapat mengubahnya.'
+                );
+
+            } catch (error) {
+
+                console.error(
+                    'Gagal mengambil perkembangan:',
+                    error
+                );
+
+
+                setStatus(
+                    'Gagal mengambil data perkembangan.',
+                    true
+                );
+
+            }
+
+        }
+
+
+        /* =========================================
+           BUKA FORM
+        ========================================== */
+
+        async function openDevelopmentForm() {
+
+            const childId =
+                childSelect.value;
+
+            const tanggal =
+                developmentDate.value;
+
+
+            if (!childId) {
+
+                alert(
+                    'Silakan pilih anak terlebih dahulu.'
+                );
+
+                return;
+
+            }
+
+
+            if (!tanggal) {
+
+                alert(
+                    'Silakan pilih tanggal.'
+                );
+
+                return;
+
+            }
+
+
+            startDevelopment.disabled =
+                true;
+
+            startDevelopment.textContent =
+                'Memuat...';
+
+
+            developmentForm.style.display =
+                'block';
+
+
+            await loadExistingDevelopment(
+                childId,
+                tanggal
+            );
+
+
+            developmentForm.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+
+            startDevelopment.disabled =
+                false;
+
+            startDevelopment.textContent =
+                'Mulai Isi';
+
+        }
+
+
+        /* =========================================
+           SIMPAN
+        ========================================== */
+
+        async function saveDevelopmentData() {
+
+            const childId =
+                childSelect.value;
+
+            const tanggal =
+                developmentDate.value;
+
+
+            if (!currentGuruId) {
+
+                alert(
+                    'Data Guru belum siap. Silakan refresh halaman.'
+                );
+
+                return;
+
+            }
+
+
+            if (!childId) {
+
+                alert(
+                    'Silakan pilih anak terlebih dahulu.'
+                );
+
+                return;
+
+            }
+
+
+            if (!tanggal) {
+
+                alert(
+                    'Silakan pilih tanggal.'
+                );
+
+                return;
+
+            }
+
+
+            const payload = {

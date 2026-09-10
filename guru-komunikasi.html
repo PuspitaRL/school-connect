@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Komunikasi Orang Tua</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <style>
+
+        .communication-header {
+            background: var(--orange-light);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .communication-header h1 {
+            margin: 0 0 7px;
+            font-size: 25px;
+            color: var(--text);
+        }
+
+        .communication-header p {
+            margin: 0;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .message-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 18px;
+        }
+
+        .message-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .child-name {
+            font-weight: 700;
+            color: var(--text);
+            font-size: 16px;
+        }
+
+        .message-date {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        .message-text {
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .response-area {
+            background: #F8F5F0;
+            border-radius: 13px;
+            padding: 15px;
+        }
+
+        .response-area label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .response-area textarea {
+            width: 100%;
+            min-height: 90px;
+            box-sizing: border-box;
+            resize: vertical;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 11px;
+            font-family: inherit;
+            font-size: 14px;
+            background: white;
+        }
+
+        .response-area textarea:focus {
+            outline: none;
+            border-color: var(--orange);
+        }
+
+        .reply-button {
+            margin-top: 10px;
+            border: none;
+            background: var(--orange);
+            color: white;
+            padding: 10px 17px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+        }
+
+        .reply-button:hover {
+            background: var(--orange-dark);
+        }
+
+        .existing-response {
+            background: var(--orange-light);
+            padding: 14px;
+            border-radius: 11px;
+            margin-top: 12px;
+        }
+
+        .existing-response strong {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .existing-response p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="images/logo.png" alt="Logo">
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <a href="guru-dashboard.html" class="menu-item">
+                ⌂ Dashboard
+            </a>
+
+            <a href="guru-dashboard.html" class="menu-item">
+                👧 Data Anak
+            </a>
+
+            <a href="guru-buku-penghubung.html" class="menu-item">
+                📖 Buku Penghubung
+            </a>
+
+            <a href="perkembangan.html" class="menu-item">
+                📊 Perkembangan
+            </a>
+
+            <a href="bintang-prestasi.html" class="menu-item">
+                ⭐ Bintang Prestasi
+            </a>
+
+            <a href="guru-absensi.html" class="menu-item">
+                📅 Absensi
+            </a>
+
+            <a href="guru-pengumuman.html" class="menu-item">
+                📢 Pengumuman
+            </a>
+
+            <a href="guru-komunikasi.html" class="menu-item active">
+                💬 Komunikasi
+            </a>
+
+            <a href="pengaturan.html" class="menu-item">
+                ⚙ Pengaturan
+            </a>
+
+            <a href="index.html" class="menu-item logout">
+                ↪ Keluar
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <button class="menu-toggle" type="button">
+                ☰
+            </button>
+
+            <div class="topbar-title">
+                Buku Penghubung
+            </div>
+
+            <div class="topbar-right">
+
+                <div class="profile-wrapper">
+
+    <button class="profile-mini" id="profileButton" type="button">
+
+        <div class="profile-avatar" id="guruAvatar">
+            G
+        </div>
+
+        <div class="profile-info">
+            <strong id="guruName">Guru</strong>
+            <span>Guru</span>
+        </div>
+
+        <span class="profile-arrow">⌄</span>
+
+    </button>
+
+    <div class="profile-dropdown" id="profileDropdown">
+
+        <a href="pengaturan.html">
+            ⚙ Pengaturan
+        </a>
+
+        <a href="index.html" class="dropdown-logout">
+            ↪ Keluar
+        </a>
+
+    </div>
+
+</div>
+
+            <button class="menu-toggle" type="button">
+                ☰
+            </button>
+
+            <div class="topbar-title">
+                Komunikasi Orang Tua
+            </div>
+
+        </header>
+
+
+        <section class="dashboard-content">
+
+            <div class="communication-header">
+
+                <h1>
+                    Komunikasi Tumbuh Kembang
+                </h1>
+
+                <p>
+                    Informasi dari orang tua mengenai perkembangan
+                    anak di rumah.
+                </p>
+
+            </div>
+
+
+            <div id="messagesList">
+
+                <div class="empty-message">
+                    Memuat komunikasi...
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+
+
+    <script>
+
+        const messagesList =
+            document.querySelector('#messagesList');
+
+
+        async function loadMessages() {
+
+            const {
+                data: messages,
+                error
+            } = await supabaseClient
+                .from('parent_notes')
+                .select(`
+                    id,
+                    tanggal,
+                    isi,
+                    status,
+                    tanggapan_guru,
+                    children (
+                        nama,
+                        kelas
+                    )
+                `)
+                .order('created_at', {
+                    ascending: false
+                });
+
+
+            if (error) {
+
+                console.error(error);
+
+                messagesList.innerHTML = `
+                    <div class="empty-message">
+                        Gagal memuat komunikasi.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            if (!messages || messages.length === 0) {
+
+                messagesList.innerHTML = `
+                    <div class="empty-message">
+                        Belum ada komunikasi dari orang tua.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            messagesList.innerHTML = '';
+
+
+            messages.forEach(message => {
+
+                const date =
+                    new Date(message.tanggal)
+                    .toLocaleDateString(
+                        'id-ID',
+                        {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        }
+                    );
+
+
+                messagesList.innerHTML += `
+
+                    <div
+                        class="message-card"
+                        data-id="${message.id}"
+                    >
+
+                        <div class="message-top">
+
+                            <div class="child-name">
+
+                                👧
+                                ${message.children?.nama || 'Anak'}
+                                —
+                                ${message.children?.kelas || ''}
+
+                            </div>
+
+                            <div class="message-date">
+                                ${date}
+                            </div>
+
+                        </div>
+
+
+                        <div class="message-text">
+                            ${message.isi}
+                        </div>
+
+
+                        ${
+                            message.tanggapan_guru
+                            ? `
+
+                                <div class="existing-response">
+
+                                    <strong>
+                                        💬 Tanggapan Guru
+                                    </strong>
+
+                                    <p>
+                                        ${message.tanggapan_guru}
+                                    </p>
+
+                                </div>
+
+                            `
+                            : `
+
+                                <div class="response-area">
+
+                                    <label>
+                                        Tanggapan Guru
+                                    </label>
+
+                                    <textarea
+                                        class="reply-text"
+                                        placeholder="Tuliskan tanggapan untuk orang tua..."
+                                    ></textarea>
+
+                                    <button
+                                        class="reply-button"
+                                        type="button"
+                                        onclick="replyMessage('${message.id}', this)"
+                                    >
+                                        Kirim Tanggapan
+                                    </button>
+
+                                </div>
+
+                            `
+                        }
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+
+        async function replyMessage(
+            messageId,
+            button
+        ) {
+
+            const card =
+                button.closest('.message-card');
+
+            const textarea =
+                card.querySelector('.reply-text');
+
+            const response =
+                textarea.value.trim();
+
+
+            if (!response) {
+
+                alert(
+                    'Silakan tuliskan tanggapan terlebih dahulu.'
+                );
+
+                return;
+            }
+
+
+            const {
+                data: { user },
+                error: authError
+            } =
+                await supabaseClient.auth.getUser();
+
+
+            if (authError || !user) {
+
+                alert(
+                    'Sesi login tidak ditemukan.'
+                );
+
+                return;
+            }
+
+
+            const {
+                data: guru,
+                error: guruError
+            } =
+                await supabaseClient
+                    .from('users')
+                    .select('id, role')
+                    .eq('auth_id', user.id)
+                    .single();
+
+
+            if (
+                guruError ||
+                !guru ||
+                guru.role !== 'guru'
+            ) {
+
+                alert(
+                    'Profil Guru tidak ditemukan.'
+                );
+
+                return;
+            }
+
+
+            const {
+                error
+            } = await supabaseClient
+                .from('parent_notes')
+                .update({
+
+                    tanggapan_guru: response,
+
+                    guru_id: guru.id,
+
+                    status: 'ditanggapi'
+
+                })
+                .eq('id', messageId);
+
+
+            if (error) {
+
+                console.error(error);
+
+                alert(
+                    'Gagal menyimpan tanggapan: ' +
+                    error.message
+                );
+
+                return;
+            }
+
+
+            alert(
+                'Tanggapan berhasil dikirim kepada orang tua.'
+            );
+
+
+            loadMessages();
+
+        }
+
+
+        loadMessages();
+
+    </script>
+
+
+    <script>
+
+        const menuToggle =
+            document.querySelector('.menu-toggle');
+
+        const sidebar =
+            document.querySelector('.sidebar');
+
+        if (menuToggle && sidebar) {
+
+            menuToggle.addEventListener(
+                'click',
+                () => {
+
+                    sidebar.classList.toggle('show');
+
+                }
+            );
+
+        }
+
+    </script>
+
+</body>
+</html>
