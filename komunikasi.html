@@ -81,6 +81,23 @@
             border-color: var(--orange);
         }
 
+        .child-info {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 12px;
+            font-size: 14px;
+            color: var(--text);
+            background: #f8f5f0;
+            font-weight: 600;
+        }
+
+        .child-info.loading {
+            font-weight: 400;
+            color: var(--text-light);
+        }
+
         .send-note {
             border: none;
             background: var(--orange);
@@ -196,7 +213,7 @@
             </a>
 
             <a href="perkembangan.html" class="menu-item">
-                📊 Perkembangan
+                📊 Pembelajaran hari Ini
             </a>
 
             <a href="bintang-prestasi.html" class="menu-item">
@@ -241,7 +258,11 @@
 
             <div class="profile-wrapper">
 
-                <button class="profile-mini" id="profileButton" type="button">
+                <button
+                    class="profile-mini"
+                    id="profileButton"
+                    type="button"
+                >
 
                     <div class="profile-avatar">
                         A
@@ -252,17 +273,25 @@
                         <span>Orang Tua</span>
                     </div>
 
-                    <span class="profile-arrow">⌄</span>
+                    <span class="profile-arrow">
+                        ⌄
+                    </span>
 
                 </button>
 
-                <div class="profile-dropdown" id="profileDropdown">
+                <div
+                    class="profile-dropdown"
+                    id="profileDropdown"
+                >
 
                     <a href="pengaturan.html">
                         ⚙ Pengaturan
                     </a>
 
-                    <a href="index.html" class="dropdown-logout">
+                    <a
+                        href="index.html"
+                        class="dropdown-logout"
+                    >
                         ↪ Keluar
                     </a>
 
@@ -277,7 +306,9 @@
 
             <div class="communication-header">
 
-                <h1>Komunikasi Tumbuh Kembang</h1>
+                <h1>
+                    Komunikasi Tumbuh Kembang
+                </h1>
 
                 <p>
                     Ruang berbagi antara orang tua dan guru untuk saling
@@ -289,22 +320,30 @@
 
             <div class="note-form-card">
 
-                <h2>Bagikan informasi tentang anak</h2>
+                <h2>
+                    Bagikan informasi tentang anak
+                </h2>
+
+
+                <!-- ANAK OTOMATIS DARI AKUN YANG LOGIN -->
 
                 <div class="form-group">
 
-                    <label for="childSelect">
-                        Anak
+                    <label>
+                        Untuk anak
                     </label>
 
-                    <select id="childSelect">
-                        <option value="">
-                            Memuat data anak...
-                        </option>
-                    </select>
+                    <div
+                        id="childInfo"
+                        class="child-info loading"
+                    >
+                        Memuat data anak...
+                    </div>
 
                 </div>
 
+
+                <!-- TOPIK -->
 
                 <div class="form-group">
 
@@ -339,6 +378,8 @@
                 </div>
 
 
+                <!-- ISI KOMUNIKASI -->
+
                 <div class="form-group">
 
                     <label for="noteContent">
@@ -368,6 +409,7 @@
                 Riwayat Komunikasi
             </h2>
 
+
             <div id="notesList">
 
                 <div class="empty-note">
@@ -387,8 +429,12 @@
 
     <script>
 
-        const childSelect =
-            document.querySelector('#childSelect');
+        /* =========================================
+           ELEMENT
+        ========================================= */
+
+        const childInfo =
+            document.querySelector('#childInfo');
 
         const notesList =
             document.querySelector('#notesList');
@@ -397,6 +443,13 @@
             document.querySelector('#sendNote');
 
 
+        let currentChild = null;
+
+
+        /* =========================================
+           AMBIL ORANG TUA YANG SEDANG LOGIN
+        ========================================= */
+
         async function getCurrentParent() {
 
             const {
@@ -404,9 +457,15 @@
                 error
             } = await supabaseClient.auth.getUser();
 
+
             if (error || !user) {
-                throw new Error('Sesi login tidak ditemukan.');
+
+                throw new Error(
+                    'Sesi login tidak ditemukan.'
+                );
+
             }
+
 
             const {
                 data: parent,
@@ -417,187 +476,254 @@
                 .eq('auth_id', user.id)
                 .single();
 
+
             if (parentError || !parent) {
-                throw new Error('Profil orang tua tidak ditemukan.');
+
+                throw new Error(
+                    'Profil orang tua tidak ditemukan.'
+                );
+
             }
 
+
             return parent;
+
         }
 
 
-        async function loadChildren() {
+        /* =========================================
+           AMBIL ANAK MILIK ORANG TUA
+        ========================================= */
 
-            const parent =
-                await getCurrentParent();
+        async function loadCurrentChild() {
 
-            const {
-                data: children,
-                error
-            } = await supabaseClient
-                .from('children')
-                .select('id, nama, kelas')
-                .eq('parent_id', parent.id)
-                .order('nama');
+            try {
 
-            if (error) {
+                const parent =
+                    await getCurrentParent();
+
+
+                const {
+                    data: children,
+                    error
+                } = await supabaseClient
+                    .from('children')
+                    .select('id, nama, kelas')
+                    .eq('parent_id', parent.id)
+                    .order('nama');
+
+
+                if (error) {
+
+                    console.error(error);
+
+                    childInfo.classList.add('loading');
+
+                    childInfo.textContent =
+                        'Gagal memuat data anak.';
+
+                    return null;
+
+                }
+
+
+                if (!children || children.length === 0) {
+
+                    childInfo.classList.add('loading');
+
+                    childInfo.textContent =
+                        'Belum ada data anak yang terhubung dengan akun ini.';
+
+                    return null;
+
+                }
+
+
+                /*
+                 * Untuk saat ini akun orang tua diasumsikan
+                 * memiliki satu anak.
+                 */
+
+                currentChild = children[0];
+
+
+                childInfo.classList.remove('loading');
+
+                childInfo.textContent =
+                    `${currentChild.nama} — ${currentChild.kelas}`;
+
+
+                return currentChild;
+
+            } catch (error) {
 
                 console.error(error);
 
-                childSelect.innerHTML = `
-                    <option value="">
-                        Gagal memuat data anak
-                    </option>
-                `;
+                childInfo.classList.add('loading');
 
-                return;
+                childInfo.textContent =
+                    error.message;
+
+                return null;
+
             }
-
-            childSelect.innerHTML = `
-                <option value="">
-                    Pilih anak
-                </option>
-            `;
-
-            children.forEach(child => {
-
-                const option =
-                    document.createElement('option');
-
-                option.value = child.id;
-
-                option.textContent =
-                    `${child.nama} — ${child.kelas}`;
-
-                childSelect.appendChild(option);
-
-            });
 
         }
 
+
+        /* =========================================
+           LOAD RIWAYAT KOMUNIKASI
+        ========================================= */
 
         async function loadNotes() {
 
-            const parent =
-                await getCurrentParent();
+            try {
 
-            const {
-                data: notes,
-                error
-            } = await supabaseClient
-                .from('parent_notes')
-                .select(`
-                    id,
-                    tanggal,
-                    isi,
-                    status,
-                    tanggapan_guru,
-                    created_at,
-                    children (
-                        nama,
-                        kelas
-                    )
-                `)
-                .eq('parent_id', parent.id)
-                .order('created_at', {
-                    ascending: false
+                const parent =
+                    await getCurrentParent();
+
+
+                const {
+                    data: notes,
+                    error
+                } = await supabaseClient
+                    .from('parent_notes')
+                    .select(`
+                        id,
+                        tanggal,
+                        isi,
+                        status,
+                        tanggapan_guru,
+                        created_at,
+                        children (
+                            nama,
+                            kelas
+                        )
+                    `)
+                    .eq('parent_id', parent.id)
+                    .order('created_at', {
+                        ascending: false
+                    });
+
+
+                if (error) {
+
+                    console.error(error);
+
+                    notesList.innerHTML = `
+                        <div class="empty-note">
+                            Gagal memuat komunikasi.
+                        </div>
+                    `;
+
+                    return;
+
+                }
+
+
+                if (!notes || notes.length === 0) {
+
+                    notesList.innerHTML = `
+                        <div class="empty-note">
+                            Belum ada komunikasi dengan guru.
+                        </div>
+                    `;
+
+                    return;
+
+                }
+
+
+                notesList.innerHTML = '';
+
+
+                notes.forEach(note => {
+
+                    const date =
+                        new Date(note.tanggal)
+                        .toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        });
+
+
+                    notesList.innerHTML += `
+
+                        <div class="note-card">
+
+                            <div class="note-meta">
+
+                                <span class="note-category">
+                                    ${note.children?.nama || 'Anak'}
+                                </span>
+
+                                <span class="note-date">
+                                    ${date}
+                                </span>
+
+                            </div>
+
+
+                            <div class="note-content">
+                                ${note.isi}
+                            </div>
+
+
+                            ${
+                                note.tanggapan_guru
+                                ? `
+                                    <div class="teacher-response">
+
+                                        <strong>
+                                            💬 Tanggapan Guru
+                                        </strong>
+
+                                        <p>
+                                            ${note.tanggapan_guru}
+                                        </p>
+
+                                    </div>
+                                `
+                                : `
+                                    <div class="status-label">
+                                        ⏳ Menunggu tanggapan guru
+                                    </div>
+                                `
+                            }
+
+                        </div>
+
+                    `;
+
                 });
 
-            if (error) {
+            } catch (error) {
 
                 console.error(error);
 
                 notesList.innerHTML = `
                     <div class="empty-note">
-                        Gagal memuat komunikasi.
+                        ${error.message}
                     </div>
                 `;
 
-                return;
             }
-
-            if (!notes || notes.length === 0) {
-
-                notesList.innerHTML = `
-                    <div class="empty-note">
-                        Belum ada komunikasi dengan guru.
-                    </div>
-                `;
-
-                return;
-            }
-
-            notesList.innerHTML = '';
-
-            notes.forEach(note => {
-
-                const date =
-                    new Date(note.tanggal)
-                    .toLocaleDateString('id-ID', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric'
-                    });
-
-                notesList.innerHTML += `
-
-                    <div class="note-card">
-
-                        <div class="note-meta">
-
-                            <span class="note-category">
-                                ${note.children?.nama || 'Anak'}
-                            </span>
-
-                            <span class="note-date">
-                                ${date}
-                            </span>
-
-                        </div>
-
-                        <div class="note-content">
-                            ${note.isi}
-                        </div>
-
-                        ${
-                            note.tanggapan_guru
-                            ? `
-                                <div class="teacher-response">
-
-                                    <strong>
-                                        💬 Tanggapan Guru
-                                    </strong>
-
-                                    <p>
-                                        ${note.tanggapan_guru}
-                                    </p>
-
-                                </div>
-                            `
-                            : `
-                                <div class="status-label">
-                                    ⏳ Menunggu tanggapan guru
-                                </div>
-                            `
-                        }
-
-                    </div>
-
-                `;
-
-            });
 
         }
 
+
+        /* =========================================
+           KIRIM KOMUNIKASI
+        ========================================= */
 
         sendNote.addEventListener(
             'click',
             async () => {
 
-                const childId =
-                    childSelect.value;
-
                 const category =
                     document.querySelector('#category').value;
+
 
                 const content =
                     document.querySelector('#noteContent')
@@ -605,19 +731,29 @@
                     .trim();
 
 
-                if (!childId) {
+                /* Pastikan anak sudah ditemukan */
 
-                    alert('Silakan pilih anak.');
+                if (!currentChild) {
+
+                    alert(
+                        'Data anak belum tersedia.'
+                    );
 
                     return;
+
                 }
 
 
+                /* Pastikan isi tidak kosong */
+
                 if (!content) {
 
-                    alert('Silakan tuliskan informasi yang ingin disampaikan.');
+                    alert(
+                        'Silakan tuliskan informasi yang ingin disampaikan.'
+                    );
 
                     return;
+
                 }
 
 
@@ -633,19 +769,31 @@
                         .from('parent_notes')
                         .insert({
 
-                            child_id: childId,
+                            /*
+                             * ID anak otomatis berasal
+                             * dari akun orang tua yang login.
+                             */
 
-                            parent_id: parent.id,
+                            child_id:
+                                currentChild.id,
+
+
+                            parent_id:
+                                parent.id,
+
 
                             tanggal:
                                 new Date()
                                 .toISOString()
                                 .split('T')[0],
 
+
                             isi:
                                 `[${category}] ${content}`,
 
-                            status: 'baru'
+
+                            status:
+                                'baru'
 
                         });
 
@@ -660,8 +808,11 @@
                         );
 
                         return;
+
                     }
 
+
+                    /* Kosongkan textarea */
 
                     document.querySelector(
                         '#noteContent'
@@ -672,6 +823,8 @@
                         'Informasi berhasil dikirim kepada guru.'
                     );
 
+
+                    /* Refresh riwayat */
 
                     loadNotes();
 
@@ -687,7 +840,12 @@
         );
 
 
-        loadChildren();
+        /* =========================================
+           JALANKAN SAAT HALAMAN DIBUKA
+        ========================================= */
+
+        loadCurrentChild();
+
         loadNotes();
 
     </script>
@@ -695,29 +853,41 @@
 
     <script>
 
+        /* =========================================
+           SIDEBAR MOBILE
+        ========================================= */
+
         const menuToggle =
             document.querySelector('.menu-toggle');
 
         const sidebar =
             document.querySelector('.sidebar');
 
+
         if (menuToggle && sidebar) {
 
             menuToggle.addEventListener(
                 'click',
                 () => {
+
                     sidebar.classList.toggle('show');
+
                 }
             );
 
         }
 
 
+        /* =========================================
+           PROFILE DROPDOWN
+        ========================================= */
+
         const profileButton =
             document.querySelector('#profileButton');
 
         const profileDropdown =
             document.querySelector('#profileDropdown');
+
 
         if (profileButton && profileDropdown) {
 

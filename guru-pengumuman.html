@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -30,7 +31,44 @@
             font-size: 14px;
         }
 
-        /* FORM TAMBAH */
+        /* =========================
+           TOPBAR
+        ========================= */
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .topbar-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .profile-wrapper {
+            position: relative;
+        }
+
+        .profile-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            padding: 5px;
+            font-family: inherit;
+            color: inherit;
+        }
+
+        /* =========================
+           FORM TAMBAH
+        ========================= */
 
         .announcement-form-card {
             background: var(--white);
@@ -112,7 +150,9 @@
             cursor: not-allowed;
         }
 
-        /* DAFTAR PENGUMUMAN */
+        /* =========================
+           DAFTAR PENGUMUMAN
+        ========================= */
 
         .section-title {
             margin-bottom: 15px;
@@ -174,6 +214,7 @@
             font-size: 14px;
             line-height: 1.7;
             white-space: pre-line;
+            overflow-wrap: anywhere;
         }
 
         .btn-delete {
@@ -186,6 +227,7 @@
             font-family: inherit;
             font-size: 12px;
             cursor: pointer;
+            transition: 0.2s ease;
         }
 
         .btn-delete:hover {
@@ -218,7 +260,9 @@
             font-size: 14px;
         }
 
-        /* MOBILE */
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 768px) {
 
@@ -245,6 +289,18 @@
             .btn-add {
                 width: 100%;
             }
+
+            .topbar-right {
+                gap: 8px;
+            }
+
+            .profile-info {
+                display: none;
+            }
+
+            .profile-arrow {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -261,6 +317,7 @@
 
         <div class="sidebar-logo">
             <img src="images/logo.png" alt="Logo">
+
             <div>
                 <strong>School Connect</strong>
                 <small>TAUD SAQU DARUL IMAN</small>
@@ -286,7 +343,7 @@
 
             <a href="guru-perkembangan.html" class="menu-item">
                 <span>📊</span>
-                Perkembangan
+                Pembelajaran hari Ini
             </a>
 
             <a href="guru-bintang-prestasi.html" class="menu-item">
@@ -317,10 +374,12 @@
         </nav>
 
         <div class="sidebar-bottom">
+
             <a href="index.html" class="menu-item logout-item">
                 <span>↪</span>
                 Keluar
             </a>
+
         </div>
 
     </aside>
@@ -332,17 +391,27 @@
 
     <main class="main-content">
 
-        <!-- TOPBAR -->
+        <!-- =========================
+             TOPBAR
+        ========================== -->
 
         <header class="topbar">
 
-            <button class="menu-toggle" type="button" aria-label="Buka menu">
+            <button
+                class="menu-toggle"
+                type="button"
+                aria-label="Buka menu"
+            >
                 ☰
             </button>
 
             <div class="topbar-right">
 
-                <button class="notification-button" type="button">
+                <button
+                    class="notification-button"
+                    type="button"
+                    aria-label="Notifikasi"
+                >
                     🔔
                 </button>
 
@@ -354,7 +423,10 @@
                         type="button"
                     >
 
-                        <div class="profile-avatar" id="guruAvatar">
+                        <div
+                            class="profile-avatar"
+                            id="guruAvatar"
+                        >
                             G
                         </div>
 
@@ -401,7 +473,9 @@
         </header>
 
 
-        <!-- CONTENT -->
+        <!-- =========================
+             CONTENT
+        ========================== -->
 
         <div class="content-wrapper">
 
@@ -416,7 +490,9 @@
             </div>
 
 
-            <!-- FORM -->
+            <!-- =========================
+                 FORM TAMBAH
+            ========================== -->
 
             <section class="announcement-form-card">
 
@@ -472,7 +548,9 @@
             </section>
 
 
-            <!-- LIST -->
+            <!-- =========================
+                 DAFTAR
+            ========================== -->
 
             <section>
 
@@ -506,7 +584,9 @@
 </div>
 
 
-<!-- SUPABASE -->
+<!-- =========================
+     SUPABASE
+========================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
@@ -518,7 +598,7 @@
 
 
     /* =========================
-       HELPER TANGGAL
+       FORMAT TANGGAL
     ========================== */
 
     function formatDate(dateString) {
@@ -733,17 +813,18 @@
         list.innerHTML = data
             .map(announcement => {
 
+                const displayDate =
+                    announcement.created_at ||
+                    announcement.tanggal;
+
+
                 return `
 
-                    <article
-                        class="announcement-card"
-                    >
+                    <article class="announcement-card">
 
                         <div class="announcement-top">
 
-                            <div
-                                class="announcement-content"
-                            >
+                            <div class="announcement-content">
 
                                 <h3>
                                     ${escapeHtml(
@@ -751,18 +832,10 @@
                                     )}
                                 </h3>
 
-                                <span
-                                    class="announcement-date"
-                                >
-                                    ${formatDate(
-                                        announcement.created_at ||
-                                        announcement.tanggal
-                                    )}
+                                <span class="announcement-date">
+                                    ${formatDate(displayDate)}
                                     •
-                                    ${formatTime(
-                                        announcement.created_at ||
-                                        announcement.tanggal
-                                    )}
+                                    ${formatTime(displayDate)}
                                 </span>
 
                                 <p>
@@ -772,7 +845,6 @@
                                 </p>
 
                             </div>
-
 
                             <button
                                 type="button"
@@ -966,12 +1038,14 @@
 
     /* =========================
        ESCAPE HTML
-       Agar teks aman ditampilkan
     ========================== */
 
     function escapeHtml(value) {
 
-        if (value === null || value === undefined) {
+        if (
+            value === null ||
+            value === undefined
+        ) {
             return '';
         }
 
@@ -1003,9 +1077,7 @@
             'click',
             () => {
 
-                sidebar.classList.toggle(
-                    'show'
-                );
+                sidebar.classList.toggle('show');
 
             }
         );
@@ -1087,3 +1159,4 @@
 
 </body>
 </html>
+```

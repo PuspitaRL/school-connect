@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,13 +7,14 @@
 
     <title>Bintang Prestasi - Guru</title>
 
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
 
     <style>
 
-        /* ================================
+        /* =========================
            PAGE
-        ================================= */
+        ========================= */
 
         .page-content {
             padding: 30px;
@@ -37,67 +39,106 @@
         .page-header p {
             margin: 0;
             color: var(--text-light);
+            font-size: 14px;
         }
 
 
-        /* ================================
-           CHILD SELECTOR
-        ================================= */
+        /* =========================
+           TOPBAR
+        ========================= */
 
-        .child-selector {
+        .topbar {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .topbar-title {
+            flex: 1;
+        }
+
+        .topbar-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-wrapper {
+            position: relative;
+        }
+
+        .profile-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            padding: 5px;
+            font-family: inherit;
+            color: inherit;
+        }
+
+
+        /* =========================
+           INFO BOX
+        ========================= */
+
+        .achievement-intro {
+            background: linear-gradient(
+                135deg,
+                var(--orange),
+                var(--orange-dark)
+            );
+            color: white;
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .achievement-intro h2 {
+            margin: 0 0 6px;
+            font-size: 20px;
+        }
+
+        .achievement-intro p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.6;
+            opacity: .92;
+        }
+
+
+        /* =========================
+           DATE
+        ========================= */
+
+        .filter-card {
             background: var(--white);
             border: 1px solid var(--border);
-            border-radius: 18px;
+            border-radius: 16px;
             padding: 18px 20px;
+            margin-bottom: 25px;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 20px;
-            margin-bottom: 25px;
         }
 
-        .selected-child {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .selected-child-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--orange-light);
-            color: var(--orange-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 18px;
-        }
-
-        .selected-child-info span {
+        .filter-info strong {
             display: block;
-            font-size: 11px;
-            color: var(--text-light);
-            margin-bottom: 3px;
-            text-transform: uppercase;
-            letter-spacing: .5px;
-        }
-
-        .selected-child-info strong {
-            display: block;
-            font-size: 16px;
+            font-size: 15px;
             color: var(--text);
+            margin-bottom: 4px;
         }
 
-        .selected-child-info small {
+        .filter-info span {
+            display: block;
             color: var(--text-light);
+            font-size: 12px;
         }
-
-
-        /* ================================
-           DATE SELECTOR
-        ================================= */
 
         .date-selector {
             display: flex;
@@ -125,38 +166,9 @@
         }
 
 
-        /* ================================
-           INTRO
-        ================================= */
-
-        .achievement-intro {
-            background: linear-gradient(
-                135deg,
-                var(--orange),
-                var(--orange-dark)
-            );
-            color: white;
-            border-radius: 20px;
-            padding: 22px;
-            margin-bottom: 25px;
-        }
-
-        .achievement-intro h2 {
-            margin: 0 0 6px;
-            font-size: 20px;
-        }
-
-        .achievement-intro p {
-            margin: 0;
-            font-size: 13px;
-            line-height: 1.6;
-            opacity: .92;
-        }
-
-
-        /* ================================
-           SECTION
-        ================================= */
+        /* =========================
+           SECTION HEADING
+        ========================= */
 
         .section-heading {
             margin-bottom: 15px;
@@ -175,166 +187,167 @@
         }
 
 
-        /* ================================
-           SUMMARY
-        ================================= */
+        /* =========================
+           TABLE
+        ========================= */
 
-        .achievement-summary-card {
+        .achievement-table-wrapper {
             background: var(--white);
             border: 1px solid var(--border);
             border-radius: 18px;
-            padding: 22px;
+            overflow-x: auto;
             margin-bottom: 25px;
         }
 
-        .summary-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 14px;
+        .achievement-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 760px;
         }
 
-        .summary-label {
-            font-size: 13px;
-            color: var(--text-light);
-        }
-
-        .summary-count {
-            font-size: 25px;
+        .achievement-table th {
+            background: var(--orange-light);
+            color: var(--text);
+            font-size: 12px;
             font-weight: 700;
-            color: var(--orange-dark);
-        }
-
-        .progress-bar {
-            height: 9px;
-            background: #F0ECE7;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: var(--orange);
-            border-radius: 20px;
-            transition: width .3s ease;
-        }
-
-
-        /* ================================
-           ACHIEVEMENT CARD
-        ================================= */
-
-        .achievement-card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            overflow: hidden;
-            margin-bottom: 25px;
-        }
-
-        .achievement-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 18px 20px;
+            padding: 15px 12px;
+            text-align: center;
             border-bottom: 1px solid var(--border);
+            white-space: nowrap;
         }
 
-        .achievement-item:last-child {
+        .achievement-table th:nth-child(2) {
+            text-align: left;
+            min-width: 190px;
+        }
+
+        .achievement-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            font-size: 13px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .achievement-table td:first-child {
+            color: var(--text-light);
+            width: 55px;
+        }
+
+        .achievement-table td:nth-child(2) {
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .achievement-table tr:last-child td {
             border-bottom: none;
         }
 
+        .achievement-table tbody tr:hover {
+            background: #fffaf4;
+        }
 
-        /* ================================
-           STATUS ICON
-        ================================= */
 
-        .achievement-status {
-            width: 35px;
-            height: 35px;
-            border-radius: 10px;
-            background: #F2EFEB;
-            color: var(--text-light);
-            display: flex;
+        /* =========================
+           STAR STATUS
+        ========================= */
+
+        .star-status {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
-            font-size: 16px;
+
+            width: 34px;
+            height: 34px;
+
+            border-radius: 10px;
+
+            font-size: 17px;
             font-weight: 700;
         }
 
-        .achievement-item.completed
-        .achievement-status {
+        .star-status.active {
             background: var(--orange-light);
             color: var(--orange-dark);
         }
 
+        .star-status.empty {
+            background: #f5f2ee;
+            color: #aaa29a;
+        }
 
-        /* ================================
-           ITEM CONTENT
-        ================================= */
 
-        .achievement-info {
-            flex: 1;
+        /* =========================
+           STUDENT NAME
+        ========================= */
+
+        .student-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .student-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: var(--orange-light);
+            color: var(--orange-dark);
+
+            font-size: 13px;
+            font-weight: 700;
+
+            flex-shrink: 0;
+        }
+
+        .student-name-text {
             min-width: 0;
         }
 
-        .achievement-info strong {
+        .student-name-text strong {
             display: block;
-            font-size: 14px;
             color: var(--text);
-            margin-bottom: 4px;
+            font-size: 13px;
         }
 
-        .achievement-info span {
+        .student-name-text small {
             display: block;
-            font-size: 12px;
             color: var(--text-light);
-            line-height: 1.5;
-        }
-
-        .achievement-star {
-            font-size: 20px;
-            opacity: .35;
-        }
-
-        .achievement-item.completed
-        .achievement-star {
-            opacity: 1;
+            font-size: 10px;
+            font-weight: 400;
+            margin-top: 2px;
         }
 
 
-        /* ================================
-           STATUS TEXT
-        ================================= */
+        /* =========================
+           LOADING
+        ========================= */
 
-        .achievement-result {
-            font-size: 11px;
-            font-weight: 600;
-            white-space: nowrap;
+        .loading-state {
+            padding: 40px 20px;
+            text-align: center;
             color: var(--text-light);
-        }
-
-        .achievement-item.completed
-        .achievement-result {
-            color: var(--orange-dark);
+            font-size: 14px;
         }
 
 
-        /* ================================
-           EMPTY / ERROR
-        ================================= */
+        /* =========================
+           EMPTY
+        ========================= */
 
         .empty-state {
             background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 35px 20px;
+            border: 1px dashed var(--border);
+            border-radius: 16px;
+            padding: 40px 20px;
             text-align: center;
             color: var(--text-light);
-            margin-bottom: 25px;
         }
 
         .empty-state .empty-icon {
@@ -354,21 +367,22 @@
         }
 
 
-        /* ================================
+        /* =========================
            FOOTER
-        ================================= */
+        ========================= */
 
         .page-footer {
             text-align: center;
             color: var(--text-light);
             font-size: 11px;
             padding: 5px 0 20px;
+            line-height: 1.7;
         }
 
 
-        /* ================================
-           RESPONSIVE
-        ================================= */
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 768px) {
 
@@ -380,9 +394,21 @@
                 font-size: 23px;
             }
 
-            .child-selector {
-                align-items: flex-start;
+            .topbar-right {
+                gap: 8px;
+            }
+
+            .profile-info {
+                display: none;
+            }
+
+            .profile-arrow {
+                display: none;
+            }
+
+            .filter-card {
                 flex-direction: column;
+                align-items: flex-start;
             }
 
             .date-selector {
@@ -394,14 +420,6 @@
             .date-selector input {
                 width: 100%;
                 box-sizing: border-box;
-            }
-
-            .achievement-item {
-                padding: 16px;
-            }
-
-            .achievement-result {
-                display: none;
             }
 
         }
@@ -426,22 +444,6 @@
                 font-size: 17px;
             }
 
-            .achievement-item {
-                gap: 11px;
-            }
-
-            .achievement-info strong {
-                font-size: 13px;
-            }
-
-            .achievement-info span {
-                font-size: 11px;
-            }
-
-            .achievement-star {
-                font-size: 17px;
-            }
-
         }
 
     </style>
@@ -450,17 +452,27 @@
 
 <body>
 
-    <!-- =====================================
+<div class="dashboard-layout">
+
+
+    <!-- =========================
          SIDEBAR
-    ====================================== -->
+    ========================= -->
 
     <aside class="sidebar">
 
         <div class="sidebar-logo">
+
             <img
                 src="images/logo.png"
                 alt="Logo TAUD SAQU DARUL IMAN"
             >
+
+            <div>
+                <strong>School Connect</strong>
+                <small>TAUD SAQU DARUL IMAN</small>
+            </div>
+
         </div>
 
 
@@ -470,7 +482,8 @@
                 href="guru-dashboard.html"
                 class="menu-item"
             >
-                ⌂ Dashboard
+                <span>🏠</span>
+                Dashboard
             </a>
 
 
@@ -478,7 +491,8 @@
                 href="guru-child.html"
                 class="menu-item"
             >
-                👧 Data Anak
+                <span>👧</span>
+                Siswa
             </a>
 
 
@@ -486,7 +500,8 @@
                 href="guru-buku-penghubung.html"
                 class="menu-item"
             >
-                📖 Buku Penghubung
+                <span>📖</span>
+                Buku Penghubung
             </a>
 
 
@@ -494,7 +509,8 @@
                 href="guru-perkembangan.html"
                 class="menu-item"
             >
-                📊 Perkembangan
+                <span>📊</span>
+                Pembelajaran hari Ini
             </a>
 
 
@@ -502,7 +518,8 @@
                 href="guru-bintang-prestasi.html"
                 class="menu-item active"
             >
-                ⭐ Bintang Prestasi
+                <span>⭐</span>
+                Bintang Prestasi
             </a>
 
 
@@ -510,7 +527,8 @@
                 href="guru-absensi.html"
                 class="menu-item"
             >
-                📅 Absensi
+                <span>📅</span>
+                Absensi
             </a>
 
 
@@ -518,7 +536,8 @@
                 href="guru-pengumuman.html"
                 class="menu-item"
             >
-                📢 Pengumuman
+                <span>📢</span>
+                Pengumuman
             </a>
 
 
@@ -526,7 +545,8 @@
                 href="guru-komunikasi.html"
                 class="menu-item"
             >
-                💬 Komunikasi
+                <span>💬</span>
+                Komunikasi
             </a>
 
 
@@ -534,30 +554,38 @@
                 href="pengaturan.html"
                 class="menu-item"
             >
-                ⚙ Pengaturan
-            </a>
-
-
-            <a
-                href="index.html"
-                class="menu-item logout"
-            >
-                ↪ Keluar
+                <span>⚙️</span>
+                Pengaturan
             </a>
 
         </nav>
 
+
+        <div class="sidebar-bottom">
+
+            <a
+                href="index.html"
+                class="menu-item logout-item"
+            >
+                <span>↪</span>
+                Keluar
+            </a>
+
+        </div>
+
     </aside>
 
 
-    <!-- =====================================
+    <!-- =========================
          MAIN
-    ====================================== -->
+    ========================= -->
 
     <main class="main-content">
 
 
-        <!-- TOPBAR -->
+        <!-- =========================
+             TOPBAR
+        ========================= -->
 
         <header class="topbar">
 
@@ -576,6 +604,15 @@
 
 
             <div class="topbar-right">
+
+                <button
+                    class="notification-button"
+                    type="button"
+                    aria-label="Notifikasi"
+                >
+                    🔔
+                </button>
+
 
                 <div class="profile-wrapper">
 
@@ -638,9 +675,9 @@
         </header>
 
 
-        <!-- =====================================
+        <!-- =========================
              CONTENT
-        ====================================== -->
+        ========================= -->
 
         <section class="page-content">
 
@@ -658,41 +695,41 @@
                 </h1>
 
                 <p>
-                    Pantau kebiasaan baik yang dilaporkan orang tua.
+                    Pantau pencapaian siswa berdasarkan laporan orang tua.
                 </p>
 
             </div>
 
 
-            <!-- CHILD + DATE -->
+            <!-- INTRO -->
 
-            <div class="child-selector">
+            <div class="achievement-intro">
 
-                <div class="selected-child">
+                <h2>
+                    Rekap Bintang Prestasi ⭐
+                </h2>
 
-                    <div
-                        class="selected-child-avatar"
-                        id="childAvatar"
-                    >
-                        S
-                    </div>
+                <p>
+                    Guru dapat melihat seluruh pencapaian siswa.
+                    Data bintang diisi oleh orang tua dan tidak dapat diubah dari akun Guru.
+                </p>
+
+            </div>
 
 
-                    <div class="selected-child-info">
+            <!-- FILTER TANGGAL -->
 
-                        <span>
-                            Anak
-                        </span>
+            <div class="filter-card">
 
-                        <strong id="childName">
-                            Memuat...
-                        </strong>
+                <div class="filter-info">
 
-                        <small id="childClass">
-                            -
-                        </small>
+                    <strong>
+                        Laporan Bintang Prestasi
+                    </strong>
 
-                    </div>
+                    <span>
+                        Pilih tanggal untuk melihat pencapaian siswa.
+                    </span>
 
                 </div>
 
@@ -713,261 +750,31 @@
             </div>
 
 
-            <!-- INTRO -->
-
-            <div class="achievement-intro">
-
-                <h2>
-                    Bintang Prestasi ⭐
-                </h2>
-
-                <p>
-                    Halaman ini menampilkan kebiasaan baik anak
-                    yang telah dilaporkan oleh orang tua di rumah.
-                </p>
-
-            </div>
-
-
-            <!-- SUMMARY -->
+            <!-- SECTION -->
 
             <div class="section-heading">
 
                 <h2>
-                    Ringkasan Hari Ini
+                    Daftar Siswa
                 </h2>
 
                 <p>
-                    Pencapaian yang dilaporkan orang tua.
+                    ⭐ menunjukkan pencapaian yang telah dilaporkan orang tua.
                 </p>
 
             </div>
 
 
-            <div class="achievement-summary-card">
-
-                <div class="summary-top">
-
-                    <div>
-
-                        <div class="summary-label">
-                            Bintang Prestasi
-                        </div>
-
-                        <div
-                            class="summary-count"
-                            id="summaryCount"
-                        >
-                            0 / 4 ⭐
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="progress-bar">
-
-                    <div
-                        class="progress-fill"
-                        id="progressFill"
-                    ></div>
-
-                </div>
-
-            </div>
-
-
-            <!-- CHECKLIST -->
-
-            <div class="section-heading">
-
-                <h2>
-                    Prestasi Hari Ini
-                </h2>
-
-                <p>
-                    Informasi yang dikirimkan oleh orang tua.
-                </p>
-
-            </div>
-
+            <!-- TABLE -->
 
             <div
-                class="achievement-card"
-                id="achievementCard"
+                class="achievement-table-wrapper"
+                id="tableWrapper"
             >
 
-                <!-- ITEM 1 -->
-
-                <div
-                    class="achievement-item"
-                    data-key="murojaah_surat"
-                >
-
-                    <div class="achievement-status">
-                        —
-                    </div>
-
-
-                    <div class="achievement-info">
-
-                        <strong>
-                            Murojaah Surat
-                        </strong>
-
-                        <span>
-                            Mengulang hafalan surat yang sudah dipelajari.
-                        </span>
-
-                    </div>
-
-
-                    <div class="achievement-result">
-                        Belum dilakukan
-                    </div>
-
-
-                    <div class="achievement-star">
-                        ⭐
-                    </div>
-
+                <div class="loading-state">
+                    Memuat data siswa...
                 </div>
-
-
-                <!-- ITEM 2 -->
-
-                <div
-                    class="achievement-item"
-                    data-key="mendengarkan_20x"
-                >
-
-                    <div class="achievement-status">
-                        —
-                    </div>
-
-
-                    <div class="achievement-info">
-
-                        <strong>
-                            Mendengarkan Surat 20×
-                        </strong>
-
-                        <span>
-                            Mendengarkan surat sesuai target sebanyak 20 kali.
-                        </span>
-
-                    </div>
-
-
-                    <div class="achievement-result">
-                        Belum dilakukan
-                    </div>
-
-
-                    <div class="achievement-star">
-                        ⭐
-                    </div>
-
-                </div>
-
-
-                <!-- ITEM 3 -->
-
-                <div
-                    class="achievement-item"
-                    data-key="murojaah_tibyan"
-                >
-
-                    <div class="achievement-status">
-                        —
-                    </div>
-
-
-                    <div class="achievement-info">
-
-                        <strong>
-                            Murojaah Tibyan
-                        </strong>
-
-                        <span>
-                            Mengulang pembelajaran Tibyan di rumah.
-                        </span>
-
-                    </div>
-
-
-                    <div class="achievement-result">
-                        Belum dilakukan
-                    </div>
-
-
-                    <div class="achievement-star">
-                        ⭐
-                    </div>
-
-                </div>
-
-
-                <!-- ITEM 4 -->
-
-                <div
-                    class="achievement-item"
-                    data-key="tarbiyah"
-                >
-
-                    <div class="achievement-status">
-                        —
-                    </div>
-
-
-                    <div class="achievement-info">
-
-                        <strong>
-                            Tarbiyah
-                        </strong>
-
-                        <span>
-                            Melakukan kegiatan tarbiyah sesuai arahan.
-                        </span>
-
-                    </div>
-
-
-                    <div class="achievement-result">
-                        Belum dilakukan
-                    </div>
-
-
-                    <div class="achievement-star">
-                        ⭐
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- EMPTY STATE -->
-
-            <div
-                class="empty-state"
-                id="emptyState"
-                style="display: none;"
-            >
-
-                <div class="empty-icon">
-                    ⭐
-                </div>
-
-                <strong>
-                    Belum ada laporan bintang
-                </strong>
-
-                <p>
-                    Orang tua belum mengirimkan laporan bintang
-                    untuk tanggal ini.
-                </p>
 
             </div>
 
@@ -985,664 +792,698 @@
 
             </div>
 
+
         </section>
 
     </main>
 
+</div>
 
-    <!-- =====================================
-         SUPABASE
-    ====================================== -->
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase.js"></script>
+<!-- =========================
+     SUPABASE
+========================= -->
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
 
-    <script>
 
-        /* =====================================
-           ELEMENT
-        ====================================== */
+<script>
 
-        const childName =
-            document.getElementById('childName');
+    /* =========================
+       ELEMENT
+    ========================= */
 
-        const childClass =
-            document.getElementById('childClass');
+    const achievementDate =
+        document.getElementById(
+            'achievementDate'
+        );
 
-        const childAvatar =
-            document.getElementById('childAvatar');
-
-        const achievementDate =
-            document.getElementById('achievementDate');
-
-        const summaryCount =
-            document.getElementById('summaryCount');
-
-        const progressFill =
-            document.getElementById('progressFill');
-
-        const achievementCard =
-            document.getElementById('achievementCard');
-
-        const emptyState =
-            document.getElementById('emptyState');
-
-
-        /* =====================================
-           STATE
-        ====================================== */
-
-        let currentChildId = null;
-
-
-        /* =====================================
-           DATE
-        ====================================== */
-
-        function getTodayLocal() {
-
-            const now = new Date();
-
-            const offset =
-                now.getTimezoneOffset() * 60000;
-
-            return new Date(
-                now.getTime() - offset
-            )
-                .toISOString()
-                .slice(0, 10);
-        }
-
-
-        /* =====================================
-           GET CHILD ID FROM URL
-        ====================================== */
-
-        function getChildIdFromUrl() {
-
-            const params =
-                new URLSearchParams(
-                    window.location.search
-                );
-
-            return params.get('child_id');
-        }
-
-
-        /* =====================================
-           LOAD GURU PROFILE
-        ====================================== */
-
-        async function loadGuruProfile() {
-
-            try {
-
-                const {
-                    data: authData,
-                    error: authError
-                } =
-                    await supabaseClient.auth.getUser();
-
-
-                if (
-                    authError ||
-                    !authData.user
-                ) {
-
-                    window.location.href =
-                        'login.html';
-
-                    return false;
-                }
-
-
-                const {
-                    data: profile,
-                    error: profileError
-                } =
-                    await supabaseClient
-                        .from('users')
-                        .select(
-                            'id, nama, role'
-                        )
-                        .eq(
-                            'auth_id',
-                            authData.user.id
-                        )
-                        .single();
-
-
-                if (profileError) {
-                    throw profileError;
-                }
-
-
-                if (
-                    !profile ||
-                    profile.role !== 'guru'
-                ) {
-
-                    alert(
-                        'Akses halaman ini hanya untuk Guru.'
-                    );
-
-                    window.location.href =
-                        'login.html';
-
-                    return false;
-                }
-
-
-                document.getElementById(
-                    'guruName'
-                ).textContent =
-                    profile.nama || 'Guru';
-
-
-                document.getElementById(
-                    'guruRole'
-                ).textContent =
-                    'Guru';
-
-
-                document.getElementById(
-                    'guruAvatar'
-                ).textContent =
-                    (
-                        profile.nama || 'G'
-                    )
-                        .trim()
-                        .charAt(0)
-                        .toUpperCase();
-
-
-                return true;
-
-            } catch (error) {
-
-                console.error(
-                    'Gagal memuat profil Guru:',
-                    error
-                );
-
-                alert(
-                    'Profil Guru tidak dapat dimuat.'
-                );
-
-                window.location.href =
-                    'login.html';
-
-                return false;
-            }
-        }
-
-
-        /* =====================================
-           LOAD CHILD
-        ====================================== */
-
-        async function loadChild() {
-
-            const childId =
-                getChildIdFromUrl();
-
-
-            if (!childId) {
-
-                childName.textContent =
-                    'Belum memilih anak';
-
-                childClass.textContent =
-                    'Buka melalui Data Anak';
-
-                return false;
-            }
-
-
-            try {
-
-                const {
-                    data: child,
-                    error
-                } =
-                    await supabaseClient
-                        .from('children')
-                        .select(
-                            'id, nama, kelas, tahun_ajaran'
-                        )
-                        .eq(
-                            'id',
-                            childId
-                        )
-                        .single();
-
-
-                if (error) {
-                    throw error;
-                }
-
-
-                if (!child) {
-
-                    throw new Error(
-                        'Data anak tidak ditemukan.'
-                    );
-                }
-
-
-                currentChildId =
-                    child.id;
-
-
-                childName.textContent =
-                    child.nama;
-
-
-                childClass.textContent =
-                    child.kelas
-                        ? `Kelas ${child.kelas}`
-                        : '-';
-
-
-                childAvatar.textContent =
-                    child.nama
-                        .trim()
-                        .charAt(0)
-                        .toUpperCase();
-
-
-                return true;
-
-            } catch (error) {
-
-                console.error(
-                    'Gagal memuat data anak:',
-                    error
-                );
-
-
-                childName.textContent =
-                    'Data anak tidak ditemukan';
-
-                childClass.textContent =
-                    '-';
-
-                return false;
-            }
-        }
-
-
-        /* =====================================
-           LOAD ACHIEVEMENT
-        ====================================== */
-
-        async function loadAchievement() {
-
-            if (!currentChildId) {
-
-                resetAchievementDisplay();
-
-                return;
-            }
-
-
-            const tanggal =
-                achievementDate.value;
-
-
-            if (!tanggal) {
-                return;
-            }
-
-
-            try {
-
-                const {
-                    data: achievement,
-                    error
-                } =
-                    await supabaseClient
-                        .from('achievements')
-                        .select(
-                            'id, tanggal, murojaah_surat, mendengarkan_20x, murojaah_tibyan, tarbiyah'
-                        )
-                        .eq(
-                            'child_id',
-                            currentChildId
-                        )
-                        .eq(
-                            'tanggal',
-                            tanggal
-                        )
-                        .maybeSingle();
-
-
-                if (error) {
-                    throw error;
-                }
-
-
-                if (!achievement) {
-
-                    resetAchievementDisplay();
-
-                    return;
-                }
-
-
-                updateAchievementDisplay(
-                    achievement
-                );
-
-            } catch (error) {
-
-                console.error(
-                    'Gagal mengambil data bintang:',
-                    error
-                );
-
-
-                alert(
-                    'Gagal mengambil data Bintang Prestasi.'
-                );
-            }
-        }
-
-
-        /* =====================================
-           UPDATE DISPLAY
-        ====================================== */
-
-        function updateAchievementDisplay(
-            achievement
-        ) {
-
-            const values = {
-
-                murojaah_surat:
-                    achievement.murojaah_surat === true,
-
-                mendengarkan_20x:
-                    achievement.mendengarkan_20x === true,
-
-                murojaah_tibyan:
-                    achievement.murojaah_tibyan === true,
-
-                tarbiyah:
-                    achievement.tarbiyah === true
-
-            };
-
-
-            const items =
-                document.querySelectorAll(
-                    '.achievement-item'
-                );
-
-
-            let checked = 0;
-
-
-            items.forEach(item => {
-
-                const key =
-                    item.dataset.key;
-
-                const completed =
-                    values[key] === true;
-
-
-                if (completed) {
-                    checked++;
-                }
-
-
-                item.classList.toggle(
-                    'completed',
-                    completed
-                );
-
-
-                const status =
-                    item.querySelector(
-                        '.achievement-status'
-                    );
-
-                const result =
-                    item.querySelector(
-                        '.achievement-result'
-                    );
-
-
-                if (completed) {
-
-                    status.textContent =
-                        '✓';
-
-                    result.textContent =
-                        'Sudah dilakukan';
-
-                } else {
-
-                    status.textContent =
-                        '—';
-
-                    result.textContent =
-                        'Belum dilakukan';
-
-                }
-
-            });
-
-
-            const total = 4;
-
-
-            summaryCount.textContent =
-                `${checked} / ${total} ⭐`;
-
-
-            progressFill.style.width =
-                `${(checked / total) * 100}%`;
-
-
-            emptyState.style.display =
-                'none';
-
-            achievementCard.style.display =
-                'block';
-        }
-
-
-        /* =====================================
-           RESET DISPLAY
-        ====================================== */
-
-        function resetAchievementDisplay() {
-
-            const items =
-                document.querySelectorAll(
-                    '.achievement-item'
-                );
-
-
-            items.forEach(item => {
-
-                item.classList.remove(
-                    'completed'
-                );
-
-
-                item.querySelector(
-                    '.achievement-status'
-                ).textContent =
-                    '—';
-
-
-                item.querySelector(
-                    '.achievement-result'
-                ).textContent =
-                    'Belum dilakukan';
-
-            });
-
-
-            summaryCount.textContent =
-                '0 / 4 ⭐';
-
-
-            progressFill.style.width =
-                '0%';
-
-
-            achievementCard.style.display =
-                'block';
-
-            emptyState.style.display =
-                'none';
-        }
-
-
-        /* =====================================
-           DATE CHANGE
-        ====================================== */
-
-        achievementDate.addEventListener(
-            'change',
-            loadAchievement
+    const tableWrapper =
+        document.getElementById(
+            'tableWrapper'
         );
 
 
-        /* =====================================
-           PROFILE DROPDOWN
-        ====================================== */
+    /* =========================
+       DATE
+    ========================= */
 
-        const profileButton =
-            document.getElementById(
-                'profileButton'
-            );
+    function getTodayLocal() {
 
-        const profileDropdown =
-            document.getElementById(
-                'profileDropdown'
-            );
+        const now = new Date();
+
+        const year =
+            now.getFullYear();
+
+        const month =
+            String(
+                now.getMonth() + 1
+            ).padStart(2, '0');
+
+        const day =
+            String(
+                now.getDate()
+            ).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    }
+
+
+    /* =========================
+       LOAD GURU PROFILE
+    ========================= */
+
+    async function loadGuruProfile() {
+
+        const {
+            data: authData,
+            error: authError
+        } = await supabaseClient
+            .auth
+            .getUser();
 
 
         if (
-            profileButton &&
-            profileDropdown
+            authError ||
+            !authData ||
+            !authData.user
         ) {
 
-            profileButton.addEventListener(
-                'click',
-                event => {
+            window.location.href =
+                'login.html';
 
-                    event.stopPropagation();
+            return false;
+        }
 
-                    profileDropdown.classList.toggle(
-                        'show'
-                    );
 
-                }
+        const {
+            data: profile,
+            error: profileError
+        } = await supabaseClient
+            .from('users')
+            .select(
+                'id, nama, role, auth_id'
+            )
+            .eq(
+                'auth_id',
+                authData.user.id
+            )
+            .maybeSingle();
+
+
+        if (profileError) {
+
+            console.error(
+                'Gagal mengambil profil Guru:',
+                profileError
             );
 
+            alert(
+                'Gagal mengambil profil Guru.'
+            );
 
-            document.addEventListener(
-                'click',
-                event => {
+            return false;
+        }
 
-                    if (
-                        !profileDropdown.contains(
-                            event.target
-                        )
-                    ) {
 
-                        profileDropdown.classList.remove(
-                            'show'
-                        );
+        if (!profile) {
 
+            alert(
+                'Profil pengguna tidak ditemukan.'
+            );
+
+            window.location.href =
+                'login.html';
+
+            return false;
+        }
+
+
+        if (profile.role !== 'guru') {
+
+            alert(
+                'Halaman ini hanya dapat diakses oleh Guru.'
+            );
+
+            window.location.href =
+                'login.html';
+
+            return false;
+        }
+
+
+        document.getElementById(
+            'guruName'
+        ).textContent =
+            profile.nama || 'Guru';
+
+
+        document.getElementById(
+            'guruRole'
+        ).textContent =
+            'Guru';
+
+
+        document.getElementById(
+            'guruAvatar'
+        ).textContent =
+            (profile.nama || 'G')
+                .trim()
+                .charAt(0)
+                .toUpperCase();
+
+
+        return true;
+    }
+
+
+    /* =========================
+       LOAD SEMUA SISWA
+    ========================= */
+
+    async function loadStudents() {
+
+        const tanggal =
+            achievementDate.value;
+
+
+        tableWrapper.innerHTML = `
+            <div class="loading-state">
+                Memuat data siswa...
+            </div>
+        `;
+
+
+        try {
+
+            /* -------------------------
+               AMBIL SEMUA ANAK
+            ------------------------- */
+
+            const {
+                data: children,
+                error: childrenError
+            } = await supabaseClient
+                .from('children')
+                .select(
+                    'id, nama, kelas, tahun_ajaran'
+                )
+                .order(
+                    'nama',
+                    {
+                        ascending: true
                     }
+                );
+
+
+            if (childrenError) {
+                throw childrenError;
+            }
+
+
+            if (
+                !children ||
+                children.length === 0
+            ) {
+
+                tableWrapper.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">👧</div>
+
+                        <strong>
+                            Belum ada data siswa
+                        </strong>
+
+                        <p>
+                            Data siswa belum tersedia di sistem.
+                        </p>
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            /* -------------------------
+               AMBIL ACHIEVEMENTS
+            ------------------------- */
+
+            const childIds =
+                children.map(
+                    child => child.id
+                );
+
+
+            const {
+                data: achievements,
+                error: achievementError
+            } = await supabaseClient
+                .from('achievements')
+                .select(`
+                    child_id,
+                    tanggal,
+                    murojaah_surat,
+                    mendengarkan_20x,
+                    murojaah_tibyan,
+                    tarbiyah
+                `)
+                .in(
+                    'child_id',
+                    childIds
+                )
+                .eq(
+                    'tanggal',
+                    tanggal
+                );
+
+
+            if (achievementError) {
+                throw achievementError;
+            }
+
+
+            /* -------------------------
+               BUAT MAP DATA
+            ------------------------- */
+
+            const achievementMap =
+                {};
+
+
+            (
+                achievements || []
+            ).forEach(
+                achievement => {
+
+                    achievementMap[
+                        achievement.child_id
+                    ] = achievement;
 
                 }
             );
 
+
+            /* -------------------------
+               BUAT TABLE
+            ------------------------- */
+
+            let html = `
+
+                <table class="achievement-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                No
+                            </th>
+
+                            <th>
+                                Nama Anak
+                            </th>
+
+                            <th>
+                                Murojaah Surat
+                            </th>
+
+                            <th>
+                                Mendengarkan 20×
+                            </th>
+
+                            <th>
+                                Murojaah Tibyan
+                            </th>
+
+                            <th>
+                                Tarbiyah
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+            `;
+
+
+            children.forEach(
+                (child, index) => {
+
+                    const achievement =
+                        achievementMap[
+                            child.id
+                        ] || null;
+
+
+                    html += `
+
+                        <tr>
+
+                            <td>
+                                ${index + 1}
+                            </td>
+
+
+                            <td>
+
+                                <div class="student-name">
+
+                                    <div class="student-avatar">
+                                        ${getInitial(
+                                            child.nama
+                                        )}
+                                    </div>
+
+                                    <div class="student-name-text">
+
+                                        <strong>
+                                            ${escapeHtml(
+                                                child.nama
+                                            )}
+                                        </strong>
+
+                                        <small>
+                                            ${escapeHtml(
+                                                child.kelas || ''
+                                            )}
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+                                ${renderStar(
+                                    achievement &&
+                                    achievement.murojaah_surat
+                                )}
+                            </td>
+
+
+                            <td>
+                                ${renderStar(
+                                    achievement &&
+                                    achievement.mendengarkan_20x
+                                )}
+                            </td>
+
+
+                            <td>
+                                ${renderStar(
+                                    achievement &&
+                                    achievement.murojaah_tibyan
+                                )}
+                            </td>
+
+
+                            <td>
+                                ${renderStar(
+                                    achievement &&
+                                    achievement.tarbiyah
+                                )}
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }
+            );
+
+
+            html += `
+
+                    </tbody>
+
+                </table>
+
+            `;
+
+
+            tableWrapper.innerHTML =
+                html;
+
+
+        } catch (error) {
+
+            console.error(
+                'Gagal memuat data Bintang Prestasi:',
+                error
+            );
+
+
+            tableWrapper.innerHTML = `
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        ⚠️
+                    </div>
+
+                    <strong>
+                        Data belum dapat dimuat
+                    </strong>
+
+                    <p>
+                        Terjadi kesalahan saat mengambil data Bintang Prestasi.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    /* =========================
+       RENDER STAR
+    ========================= */
+
+    function renderStar(value) {
+
+        if (value === true) {
+
+            return `
+                <span
+                    class="star-status active"
+                    title="Sudah dilakukan"
+                >
+                    ⭐
+                </span>
+            `;
+
         }
 
 
-        /* =====================================
-           MOBILE MENU
-        ====================================== */
+        return `
+            <span
+                class="star-status empty"
+                title="Belum dilakukan"
+            >
+                —
+            </span>
+        `;
 
-        const menuToggle =
-            document.querySelector(
-                '.menu-toggle'
-            );
+    }
 
-        const sidebar =
-            document.querySelector(
-                '.sidebar'
-            );
 
+    /* =========================
+       INITIAL
+    ========================= */
+
+    function getInitial(name) {
+
+        if (!name) {
+            return '?';
+        }
+
+        return name
+            .trim()
+            .charAt(0)
+            .toUpperCase();
+
+    }
+
+
+    /* =========================
+       ESCAPE HTML
+    ========================= */
+
+    function escapeHtml(value) {
 
         if (
-            menuToggle &&
-            sidebar
+            value === null ||
+            value === undefined
         ) {
+            return '';
+        }
 
-            menuToggle.addEventListener(
-                'click',
-                () => {
 
-                    sidebar.classList.toggle(
+        return String(value)
+            .replace(
+                /&/g,
+                '&amp;'
+            )
+            .replace(
+                /</g,
+                '&lt;'
+            )
+            .replace(
+                />/g,
+                '&gt;'
+            )
+            .replace(
+                /"/g,
+                '&quot;'
+            )
+            .replace(
+                /'/g,
+                '&#039;'
+            );
+
+    }
+
+
+    /* =========================
+       DATE CHANGE
+    ========================= */
+
+    achievementDate.addEventListener(
+        'change',
+        () => {
+
+            loadStudents();
+
+        }
+    );
+
+
+    /* =========================
+       PROFILE DROPDOWN
+    ========================= */
+
+    const profileButton =
+        document.getElementById(
+            'profileButton'
+        );
+
+    const profileDropdown =
+        document.getElementById(
+            'profileDropdown'
+        );
+
+
+    if (
+        profileButton &&
+        profileDropdown
+    ) {
+
+        profileButton.addEventListener(
+            'click',
+            event => {
+
+                event.stopPropagation();
+
+                profileDropdown.classList.toggle(
+                    'show'
+                );
+
+            }
+        );
+
+
+        document.addEventListener(
+            'click',
+            event => {
+
+                if (
+                    !profileDropdown.contains(
+                        event.target
+                    ) &&
+                    event.target !== profileButton
+                ) {
+
+                    profileDropdown.classList.remove(
                         'show'
                     );
 
                 }
-            );
 
+            }
+        );
+
+    }
+
+
+    /* =========================
+       MOBILE MENU
+    ========================= */
+
+    const menuToggle =
+        document.querySelector(
+            '.menu-toggle'
+        );
+
+    const sidebar =
+        document.querySelector(
+            '.sidebar'
+        );
+
+
+    if (
+        menuToggle &&
+        sidebar
+    ) {
+
+        menuToggle.addEventListener(
+            'click',
+            () => {
+
+                sidebar.classList.toggle(
+                    'show'
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================
+       INIT
+    ========================= */
+
+    async function initPage() {
+
+        achievementDate.value =
+            getTodayLocal();
+
+
+        const guruReady =
+            await loadGuruProfile();
+
+
+        if (!guruReady) {
+            return;
         }
 
 
-        /* =====================================
-           INIT
-        ====================================== */
+        await loadStudents();
 
-        async function initPage() {
-
-            achievementDate.value =
-                getTodayLocal();
+    }
 
 
-            const guruReady =
-                await loadGuruProfile();
+    initPage();
 
-
-            if (!guruReady) {
-                return;
-            }
-
-
-            const childReady =
-                await loadChild();
-
-
-            if (!childReady) {
-
-                resetAchievementDisplay();
-
-                return;
-            }
-
-
-            await loadAchievement();
-
-        }
-
-
-        initPage();
-
-    </script>
+</script>
 
 </body>
 </html>
+```

@@ -1,838 +1,713 @@
-<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8">
+```html
+<!DOCTYPE html>
+<html lang="id">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<head>
 
-<title>
-    Dashboard Orang Tua | TAUD SAQU DARUL IMAN
-</title>
+    <meta charset="UTF-8">
 
-<link
-    rel="stylesheet"
-    href="css/dashboard.css"
->
-
-<!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="js/supabase.js?v=2"></script>
-
-</head><body><!-- =========================
-     SIDEBAR
-========================== --><aside
-    class="sidebar"
-    id="sidebar"
-><div class="sidebar-logo">
-
-    <img
-        src="images/logo.png"
-        alt="Logo TAUD SAQU DARUL IMAN"
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
     >
 
-    <div>
+    <title>
+        Dashboard Orang Tua | TAUD SAQU DARUL IMAN
+    </title>
 
-        <strong>
-            TAUD SAQU
-        </strong>
-
-        <span>
-            DARUL IMAN
-        </span>
-
-    </div>
-
-</div>
-
-
-<nav class="sidebar-menu">
-
-
-    <a
-        href="parent-dashboard.html"
-        class="menu-item active"
+    <link
+        rel="stylesheet"
+        href="css/dashboard.css"
     >
 
-        <span>⌂</span>
-
-        Dashboard
-
-    </a>
-
-
-    <a
-        href="child.html"
-        class="menu-item"
-    >
-
-        <span>👧</span>
-
-        Anak Saya
-
-    </a>
-
-
-    <a
-        href="buku-penghubung.html"
-        class="menu-item"
-    >
-
-        <span>📖</span>
-
-        Buku Penghubung
-
-    </a>
-
-
-    <a
-        href="perkembangan.html"
-        class="menu-item"
-    >
-
-        <span>📊</span>
-
-        Perkembangan
-
-    </a>
-
-
-    <a
-        href="bintang-prestasi.html"
-        class="menu-item"
-    >
-
-        <span>⭐</span>
-
-        Bintang Prestasi
-
-    </a>
-
-
-    <a
-        href="absensi.html"
-        class="menu-item"
-    >
-
-        <span>📅</span>
-
-        Absensi
-
-    </a>
-
-
-    <a
-        href="pengumuman.html"
-        class="menu-item"
-    >
-
-        <span>📢</span>
-
-        Pengumuman
-
-    </a>
-
-
-    <a
-        href="komunikasi.html"
-        class="menu-item"
-    >
-
-        <span>💬</span>
-
-        Komunikasi
-
-    </a>
-
-
-    <div class="menu-divider"></div>
-
-
-    <a
-        href="pengaturan.html"
-        class="menu-item"
-    >
-
-        <span>⚙</span>
-
-        Pengaturan
-
-    </a>
-
-
-    <a
-        href="index.html"
-        class="menu-item logout"
-    >
-
-        <span>↪</span>
-
-        Keluar
-
-    </a>
-
-
-</nav>
-
-</aside><!-- =========================
-     MAIN CONTENT
-========================== --><main class="main-content"><!-- =========================
-     TOPBAR
-========================== -->
-
-<header class="topbar">
-
-
-    <button
-        class="menu-toggle"
-        id="menuToggle"
-        type="button"
-        aria-label="Buka menu"
-    >
-        ☰
-    </button>
-
-
-    <div class="topbar-title">
-
-        Dashboard
-
-    </div>
-
-
-    <div class="topbar-right">
-
-
-        <button
-            class="notification"
-            type="button"
-            aria-label="Notifikasi"
-        >
-
-            🔔
-
-            <span class="notification-dot"></span>
-
-        </button>
-
-
-        <!-- PROFILE -->
-
-        <div class="profile-wrapper">
-
-
-            <button
-                class="profile-mini"
-                id="profileButton"
-                type="button"
-            >
-
-
-                <div
-                    class="profile-avatar"
-                    id="profileAvatar"
-                >
-                    A
-                </div>
-
-
-                <div class="profile-info">
-
-
-                    <strong id="profileName">
-                        Orang Tua
-                    </strong>
-
-
-                    <span id="profileRole">
-                        Orang Tua
-                    </span>
-
-
-                </div>
-
-
-                <span class="profile-arrow">
-                    ⌄
-                </span>
-
-
-            </button>
-
-
-            <div
-                class="profile-dropdown"
-                id="profileDropdown"
-            >
-
-
-                <a href="pengaturan.html">
-                    ⚙ Pengaturan
-                </a>
-
-
-                <a
-                    href="index.html"
-                    class="dropdown-logout"
-                >
-                    ↪ Keluar
-                </a>
-
-
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-</header>
-
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/supabase.js?v=2"></script>
+
+    <style>
+
+        /* =========================
+           SHORTCUT NOTIFIKASI
+        ========================== */
+
+        .dashboard-shortcuts {
+            display: flex;
+            align-items: flex-start;
+            gap: 38px;
+            margin: 10px 0 35px;
+        }
+
+        .dashboard-shortcut {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 9px;
+            width: 90px;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .dashboard-shortcut-icon {
+            position: relative;
+            width: 56px;
+            height: 56px;
+            border-radius: 15px;
+            background: var(--orange-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            transition: .2s ease;
+        }
+
+        .dashboard-shortcut:hover .dashboard-shortcut-icon {
+            background: #FFE7C9;
+            transform: translateY(-2px);
+        }
+
+        .dashboard-shortcut-label {
+            font-size: 12px;
+            color: var(--text);
+            text-align: center;
+            line-height: 1.35;
+        }
+
+        .dashboard-shortcut-badge {
+            position: absolute;
+            top: -6px;
+            right: -7px;
+            min-width: 19px;
+            height: 19px;
+            padding: 0 5px;
+            border-radius: 20px;
+            background: #E53935;
+            color: #FFFFFF;
+            font-size: 10px;
+            font-weight: 700;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #FFFFFF;
+        }
+
+        .dashboard-shortcut-badge.show {
+            display: flex;
+        }
+
+
+        /* =========================
+           AKSES CEPAT
+        ========================== */
+
+        .quick-access {
+            margin-top: 5px;
+        }
+
+        .quick-access-title {
+            margin: 0 0 15px;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .quick-access-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .quick-access-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 14px 15px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text);
+            transition: .2s ease;
+        }
+
+        .quick-access-item:hover {
+            border-color: var(--orange);
+            background: var(--orange-light);
+            transform: translateY(-1px);
+        }
+
+        .quick-access-icon {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: var(--orange-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+        }
+
+        .quick-access-item span:last-child {
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================== */
+
+        @media (max-width: 700px) {
+
+            .dashboard-shortcuts {
+                justify-content: space-between;
+                gap: 10px;
+                margin-bottom: 30px;
+            }
+
+            .dashboard-shortcut {
+                width: 78px;
+            }
+
+            .dashboard-shortcut-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 23px;
+            }
+
+            .dashboard-shortcut-label {
+                font-size: 11px;
+            }
+
+            .quick-access-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .quick-access-item {
+                padding: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
 
 
 <!-- =========================
-     CONTENT
+     SIDEBAR
 ========================== -->
 
-<section class="dashboard-content">
+<aside
+    class="sidebar"
+    id="sidebar"
+>
 
+    <div class="sidebar-logo">
 
-    <!-- WELCOME -->
-
-    <div class="welcome-section">
-
-
-        <div>
-
-
-            <p class="greeting">
-
-                Assalamu'alaikum 👋
-
-            </p>
-
-
-            <h1 id="welcomeTitle">
-
-                Selamat datang, Ayah/Bunda
-
-            </h1>
-
-
-            <p>
-
-                Pantau perkembangan dan aktivitas anak dengan lebih mudah.
-
-            </p>
-
-
-        </div>
-
-
-    </div>
-
-
-
-    <!-- =========================
-         CHILD CARD
-    ========================== -->
-
-    <div
-        class="child-card"
-        id="childCard"
-    >
-
-
-        <div
-            class="child-avatar"
-            id="childAvatar"
+        <img
+            src="images/logo.png"
+            alt="Logo TAUD SAQU DARUL IMAN"
         >
-            S
-        </div>
-
-
-        <div class="child-info">
-
-
-            <span class="small-label">
-
-                ANAK SAYA
-
-            </span>
-
-
-            <h2 id="childName">
-
-                Memuat...
-
-            </h2>
-
-
-            <p id="childClass">
-
-                Memuat data anak...
-
-            </p>
-
-
-        </div>
-
-
-        <div class="attendance-status">
-
-
-            <span
-                class="status-dot"
-                id="attendanceDot"
-            ></span>
-
-
-            <div>
-
-
-                <small>
-
-                    Status Hari Ini
-
-                </small>
-
-
-                <strong id="attendanceStatus">
-
-                    Memuat...
-
-                </strong>
-
-
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-
-    <!-- =========================
-         SECTION TITLE
-    ========================== -->
-
-    <div class="section-heading">
-
 
         <div>
-
-
-            <h2>
-
-                Ringkasan Hari Ini
-
-            </h2>
-
-
-            <p>
-
-                Informasi terbaru mengenai aktivitas anak.
-
-            </p>
-
-
+            <strong>TAUD SAQU</strong>
+            <span>DARUL IMAN</span>
         </div>
-
 
     </div>
 
 
-
-    <!-- =========================
-         STAT CARDS
-    ========================== -->
-
-    <div class="stats-grid">
-
-
-        <!-- KEHADIRAN -->
-
-        <div class="stat-card">
-
-
-            <div class="stat-icon">
-
-                📅
-
-            </div>
-
-
-            <div>
-
-
-                <span>
-
-                    Kehadiran
-
-                </span>
-
-
-                <strong id="summaryAttendance">
-
-                    -
-
-                </strong>
-
-
-            </div>
-
-
-        </div>
-
-
-
-        <!-- BUKU PENGHUBUNG -->
-
-        <div class="stat-card">
-
-
-            <div class="stat-icon">
-
-                📖
-
-            </div>
-
-
-            <div>
-
-
-                <span>
-
-                    Buku Penghubung
-
-                </span>
-
-
-                <strong id="summaryReport">
-
-                    -
-
-                </strong>
-
-
-            </div>
-
-
-        </div>
-
-
-
-        <!-- PERKEMBANGAN -->
-
-        <div class="stat-card">
-
-
-            <div class="stat-icon">
-
-                📊
-
-            </div>
-
-
-            <div>
-
-
-                <span>
-
-                    Perkembangan
-
-                </span>
-
-
-                <strong id="summaryDevelopment">
-
-                    -
-
-                </strong>
-
-
-            </div>
-
-
-        </div>
-
-
-
-        <!-- PRESTASI -->
-
-        <div class="stat-card">
-
-
-            <div class="stat-icon">
-
-                ⭐
-
-            </div>
-
-
-            <div>
-
-
-                <span>
-
-                    Prestasi
-
-                </span>
-
-
-                <strong id="summaryAchievement">
-
-                    -
-
-                </strong>
-
-
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-
-    <!-- =========================
-         QUICK ACCESS
-    ========================== -->
-
-    <div class="section-heading">
-
-
-        <div>
-
-
-            <h2>
-
-                Akses Cepat
-
-            </h2>
-
-
-            <p>
-
-                Buka informasi anak dengan lebih cepat.
-
-            </p>
-
-
-        </div>
-
-
-    </div>
-
-
-
-    <div class="quick-menu">
+    <nav class="sidebar-menu">
+
+        <a
+            href="parent-dashboard.html"
+            class="menu-item active"
+        >
+            <span>⌂</span>
+            <span>Dashboard</span>
+        </a>
+
+
+        <a
+            href="child.html"
+            class="menu-item"
+        >
+            <span>👧</span>
+            <span>Anak Saya</span>
+        </a>
 
 
         <a
             href="buku-penghubung.html"
-            class="quick-menu-item"
+            class="menu-item"
         >
-
-            <span>
-
-                📖
-
-            </span>
-
-
-            <strong>
-
-                Buku Penghubung
-
-            </strong>
-
-
-            <small>
-
-                Lihat catatan harian dari Guru
-
-            </small>
-
-
+            <span>📖</span>
+            <span>Buku Penghubung</span>
         </a>
-
 
 
         <a
             href="perkembangan.html"
-            class="quick-menu-item"
+            class="menu-item"
         >
-
-            <span>
-
-                📊
-
-            </span>
-
-
-            <strong>
-
-                Perkembangan
-
-            </strong>
-
-
-            <small>
-
-                Pantau perkembangan anak
-
-            </small>
-
-
+            <span>📊</span>
+            <span>Pembelajaran hari Ini</span>
         </a>
 
+
+        <a
+            href="bintang-prestasi.html"
+            class="menu-item"
+        >
+            <span>⭐</span>
+            <span>Bintang Prestasi</span>
+        </a>
 
 
         <a
             href="absensi.html"
-            class="quick-menu-item"
+            class="menu-item"
         >
-
-            <span>
-
-                📅
-
-            </span>
-
-
-            <strong>
-
-                Absensi
-
-            </strong>
-
-
-            <small>
-
-                Lihat riwayat kehadiran
-
-            </small>
-
-
+            <span>📅</span>
+            <span>Absensi</span>
         </a>
-
 
 
         <a
-            href="pesan.html"
-            class="quick-menu-item"
+            href="pengumuman.html"
+            class="menu-item"
         >
-
-            <span>
-
-                💬
-
-            </span>
-
-
-            <strong>
-
-                Komunikasi
-
-            </strong>
-
-
-            <small>
-
-                Sampaikan informasi kepada Guru
-
-            </small>
-
-
+            <span>📢</span>
+            <span>Pengumuman</span>
         </a>
 
 
-    </div>
+        <a
+            href="komunikasi.html"
+            class="menu-item"
+        >
+            <span>💬</span>
+            <span>Komunikasi</span>
+        </a>
 
+
+        <div class="menu-divider"></div>
+
+
+        <a
+            href="pengaturan.html"
+            class="menu-item"
+        >
+            <span>⚙</span>
+            <span>Pengaturan</span>
+        </a>
+
+
+        <a
+            href="index.html"
+            class="menu-item logout"
+        >
+            <span>↪</span>
+            <span>Keluar</span>
+        </a>
+
+    </nav>
+
+</aside>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================== -->
+
+<main class="main-content">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <button
+            class="menu-toggle"
+            id="menuToggle"
+            type="button"
+            aria-label="Buka menu"
+        >
+            ☰
+        </button>
+
+
+        <div class="topbar-title">
+            Dashboard
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button
+                class="notification"
+                id="notificationButton"
+                type="button"
+                aria-label="Notifikasi"
+            >
+                🔔
+                <span
+                    class="notification-dot"
+                    id="notificationDot"
+                ></span>
+            </button>
+
+
+            <div class="profile-wrapper">
+
+                <button
+                    class="profile-mini"
+                    id="profileButton"
+                    type="button"
+                >
+
+                    <div
+                        class="profile-avatar"
+                        id="profileAvatar"
+                    >
+                        A
+                    </div>
+
+
+                    <div class="profile-info">
+
+                        <strong id="profileName">
+                            Orang Tua
+                        </strong>
+
+                        <span id="profileRole">
+                            Orang Tua
+                        </span>
+
+                    </div>
+
+
+                    <span class="profile-arrow">
+                        ⌄
+                    </span>
+
+                </button>
+
+
+                <div
+                    class="profile-dropdown"
+                    id="profileDropdown"
+                >
+
+                    <a href="pengaturan.html">
+                        ⚙ Pengaturan
+                    </a>
+
+                    <a
+                        href="index.html"
+                        class="dropdown-logout"
+                    >
+                        ↪ Keluar
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
 
 
     <!-- =========================
-         INFO GURU
+         CONTENT
     ========================== -->
 
-    <div class="section-heading">
+    <section class="dashboard-content">
 
 
-        <div>
+        <!-- WELCOME -->
+
+        <div class="welcome-section">
+
+            <div>
+
+                <p class="greeting">
+                    Assalamu'alaikum,
+                </p>
+
+                <h1 id="welcomeTitle">
+                    Selamat datang, Ayah/Bunda
+                </h1>
+
+                <p>
+                    Semoga hari ini menjadi hari yang penuh kebaikan.
+                    Pantau perkembangan dan aktivitas anak dengan lebih mudah.
+                </p>
+
+            </div>
+
+        </div>
 
 
-            <h2>
+        <!-- =========================
+             DATA ANAK + STATUS HARI INI
+        ========================== -->
 
-                Catatan
+        <div
+            class="child-card"
+            id="childCard"
+        >
 
+            <div
+                class="child-avatar"
+                id="childAvatar"
+            >
+                S
+            </div>
+
+
+            <div class="child-info">
+
+                <span class="small-label">
+                    ANAK SAYA
+                </span>
+
+                <h2
+                    id="childName"
+                    style="
+                        display:block !important;
+                        color:#3D372F !important;
+                        visibility:visible !important;
+                        opacity:1 !important;
+                        font-size:22px !important;
+                        line-height:1.3 !important;
+                        margin:4px 0 6px !important;
+                    "
+                >
+                    Memuat...
+                </h2>
+
+                <p id="childClass">
+                    Memuat data anak...
+                </p>
+
+            </div>
+
+
+            <div class="attendance-status">
+
+                <span
+                    class="status-dot"
+                    id="attendanceDot"
+                ></span>
+
+                <div>
+
+                    <small>
+                        Status Hari Ini
+                    </small>
+
+                    <strong id="attendanceStatus">
+                        Memuat...
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             SHORTCUT NOTIFIKASI
+        ========================== -->
+
+        <div class="dashboard-shortcuts">
+
+
+            <!-- KOMUNIKASI -->
+
+            <a
+                href="komunikasi.html"
+                class="dashboard-shortcut"
+                data-notification-type="komunikasi"
+            >
+
+                <div class="dashboard-shortcut-icon">
+
+                    💬
+
+                    <span
+                        class="dashboard-shortcut-badge"
+                        id="komunikasiBadge"
+                    ></span>
+
+                </div>
+
+                <span class="dashboard-shortcut-label">
+                    Komunikasi
+                </span>
+
+            </a>
+
+
+            <!-- PENGUMUMAN -->
+
+            <a
+                href="pengumuman.html"
+                class="dashboard-shortcut"
+                data-notification-type="pengumuman"
+            >
+
+                <div class="dashboard-shortcut-icon">
+
+                    📢
+
+                    <span
+                        class="dashboard-shortcut-badge"
+                        id="pengumumanBadge"
+                    ></span>
+
+                </div>
+
+                <span class="dashboard-shortcut-label">
+                    Pengumuman
+                </span>
+
+            </a>
+
+
+            <!-- PEMBELAJARAN HARI INI -->
+
+            <a
+                href="perkembangan.html"
+                class="dashboard-shortcut"
+                data-notification-type="pembelajaran"
+            >
+
+                <div class="dashboard-shortcut-icon">
+
+                    📖
+
+                    <span
+                        class="dashboard-shortcut-badge"
+                        id="pembelajaranBadge"
+                    ></span>
+
+                </div>
+
+                <span class="dashboard-shortcut-label">
+                    Pembelajaran Hari Ini
+                </span>
+
+            </a>
+
+
+        </div>
+
+
+        <!-- =========================
+             AKSES CEPAT
+        ========================== -->
+
+        <div class="quick-access">
+
+            <h2 class="quick-access-title">
+                Akses Cepat
             </h2>
 
 
-            <p>
+            <div class="quick-access-grid">
 
-                Informasi terbaru dari sekolah.
 
-            </p>
+                <a
+                    href="buku-penghubung.html"
+                    class="quick-access-item"
+                >
 
+                    <span class="quick-access-icon">
+                        📖
+                    </span>
+
+                    <span>
+                        Buku Penghubung
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="perkembangan.html"
+                    class="quick-access-item"
+                >
+
+                    <span class="quick-access-icon">
+                        📊
+                    </span>
+
+                    <span>
+                        Perkembangan
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="absensi.html"
+                    class="quick-access-item"
+                >
+
+                    <span class="quick-access-icon">
+                        📅
+                    </span>
+
+                    <span>
+                        Absensi
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="komunikasi.html"
+                    class="quick-access-item"
+                >
+
+                    <span class="quick-access-icon">
+                        💬
+                    </span>
+
+                    <span>
+                        Komunikasi
+                    </span>
+
+                </a>
+
+
+            </div>
 
         </div>
 
 
-    </div>
+    </section>
+
+</main>
 
 
-    <div class="child-card">
-
-
-        <div class="child-avatar">
-
-            ℹ
-
-        </div>
-
-
-        <div class="child-info">
-
-
-            <span class="small-label">
-
-                INFORMASI
-
-            </span>
-
-
-            <h2>
-
-                Pantau aktivitas anak secara berkala
-
-            </h2>
-
-
-            <p>
-
-                Buku Penghubung dan Perkembangan akan menjadi tempat utama Guru menyampaikan informasi mengenai anak.
-
-            </p>
-
-
-        </div>
-
-
-    </div>
-
-
-</section>
-
-</main><!-- =========================
+<!-- =========================
      JAVASCRIPT
-========================== --><script>
+========================== -->
+
+<script>
 
 
 /* =========================
@@ -846,10 +721,7 @@ const sidebar =
     document.querySelector('#sidebar');
 
 
-if (
-    menuToggle &&
-    sidebar
-) {
+if (menuToggle && sidebar) {
 
     menuToggle.addEventListener(
         'click',
@@ -861,7 +733,6 @@ if (
     );
 
 }
-
 
 
 /* =========================
@@ -897,11 +768,17 @@ if (
         (event) => {
 
             if (
-                !profileDropdown.contains(event.target) &&
-                !profileButton.contains(event.target)
+                !profileDropdown.contains(
+                    event.target
+                ) &&
+                !profileButton.contains(
+                    event.target
+                )
             ) {
 
-                profileDropdown.classList.remove('show');
+                profileDropdown.classList.remove(
+                    'show'
+                );
 
             }
 
@@ -911,15 +788,13 @@ if (
 }
 
 
-
 /* =========================
    VARIABLES
 ========================= */
 
 let currentParentId = null;
-
 let currentChildId = null;
-
+let currentAuthUserId = null;
 
 
 /* =========================
@@ -951,8 +826,8 @@ async function loadParentProfile() {
         }
 
 
-        const user =
-            authData.user;
+        currentAuthUserId =
+            authData.user.id;
 
 
         const {
@@ -966,15 +841,13 @@ async function loadParentProfile() {
                 )
                 .eq(
                     'auth_id',
-                    user.id
+                    currentAuthUserId
                 )
                 .maybeSingle();
 
 
         if (profileError) {
-
             throw profileError;
-
         }
 
 
@@ -1018,20 +891,20 @@ async function loadParentProfile() {
             'Ayah/Bunda';
 
 
-        document.querySelector(
-            '#profileName'
+        document.getElementById(
+            'profileName'
         ).textContent =
             nama;
 
 
-        document.querySelector(
-            '#profileRole'
+        document.getElementById(
+            'profileRole'
         ).textContent =
             'Orang Tua';
 
 
-        document.querySelector(
-            '#profileAvatar'
+        document.getElementById(
+            'profileAvatar'
         ).textContent =
             nama
                 .trim()
@@ -1039,10 +912,10 @@ async function loadParentProfile() {
                 .toUpperCase();
 
 
-        document.querySelector(
-            '#welcomeTitle'
+        document.getElementById(
+            'welcomeTitle'
         ).textContent =
-            `Selamat datang, ${nama}`;
+            `Selamat datang, ${nama} 👋`;
 
 
         return true;
@@ -1051,15 +924,13 @@ async function loadParentProfile() {
     } catch (error) {
 
         console.error(
-            'Gagal memuat profil Orang Tua:',
+            'Gagal memuat profil:',
             error
         );
-
 
         alert(
             'Profil Orang Tua tidak dapat dimuat.'
         );
-
 
         return false;
 
@@ -1068,16 +939,26 @@ async function loadParentProfile() {
 }
 
 
-
 /* =========================
    LOAD CHILD
 ========================= */
 
 async function loadChild() {
 
-    if (!currentParentId) {
-        return false;
-    }
+    const childNameElement =
+        document.getElementById(
+            'childName'
+        );
+
+    const childClassElement =
+        document.getElementById(
+            'childClass'
+        );
+
+    const childAvatarElement =
+        document.getElementById(
+            'childAvatar'
+        );
 
 
     try {
@@ -1089,7 +970,7 @@ async function loadChild() {
             await supabaseClient
                 .from('children')
                 .select(
-                    'id, nama, kelas, tahun_ajaran'
+                    'id, nama, kelas, tahun_ajaran, tanggal_lahir'
                 )
                 .eq(
                     'parent_id',
@@ -1104,9 +985,7 @@ async function loadChild() {
 
 
         if (error) {
-
             throw error;
-
         }
 
 
@@ -1115,43 +994,19 @@ async function loadChild() {
             children.length === 0
         ) {
 
-            document.querySelector(
-                '#childName'
-            ).textContent =
+            childNameElement.textContent =
                 'Belum ada data anak';
 
+            childClassElement.textContent =
+                'Data siswa belum terhubung.';
 
-            document.querySelector(
-                '#childClass'
-            ).textContent =
-                'Data siswa belum terhubung dengan akun Orang Tua.';
-
-
-            document.querySelector(
-                '#childAvatar'
-            ).textContent =
+            childAvatarElement.textContent =
                 '?';
-
-
-            document.querySelector(
-                '#attendanceStatus'
-            ).textContent =
-                '-';
-
 
             return false;
 
         }
 
-
-        /*
-         * Untuk sementara dashboard
-         * menampilkan anak pertama.
-         *
-         * Jika nanti satu akun memiliki
-         * beberapa anak, kita bisa tambahkan
-         * pilihan anak.
-         */
 
         const child =
             children[0];
@@ -1161,34 +1016,31 @@ async function loadChild() {
             child.id;
 
 
-        document.querySelector(
-            '#childName'
-        ).textContent =
-            child.nama;
+        const namaAnak =
+            String(
+                child.nama || 'Nama anak'
+            ).trim();
 
 
-        document.querySelector(
-            '#childClass'
-        ).textContent =
-            `${child.kelas} · TAUD SAQU DARUL IMAN`;
+        childNameElement.textContent =
+            namaAnak;
 
 
-        document.querySelector(
-            '#childAvatar'
-        ).textContent =
-            child.nama
-                .trim()
+        childClassElement.textContent =
+            child.kelas
+                ? `${child.kelas} · TAUD SAQU DARUL IMAN`
+                : 'Kelas belum tersedia';
+
+
+        childAvatarElement.textContent =
+            namaAnak
                 .charAt(0)
                 .toUpperCase();
 
 
         await loadTodayAttendance();
 
-        await loadDailyReport();
-
-        await loadDevelopment();
-
-        await loadAchievement();
+        await loadShortcutNotifications();
 
 
         return true;
@@ -1202,16 +1054,16 @@ async function loadChild() {
         );
 
 
-        document.querySelector(
-            '#childName'
-        ).textContent =
+        childNameElement.textContent =
             'Gagal memuat data';
 
 
-        document.querySelector(
-            '#childClass'
-        ).textContent =
+        childClassElement.textContent =
             'Silakan refresh halaman.';
+
+
+        childAvatarElement.textContent =
+            '?';
 
 
         return false;
@@ -1219,7 +1071,6 @@ async function loadChild() {
     }
 
 }
-
 
 
 /* =========================
@@ -1260,36 +1111,24 @@ async function loadTodayAttendance() {
 
 
         if (error) {
-
             throw error;
-
         }
 
 
         const statusElement =
-            document.querySelector(
-                '#attendanceStatus'
+            document.getElementById(
+                'attendanceStatus'
             );
-
 
         const dot =
-            document.querySelector(
-                '#attendanceDot'
-            );
-
-
-        const summary =
-            document.querySelector(
-                '#summaryAttendance'
+            document.getElementById(
+                'attendanceDot'
             );
 
 
         if (!data) {
 
             statusElement.textContent =
-                'Belum diisi';
-
-            summary.textContent =
                 'Belum diisi';
 
             dot.style.background =
@@ -1300,36 +1139,31 @@ async function loadTodayAttendance() {
         }
 
 
-        const label =
+        statusElement.textContent =
             getAttendanceLabel(
                 data.status
             );
 
 
-        statusElement.textContent =
-            label;
-
-
-        summary.textContent =
-            label;
-
-
         if (
-            data.status === 'hadir'
+            data.status ===
+            'hadir'
         ) {
 
             dot.style.background =
                 '#43A047';
 
         } else if (
-            data.status === 'izin'
+            data.status ===
+            'izin'
         ) {
 
             dot.style.background =
                 '#E0A100';
 
         } else if (
-            data.status === 'sakit'
+            data.status ===
+            'sakit'
         ) {
 
             dot.style.background =
@@ -1350,13 +1184,9 @@ async function loadTodayAttendance() {
             error
         );
 
-        document.querySelector(
-            '#attendanceStatus'
-        ).textContent =
-            '-';
 
-        document.querySelector(
-            '#summaryAttendance'
+        document.getElementById(
+            'attendanceStatus'
         ).textContent =
             '-';
 
@@ -1365,23 +1195,540 @@ async function loadTodayAttendance() {
 }
 
 
-
 /* =========================
-   DAILY REPORT
+   LOAD SHORTCUT NOTIFICATIONS
 ========================= */
 
-async function loadDailyReport() {
+async function loadShortcutNotifications() {
+
+    await loadCommunicationBadge();
+
+    await loadAnnouncementBadge();
+
+    await loadLearningBadge();
+
+    updateTopNotification();
+
+}
+
+
+/* =========================
+   GET READ NOTIFICATION IDS
+========================= */
+
+async function getReadNotificationIds(
+    notificationType
+) {
+
+    if (!currentAuthUserId) {
+        return new Set();
+    }
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from('notification_reads')
+                .select(
+                    'reference_id'
+                )
+                .eq(
+                    'user_id',
+                    currentAuthUserId
+                )
+                .eq(
+                    'notification_type',
+                    notificationType
+                );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        return new Set(
+            (data || []).map(
+                item =>
+                    item.reference_id
+            )
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            'Gagal membaca status notifikasi:',
+            error
+        );
+
+        return new Set();
+
+    }
+
+}
+
+
+/* =========================
+   KOMUNIKASI
+========================= */
+
+async function loadCommunicationBadge() {
+
+    if (
+        !currentParentId ||
+        !currentChildId
+    ) {
+        return;
+    }
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from('parent_notes')
+                .select(
+                    'id, status, tanggapan_guru'
+                )
+                .eq(
+                    'parent_id',
+                    currentParentId
+                )
+                .eq(
+                    'child_id',
+                    currentChildId
+                )
+                .not(
+                    'tanggapan_guru',
+                    'is',
+                    null
+                )
+                .in(
+                    'status',
+                    [
+                        'ditanggapi',
+                        'selesai'
+                    ]
+                );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        const readIds =
+            await getReadNotificationIds(
+                'komunikasi'
+            );
+
+
+        const unread =
+            (data || []).filter(
+                item =>
+                    !readIds.has(
+                        item.id
+                    )
+            );
+
+
+        setBadge(
+            'komunikasiBadge',
+            unread.length
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            'Gagal memuat notifikasi komunikasi:',
+            error
+        );
+
+        setBadge(
+            'komunikasiBadge',
+            0
+        );
+
+    }
+
+}
+
+
+/* =========================
+   PENGUMUMAN
+========================= */
+
+async function loadAnnouncementBadge() {
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from('announcements')
+                .select(
+                    'id'
+                )
+                .order(
+                    'created_at',
+                    {
+                        ascending: false
+                    }
+                );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        const readIds =
+            await getReadNotificationIds(
+                'pengumuman'
+            );
+
+
+        const unread =
+            (data || []).filter(
+                item =>
+                    !readIds.has(
+                        item.id
+                    )
+            );
+
+
+        setBadge(
+            'pengumumanBadge',
+            unread.length
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            'Gagal memuat notifikasi pengumuman:',
+            error
+        );
+
+        setBadge(
+            'pengumumanBadge',
+            0
+        );
+
+    }
+
+}
+
+
+/* =========================
+   PEMBELAJARAN HARI INI
+========================= */
+
+async function loadLearningBadge() {
 
     if (!currentChildId) {
         return;
     }
 
 
-    const today =
-        getToday();
+    try {
+
+        const today =
+            getToday();
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from('daily_reports')
+                .select(
+                    'id'
+                )
+                .eq(
+                    'child_id',
+                    currentChildId
+                )
+                .eq(
+                    'tanggal',
+                    today
+                );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        const readIds =
+            await getReadNotificationIds(
+                'pembelajaran'
+            );
+
+
+        const unread =
+            (data || []).filter(
+                item =>
+                    !readIds.has(
+                        item.id
+                    )
+            );
+
+
+        setBadge(
+            'pembelajaranBadge',
+            unread.length
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            'Gagal memuat notifikasi pembelajaran:',
+            error
+        );
+
+        setBadge(
+            'pembelajaranBadge',
+            0
+        );
+
+    }
+
+}
+
+
+/* =========================
+   MARK NOTIFICATIONS AS READ
+========================= */
+
+async function markNotificationsAsRead(
+    notificationType,
+    referenceIds
+) {
+
+    if (
+        !currentAuthUserId ||
+        !referenceIds ||
+        referenceIds.length === 0
+    ) {
+        return;
+    }
 
 
     try {
+
+        const rows =
+            referenceIds.map(
+                referenceId => ({
+                    user_id:
+                        currentAuthUserId,
+
+                    notification_type:
+                        notificationType,
+
+                    reference_id:
+                        referenceId
+                })
+            );
+
+
+        /*
+         * INSERT SAJA.
+         *
+         * Tidak memakai UPDATE/upsert supaya
+         * policy RLS tetap sederhana.
+         */
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from('notification_reads')
+                .insert(rows);
+
+
+        /*
+         * Jika sebagian data sudah ada,
+         * abaikan error duplicate.
+         */
+
+        if (
+            error &&
+            error.code !== '23505'
+        ) {
+            throw error;
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            'Gagal menyimpan notifikasi dibaca:',
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   MARK ONE CATEGORY AS READ
+========================= */
+
+async function markShortcutAsRead(
+    notificationType
+) {
+
+    if (!currentAuthUserId) {
+        return;
+    }
+
+
+    try {
+
+        let referenceIds = [];
+
+
+        /* =====================
+           KOMUNIKASI
+        ====================== */
+
+        if (
+            notificationType ===
+            'komunikasi'
+        ) {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .from('parent_notes')
+                    .select(
+                        'id'
+                    )
+                    .eq(
+                        'parent_id',
+                        currentParentId
+                    )
+                    .eq(
+                        'child_id',
+                        currentChildId
+                    )
+                    .not(
+                        'tanggapan_guru',
+                        'is',
+                        null
+                    )
+                    .in(
+                        'status',
+                        [
+                            'ditanggapi',
+                            'selesai'
+                        ]
+                    );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            referenceIds =
+                (data || []).map(
+                    item => item.id
+                );
+
+        }
+
+
+        /* =====================
+           PENGUMUMAN
+        ====================== */
+
+        if (
+            notificationType ===
+            'pengumuman'
+        ) {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .from('announcements')
+                    .select(
+                        'id'
+                    );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            referenceIds =
+                (data || []).map(
+                    item => item.id
+                );
+
+        }
+
+
+        /* =========================
+   PEMBELAJARAN HARI INI
+========================= */
+
+async function loadLearningBadge() {
+
+    if (!currentChildId) {
+        return;
+    }
+
+    try {
+
+        const today = getToday();
+
+        /* 
+           Cek apakah pembelajaran hari ini
+           sudah pernah dibuka di perangkat ini.
+        */
+
+        const readKey =
+            `learning_read_${currentChildId}_${today}`;
+
+        const alreadyRead =
+            localStorage.getItem(readKey);
+
+        /* Kalau sudah dibaca, jangan tampilkan badge */
+
+        if (alreadyRead === 'true') {
+
+            setBadge(
+                'pembelajaranBadge',
+                0
+            );
+
+            return;
+
+        }
+
+
+        /* Cek apakah laporan pembelajaran hari ini ada */
 
         const {
             data,
@@ -1402,268 +1749,226 @@ async function loadDailyReport() {
 
 
         if (error) {
-
             throw error;
-
         }
 
 
-        document.querySelector(
-            '#summaryReport'
-        ).textContent =
-            data
-                ? 'Tersedia'
-                : 'Belum ada';
+        setBadge(
+            'pembelajaranBadge',
+            data ? 1 : 0
+        );
+
 
     } catch (error) {
 
         console.error(
-            'Gagal memuat Buku Penghubung:',
+            'Gagal memuat notifikasi pembelajaran:',
             error
         );
-
-
-        document.querySelector(
-            '#summaryReport'
-        ).textContent =
-            '-';
 
     }
 
 }
 
-
-
-/* =========================
-   DEVELOPMENT
-========================= */
-
-async function loadDevelopment() {
-
-    if (!currentChildId) {
-        return;
-    }
-
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from('developments')
-                .select(
-                    `
-                    ibadah_pembiasaan,
-                    hafalan_quran,
-                    akhlak_adab,
-                    kemandirian,
-                    pembelajaran
-                    `
-                )
-                .eq(
-                    'child_id',
-                    currentChildId
-                )
-                .order(
-                    'tanggal',
-                    {
-                        ascending: false
-                    }
-                )
-                .limit(1)
-                .maybeSingle();
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        if (!data) {
-
-            document.querySelector(
-                '#summaryDevelopment'
-            ).textContent =
-                'Belum ada';
-
-            return;
-
-        }
-
-
-        const values = [
-
-            data.ibadah_pembiasaan,
-
-            data.hafalan_quran,
-
-            data.akhlak_adab,
-
-            data.kemandirian,
-
-            data.pembelajaran
-
-        ].filter(
-            value =>
-                typeof value === 'number'
+        await markNotificationsAsRead(
+            notificationType,
+            referenceIds
         );
+
+
+        /*
+         * Langsung hilangkan badge
+         * setelah berhasil diproses.
+         */
+
+        if (
+            notificationType ===
+            'komunikasi'
+        ) {
+
+            setBadge(
+                'komunikasiBadge',
+                0
+            );
+
+        }
 
 
         if (
-            values.length === 0
+            notificationType ===
+            'pengumuman'
         ) {
 
-            document.querySelector(
-                '#summaryDevelopment'
-            ).textContent =
-                'Tersedia';
-
-            return;
+            setBadge(
+                'pengumumanBadge',
+                0
+            );
 
         }
 
 
-        const average =
-            Math.round(
-                values.reduce(
-                    (sum, value) =>
-                        sum + value,
-                    0
-                ) / values.length
+        if (
+            notificationType ===
+            'pembelajaran'
+        ) {
+
+            setBadge(
+                'pembelajaranBadge',
+                0
             );
 
+        }
 
-        document.querySelector(
-            '#summaryDevelopment'
-        ).textContent =
-            `${average}%`;
+
+        updateTopNotification();
 
 
     } catch (error) {
 
         console.error(
-            'Gagal memuat perkembangan:',
+            'Gagal menandai notifikasi:',
             error
         );
-
-
-        document.querySelector(
-            '#summaryDevelopment'
-        ).textContent =
-            '-';
 
     }
 
 }
 
 
-
 /* =========================
-   ACHIEVEMENT
+   SHORTCUT CLICK EVENTS
 ========================= */
 
-async function loadAchievement() {
+document
+    .querySelectorAll(
+        '.dashboard-shortcut[data-notification-type]'
+    )
+    .forEach(
+        shortcut => {
 
-    if (!currentChildId) {
+            shortcut.addEventListener(
+                'click',
+                () => {
+
+                    const type =
+                        shortcut.dataset
+                            .notificationType;
+
+                    /*
+                     * Jangan await.
+                     * Halaman tetap langsung terbuka.
+                     */
+
+                    markShortcutAsRead(
+                        type
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+/* =========================
+   TOPBAR NOTIFICATION
+========================= */
+
+function updateTopNotification() {
+
+    const komunikasiBadge =
+        document.getElementById(
+            'komunikasiBadge'
+        );
+
+    const pengumumanBadge =
+        document.getElementById(
+            'pengumumanBadge'
+        );
+
+    const pembelajaranBadge =
+        document.getElementById(
+            'pembelajaranBadge'
+        );
+
+
+    const hasUnread =
+        komunikasiBadge?.classList.contains(
+            'show'
+        ) ||
+        pengumumanBadge?.classList.contains(
+            'show'
+        ) ||
+        pembelajaranBadge?.classList.contains(
+            'show'
+        );
+
+
+    const notificationDot =
+        document.getElementById(
+            'notificationDot'
+        );
+
+
+    if (notificationDot) {
+
+        notificationDot.style.display =
+            hasUnread
+                ? 'block'
+                : 'none';
+
+    }
+
+}
+
+
+/* =========================
+   BADGE
+========================= */
+
+function setBadge(
+    elementId,
+    count
+) {
+
+    const badge =
+        document.getElementById(
+            elementId
+        );
+
+
+    if (!badge) {
         return;
     }
 
 
-    try {
+    if (count > 0) {
 
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from('achievements')
-                .select(
-                    `
-                    murojaah_surat,
-                    mendengarkan_20x,
-                    murojaah_tibyan,
-                    tarbiyah
-                    `
-                )
-                .eq(
-                    'child_id',
-                    currentChildId
-                )
-                .order(
-                    'tanggal',
-                    {
-                        ascending: false
-                    }
-                )
-                .limit(1)
-                .maybeSingle();
+        badge.textContent =
+            count > 99
+                ? '99+'
+                : count;
 
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        if (!data) {
-
-            document.querySelector(
-                '#summaryAchievement'
-            ).textContent =
-                'Belum ada';
-
-            return;
-
-        }
-
-
-        const total = [
-
-            data.murojaah_surat,
-
-            data.mendengarkan_20x,
-
-            data.murojaah_tibyan,
-
-            data.tarbiyah
-
-        ].filter(
-            value => value === true
-        ).length;
-
-
-        document.querySelector(
-            '#summaryAchievement'
-        ).textContent =
-            `${total}/4`;
-
-
-    } catch (error) {
-
-        console.error(
-            'Gagal memuat prestasi:',
-            error
+        badge.classList.add(
+            'show'
         );
 
+    } else {
 
-        document.querySelector(
-            '#summaryAchievement'
-        ).textContent =
-            '-';
+        badge.textContent =
+            '';
+
+        badge.classList.remove(
+            'show'
+        );
 
     }
 
 }
 
 
-
 /* =========================
-   HELPERS
+   DATE HELPERS
 ========================= */
 
 function getToday() {
@@ -1699,6 +2004,47 @@ function getToday() {
 }
 
 
+function getTomorrow() {
+
+    const tomorrow =
+        new Date();
+
+
+    tomorrow.setDate(
+        tomorrow.getDate() + 1
+    );
+
+
+    const year =
+        tomorrow.getFullYear();
+
+
+    const month =
+        String(
+            tomorrow.getMonth() + 1
+        ).padStart(
+            2,
+            '0'
+        );
+
+
+    const day =
+        String(
+            tomorrow.getDate()
+        ).padStart(
+            2,
+            '0'
+        );
+
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+/* =========================
+   ATTENDANCE LABEL
+========================= */
 
 function getAttendanceLabel(
     status
@@ -1707,21 +2053,19 @@ function getAttendanceLabel(
     const labels = {
 
         hadir: 'Hadir',
-
         izin: 'Izin',
-
         sakit: 'Sakit',
-
         alpa: 'Alpa'
 
     };
 
 
-    return labels[status] ||
-        status;
+    return (
+        labels[status] ||
+        status
+    );
 
 }
-
 
 
 /* =========================
@@ -1746,4 +2090,8 @@ async function initDashboard() {
 
 initDashboard();
 
-</script></body></html>
+</script>
+
+</body>
+</html>
+```

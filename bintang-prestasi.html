@@ -38,8 +38,6 @@
             color: var(--text-light);
         }
 
-        /* CHILD CARD */
-
         .child-selector {
             background: var(--white);
             border: 1px solid var(--border);
@@ -90,26 +88,24 @@
             color: var(--text-light);
         }
 
-        .achievement-summary {
+        .star-summary {
             background: var(--orange-light);
             border-radius: 14px;
             padding: 11px 17px;
             text-align: center;
         }
 
-        .achievement-summary span {
+        .star-summary > span {
             display: block;
             font-size: 10px;
             color: var(--text-light);
             margin-bottom: 3px;
         }
 
-        .achievement-summary strong {
+        .star-summary strong {
             color: var(--orange-dark);
             font-size: 16px;
         }
-
-        /* INTRO */
 
         .achievement-intro {
             background: linear-gradient(
@@ -135,8 +131,6 @@
             opacity: .92;
         }
 
-        /* SECTION */
-
         .section-heading {
             margin-bottom: 15px;
         }
@@ -152,8 +146,6 @@
             font-size: 13px;
             color: var(--text-light);
         }
-
-        /* CHECKLIST */
 
         .achievement-card {
             background: var(--white);
@@ -174,8 +166,6 @@
         .achievement-item:last-child {
             border-bottom: none;
         }
-
-        /* CUSTOM CHECKBOX */
 
         .achievement-checkbox {
             position: relative;
@@ -211,8 +201,6 @@
             content: "✓";
         }
 
-        /* ITEM CONTENT */
-
         .achievement-info {
             flex: 1;
         }
@@ -233,8 +221,6 @@
             font-size: 20px;
             opacity: .8;
         }
-
-        /* PROGRESS */
 
         .progress-card {
             background: var(--white);
@@ -271,12 +257,11 @@
 
         .progress-fill {
             height: 100%;
-            width: 50%;
+            width: 0%;
             background: var(--orange);
             border-radius: 20px;
+            transition: width .25s ease;
         }
-
-        /* FOOTER */
 
         .page-footer {
             text-align: center;
@@ -284,8 +269,6 @@
             font-size: 11px;
             padding: 5px 0 20px;
         }
-
-        /* RESPONSIVE */
 
         @media (max-width: 768px) {
 
@@ -302,7 +285,7 @@
                 flex-direction: column;
             }
 
-            .achievement-summary {
+            .star-summary {
                 width: 100%;
                 text-align: left;
             }
@@ -353,14 +336,12 @@
     <aside class="sidebar" id="sidebar">
 
         <div class="sidebar-logo">
-
             <img src="images/logo.png" alt="Logo TAUD SAQU DARUL IMAN">
 
             <div>
                 <strong>TAUD SAQU</strong>
                 <span>DARUL IMAN</span>
             </div>
-
         </div>
 
         <nav class="sidebar-menu">
@@ -382,7 +363,7 @@
 
             <a href="perkembangan.html" class="menu-item">
                 <span>📊</span>
-                Perkembangan
+                Pembelajaran hari Ini
             </a>
 
             <a href="bintang-prestasi.html" class="menu-item active">
@@ -426,8 +407,6 @@
 
     <main class="main-content">
 
-        <!-- TOPBAR -->
-
         <header class="topbar">
 
             <button class="menu-toggle" id="menuToggle" type="button">
@@ -447,12 +426,12 @@
 
                 <div class="profile-mini">
 
-                    <div class="profile-avatar">
+                    <div class="profile-avatar" id="profileAvatar">
                         A
                     </div>
 
                     <div class="profile-info">
-                        <strong>Ayah/Bunda</strong>
+                        <strong id="parentName">Ayah/Bunda</strong>
                         <span>Orang Tua</span>
                     </div>
 
@@ -463,11 +442,7 @@
         </header>
 
 
-        <!-- CONTENT -->
-
         <section class="page-content">
-
-            <!-- HEADER -->
 
             <div class="page-header">
 
@@ -480,7 +455,7 @@
                 </h1>
 
                 <p>
-                    Catat dan pantau kebiasaan baik Shidqia setiap hari.
+                    Catat dan pantau kebiasaan baik anak setiap hari.
                 </p>
 
             </div>
@@ -492,7 +467,7 @@
 
                 <div class="selected-child">
 
-                    <div class="selected-child-avatar">
+                    <div class="selected-child-avatar" id="childAvatar">
                         S
                     </div>
 
@@ -500,18 +475,27 @@
 
                         <span>Anak Saya</span>
 
-                        <strong>Shidqia</strong>
+                        <strong id="childName">
+                            Memuat...
+                        </strong>
 
-                        <small>Kelas Alif tsaniyah</small>
+                        <small id="childClass">
+                            Memuat kelas...
+                        </small>
 
                     </div>
 
                 </div>
 
                 <div class="star-summary">
-					<span>Bintang Hari Ini</span>
-					<strong><span class="star-count">0 / 4</span> ⭐</strong>
-				</div>
+
+                    <span>Bintang Hari Ini</span>
+
+                    <strong>
+                        <span class="star-count">0 / 4</span> ⭐
+                    </strong>
+
+                </div>
 
             </div>
 
@@ -550,126 +534,132 @@
 
             <div class="achievement-card">
 
-    <!-- MUROJAAH SURAT -->
-    <label class="achievement-item">
+                <label class="achievement-item">
 
-        <div class="achievement-checkbox">
+                    <div class="achievement-checkbox">
 
-            <input type="checkbox" data-id="murojaah-surat">
+                        <input
+                            type="checkbox"
+                            data-id="murojaah_surat"
+                        >
 
-            <span class="checkmark"></span>
+                        <span class="checkmark"></span>
 
-        </div>
+                    </div>
 
-        <div class="achievement-info">
+                    <div class="achievement-info">
 
-            <strong>
-                Murojaah Surat
-            </strong>
+                        <strong>
+                            Murojaah Surat
+                        </strong>
 
-            <span>
-                Mengulang hafalan surat yang sudah dipelajari.
-            </span>
+                        <span>
+                            Mengulang hafalan surat yang sudah dipelajari.
+                        </span>
 
-        </div>
+                    </div>
 
-        <div class="achievement-star">
-            ⭐
-        </div>
+                    <div class="achievement-star">
+                        ⭐
+                    </div>
 
-    </label>
-
-
-    <!-- MENDENGARKAN SURAT -->
-    <label class="achievement-item">
-
-        <div class="achievement-checkbox">
-
-            <input type="checkbox" data-id="mendengarkan-surat">
-
-            <span class="checkmark"></span>
-
-        </div>
-
-        <div class="achievement-info">
-
-            <strong>
-                Mendengarkan Surat 20×
-            </strong>
-
-            <span>
-                Mendengarkan surat sesuai target sebanyak 20 kali.
-            </span>
-
-        </div>
-
-        <div class="achievement-star">
-            ⭐
-        </div>
-
-    </label>
+                </label>
 
 
-    <!-- MUROJAAH TIBYAN -->
-    <label class="achievement-item">
+                <label class="achievement-item">
 
-        <div class="achievement-checkbox">
+                    <div class="achievement-checkbox">
 
-            <input type="checkbox" data-id="murojaah-tibyan">
+                        <input
+                            type="checkbox"
+                            data-id="mendengarkan_20x"
+                        >
 
-            <span class="checkmark"></span>
+                        <span class="checkmark"></span>
 
-        </div>
+                    </div>
 
-        <div class="achievement-info">
+                    <div class="achievement-info">
 
-            <strong>
-                Murojaah Tibyan
-            </strong>
+                        <strong>
+                            Mendengarkan Surat 20×
+                        </strong>
 
-            <span>
-                Mengulang pembelajaran Tibyan di rumah.
-            </span>
+                        <span>
+                            Mendengarkan surat sesuai target sebanyak 20 kali.
+                        </span>
 
-        </div>
+                    </div>
 
-        <div class="achievement-star">
-            ⭐
-        </div>
+                    <div class="achievement-star">
+                        ⭐
+                    </div>
 
-    </label>
+                </label>
 
 
-    <!-- TARBIYAH -->
-    <label class="achievement-item">
+                <label class="achievement-item">
 
-        <div class="achievement-checkbox">
+                    <div class="achievement-checkbox">
 
-            <input type="checkbox" data-id="tarbiyah">
+                        <input
+                            type="checkbox"
+                            data-id="murojaah_tibyan"
+                        >
 
-            <span class="checkmark"></span>
+                        <span class="checkmark"></span>
 
-        </div>
+                    </div>
 
-        <div class="achievement-info">
+                    <div class="achievement-info">
 
-            <strong>
-                Tarbiyah
-            </strong>
+                        <strong>
+                            Murojaah Tibyan
+                        </strong>
 
-            <span>
-                Melakukan kegiatan tarbiyah sesuai arahan.
-            </span>
+                        <span>
+                            Mengulang pembelajaran Tibyan di rumah.
+                        </span>
 
-        </div>
+                    </div>
 
-        <div class="achievement-star">
-            ⭐
-        </div>
+                    <div class="achievement-star">
+                        ⭐
+                    </div>
 
-    </label>
+                </label>
 
-</div>
+
+                <label class="achievement-item">
+
+                    <div class="achievement-checkbox">
+
+                        <input
+                            type="checkbox"
+                            data-id="tarbiyah"
+                        >
+
+                        <span class="checkmark"></span>
+
+                    </div>
+
+                    <div class="achievement-info">
+
+                        <strong>
+                            Tarbiyah
+                        </strong>
+
+                        <span>
+                            Melakukan kegiatan tarbiyah sesuai arahan.
+                        </span>
+
+                    </div>
+
+                    <div class="achievement-star">
+                        ⭐
+                    </div>
+
+                </label>
 
             </div>
 
@@ -683,7 +673,7 @@
                 </h2>
 
                 <p>
-                    Pencapaian Shidqia hari ini.
+                    Pencapaian anak hari ini.
                 </p>
 
             </div>
@@ -696,22 +686,23 @@
                         Bintang Prestasi
                     </strong>
 
-                    <span>
-                        2 dari 4
+                    <span id="progressText">
+                        0 dari 4
                     </span>
 
                 </div>
 
                 <div class="progress-bar">
 
-                    <div class="progress-fill"></div>
+                    <div
+                        class="progress-fill"
+                        id="progressFill"
+                    ></div>
 
                 </div>
 
             </div>
 
-
-            <!-- FOOTER -->
 
             <div class="page-footer">
 
@@ -726,113 +717,400 @@
     </main>
 
 
-    <!-- MOBILE MENU -->
-<script>
+    <!-- SUPABASE -->
 
-    const achievementCheckboxes =
-        document.querySelectorAll('.achievement-checkbox input');
-
-    const starCount =
-        document.querySelector('.star-count');
-
-    const progressFill =
-        document.querySelector('.progress-fill');
-
-    const progressText =
-        document.querySelector('.progress-header span');
-
-    const storageKey =
-        'bintangPrestasiShidqia';
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
 
 
-    // Ambil data yang sudah tersimpan
-    const savedData =
-        JSON.parse(localStorage.getItem(storageKey) || '{}');
+    <script>
+
+        let currentParentId = null;
+        let currentChild = null;
+        let currentAchievement = null;
+
+        const checkboxes =
+            document.querySelectorAll(
+                '.achievement-checkbox input'
+            );
+
+        const starCount =
+            document.querySelector('.star-count');
+
+        const progressText =
+            document.querySelector('#progressText');
+
+        const progressFill =
+            document.querySelector('#progressFill');
 
 
-    // Kembalikan kondisi checkbox
-    achievementCheckboxes.forEach(checkbox => {
+        /* ================================
+           UPDATE TAMPILAN
+        ================================= */
 
-        const id = checkbox.dataset.id;
+        function updateDisplay() {
 
-        checkbox.checked =
-            savedData[id] === true;
+            const total = checkboxes.length;
 
+            const checked =
+                [...checkboxes]
+                .filter(checkbox => checkbox.checked)
+                .length;
 
-        checkbox.addEventListener(
-            'change',
-            updateAchievement
-        );
+            const percentage =
+                total > 0
+                    ? (checked / total) * 100
+                    : 0;
 
-    });
+            starCount.textContent =
+                `${checked} / ${total}`;
 
+            progressText.textContent =
+                `${checked} dari ${total}`;
 
-    function updateAchievement() {
-
-        const total =
-            achievementCheckboxes.length;
-
-        const checked =
-            [...achievementCheckboxes]
-            .filter(checkbox => checkbox.checked)
-            .length;
-
-        const percentage =
-            total > 0
-                ? (checked / total) * 100
-                : 0;
+            progressFill.style.width =
+                `${percentage}%`;
+        }
 
 
-        // Update jumlah bintang
-        starCount.textContent =
-            `${checked} / ${total}`;
+        /* ================================
+           AUTH + PARENT
+        ================================= */
+
+        async function loadParent() {
+
+            const {
+                data: authData,
+                error: authError
+            } = await supabaseClient.auth.getUser();
+
+            if (authError || !authData.user) {
+
+                window.location.href = 'login.html';
+                return false;
+            }
+
+            const {
+                data: profile,
+                error: profileError
+            } = await supabaseClient
+                .from('users')
+                .select('id, nama, role')
+                .eq('auth_id', authData.user.id)
+                .maybeSingle();
+
+            if (profileError || !profile) {
+
+                alert('Profil pengguna tidak ditemukan.');
+                return false;
+            }
+
+            if (profile.role !== 'orang_tua') {
+
+                alert('Halaman ini hanya dapat diakses oleh Orang Tua.');
+                window.location.href = 'login.html';
+                return false;
+            }
+
+            currentParentId = profile.id;
+
+            document.querySelector('#parentName').textContent =
+                profile.nama || 'Ayah/Bunda';
+
+            document.querySelector('#profileAvatar').textContent =
+                (profile.nama || 'A').charAt(0).toUpperCase();
+
+            return true;
+        }
 
 
-        // Update tulisan progress
-        progressText.textContent =
-            `${checked} dari ${total}`;
+        /* ================================
+           LOAD CHILD
+        ================================= */
+
+        async function loadChild() {
+
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .from('children')
+                .select('id, nama, kelas, tahun_ajaran')
+                .eq('parent_id', currentParentId)
+                .order('nama', { ascending: true })
+                .limit(1);
+
+            if (error) {
+
+                console.error('Gagal mengambil data anak:', error);
+
+                alert('Data anak gagal dimuat.');
+                return false;
+            }
+
+            if (!data || data.length === 0) {
+
+                alert('Data anak belum ditemukan.');
+                return false;
+            }
+
+            currentChild = data[0];
+
+            document.querySelector('#childName').textContent =
+                currentChild.nama;
+
+            document.querySelector('#childClass').textContent =
+                `Kelas ${currentChild.kelas}`;
+
+            document.querySelector('#childAvatar').textContent =
+                currentChild.nama
+                    .charAt(0)
+                    .toUpperCase();
+
+            return true;
+        }
 
 
-        // Update progress bar
-        progressFill.style.width =
-            `${percentage}%`;
+        /* ================================
+           LOAD ACHIEVEMENT HARI INI
+        ================================= */
+
+        async function loadAchievement() {
+
+            const today =
+                new Date()
+                    .toLocaleDateString(
+                        'en-CA',
+                        {
+                            timeZone: 'Asia/Jakarta'
+                        }
+                    );
+
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .from('achievements')
+                .select(`
+                    id,
+                    child_id,
+                    tanggal,
+                    murojaah_surat,
+                    mendengarkan_20x,
+                    murojaah_tibyan,
+                    tarbiyah
+                `)
+                .eq('child_id', currentChild.id)
+                .eq('tanggal', today)
+                .maybeSingle();
+
+            if (error) {
+
+                console.error(
+                    'Gagal mengambil achievement:',
+                    error
+                );
+
+                alert(
+                    'Data Bintang Prestasi gagal dimuat: ' +
+                    error.message
+                );
+
+                return;
+            }
+
+            currentAchievement = data;
+
+            checkboxes.forEach(checkbox => {
+
+                const field =
+                    checkbox.dataset.id;
+
+                checkbox.checked =
+                    data
+                        ? data[field] === true
+                        : false;
+
+            });
+
+            updateDisplay();
+        }
 
 
-        // Simpan kondisi checkbox
-        const state = {};
+        /* ================================
+           SIMPAN ACHIEVEMENT
+        ================================= */
 
-        achievementCheckboxes.forEach(checkbox => {
+        async function saveAchievement() {
 
-            state[checkbox.dataset.id] =
-                checkbox.checked;
+            if (!currentChild) {
+                return;
+            }
+
+            const today =
+                new Date()
+                    .toLocaleDateString(
+                        'en-CA',
+                        {
+                            timeZone: 'Asia/Jakarta'
+                        }
+                    );
+
+            const payload = {
+
+                child_id: currentChild.id,
+
+                tanggal: today,
+
+                murojaah_surat:
+                    document.querySelector(
+                        '[data-id="murojaah_surat"]'
+                    ).checked,
+
+                mendengarkan_20x:
+                    document.querySelector(
+                        '[data-id="mendengarkan_20x"]'
+                    ).checked,
+
+                murojaah_tibyan:
+                    document.querySelector(
+                        '[data-id="murojaah_tibyan"]'
+                    ).checked,
+
+                tarbiyah:
+                    document.querySelector(
+                        '[data-id="tarbiyah"]'
+                    ).checked
+            };
+
+
+            let result;
+
+
+            /* Kalau data hari ini sudah ada → UPDATE */
+
+            if (currentAchievement) {
+
+                result =
+                    await supabaseClient
+                        .from('achievements')
+                        .update(payload)
+                        .eq(
+                            'id',
+                            currentAchievement.id
+                        )
+                        .select()
+                        .single();
+
+            }
+
+            /* Kalau belum ada → INSERT */
+
+            else {
+
+                result =
+                    await supabaseClient
+                        .from('achievements')
+                        .insert(payload)
+                        .select()
+                        .single();
+
+            }
+
+
+            if (result.error) {
+
+                console.error(
+                    'Gagal menyimpan achievement:',
+                    result.error
+                );
+
+                alert(
+                    'Bintang Prestasi gagal disimpan: ' +
+                    result.error.message
+                );
+
+                return;
+            }
+
+
+            currentAchievement =
+                result.data;
+
+            console.log(
+                'Achievement berhasil disimpan:',
+                result.data
+            );
+        }
+
+
+        /* ================================
+           CHECKBOX EVENT
+        ================================= */
+
+        checkboxes.forEach(checkbox => {
+
+            checkbox.addEventListener(
+                'change',
+                async () => {
+
+                    updateDisplay();
+
+                    await saveAchievement();
+
+                }
+            );
 
         });
 
 
-        localStorage.setItem(
-            storageKey,
-            JSON.stringify(state)
-        );
+        /* ================================
+           MOBILE MENU
+        ================================= */
 
-    }
+        const menuToggle =
+            document.querySelector('.menu-toggle');
 
-
-    // Jalankan saat halaman pertama kali dibuka
-    updateAchievement();
-
-</script>
-    <script>
-
-        const menuToggle = document.querySelector('.menu-toggle');
-        const sidebar = document.querySelector('.sidebar');
+        const sidebar =
+            document.querySelector('.sidebar');
 
         if (menuToggle && sidebar) {
 
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('show');
-            });
+            menuToggle.addEventListener(
+                'click',
+                () => {
+                    sidebar.classList.toggle('show');
+                }
+            );
 
         }
+
+
+        /* ================================
+           INIT
+        ================================= */
+
+        async function init() {
+
+            const parentLoaded =
+                await loadParent();
+
+            if (!parentLoaded) {
+                return;
+            }
+
+            const childLoaded =
+                await loadChild();
+
+            if (!childLoaded) {
+                return;
+            }
+
+            await loadAchievement();
+        }
+
+
+        init();
 
     </script>
 

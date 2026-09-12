@@ -1,954 +1,1285 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Pengaturan | TAUD SAQU DARUL IMAN</title>
+<html lang="id"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="css/dashboard.css">
+<title>Pengaturan - School Connect</title>
 
-    <style>
-        .page-content {
-            padding: 30px;
-        }
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
 
-        .page-header {
-            margin-bottom: 25px;
-        }
+<style>
+    .settings-page {
+        max-width: 900px;
+    }
 
-        .page-header .greeting {
-            color: var(--orange);
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
+    .settings-header {
+        margin-bottom: 25px;
+    }
 
-        .page-header h1 {
-            font-size: 28px;
-            margin: 0 0 8px;
-            color: var(--text);
-        }
+    .settings-header h1 {
+        margin: 0 0 6px;
+        font-size: 26px;
+        color: var(--text);
+    }
 
-        .page-header p {
-            margin: 0;
-            color: var(--text-light);
-        }
+    .settings-header p {
+        margin: 0;
+        color: var(--text-light);
+        font-size: 14px;
+    }
 
-        /* SETTINGS */
+    .settings-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 25px;
+        margin-bottom: 20px;
+    }
 
-        .settings-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
+    .settings-card h2 {
+        margin: 0 0 5px;
+        font-size: 18px;
+        color: var(--text);
+    }
+
+    .settings-card-description {
+        margin: 0 0 22px;
+        color: var(--text-light);
+        font-size: 13px;
+    }
+
+    .profile-preview {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding-bottom: 22px;
+        margin-bottom: 22px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .profile-preview-avatar {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background: var(--orange-light);
+        color: var(--orange-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+    .profile-preview-info strong {
+        display: block;
+        font-size: 17px;
+        color: var(--text);
+        margin-bottom: 4px;
+    }
+
+    .profile-preview-info span {
+        font-size: 13px;
+        color: var(--text-light);
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .form-group input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--ivory);
+        color: var(--text);
+        font-family: inherit;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s ease;
+    }
+
+    .form-group input:focus {
+        border-color: var(--orange);
+        background: var(--white);
+    }
+
+    .form-group input:disabled {
+        background: #f3f0eb;
+        color: var(--text-light);
+        cursor: not-allowed;
+    }
+
+    .form-hint {
+        display: block;
+        margin-top: 6px;
+        font-size: 11px;
+        color: var(--text-light);
+    }
+
+    .button-row {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+
+    .btn-save {
+        border: none;
+        background: var(--orange);
+        color: white;
+        padding: 11px 20px;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .btn-save:hover {
+        background: var(--orange-dark);
+    }
+
+    .btn-save:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .logout-card {
+        border-color: #f0d8d4;
+    }
+
+    .logout-button {
+        border: none;
+        background: #fff5f3;
+        color: #c0392b;
+        padding: 11px 18px;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .logout-button:hover {
+        background: #fde8e5;
+    }
+
+    @media (max-width: 768px) {
+        .settings-header h1 {
+            font-size: 22px;
         }
 
         .settings-card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            overflow: hidden;
-        }
-
-        .settings-card.full {
-            grid-column: 1 / -1;
-        }
-
-        .settings-card-header {
-            padding: 18px 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .settings-card-header h2 {
-            margin: 0 0 5px;
-            font-size: 16px;
-            color: var(--text);
-        }
-
-        .settings-card-header p {
-            margin: 0;
-            font-size: 11px;
-            color: var(--text-light);
-        }
-
-        .settings-body {
             padding: 20px;
+            border-radius: 15px;
         }
 
-        /* PROFILE */
-
-        .profile-setting {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
+        .button-row {
+            justify-content: stretch;
         }
 
-        .large-avatar {
-            width: 62px;
-            height: 62px;
-            flex-shrink: 0;
-            border-radius: 50%;
-            background: var(--orange-light);
-            color: var(--orange-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 23px;
-            font-weight: 700;
-        }
-
-        .profile-setting strong {
-            display: block;
-            color: var(--text);
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-
-        .profile-setting span {
-            color: var(--text-light);
-            font-size: 11px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group:last-child {
-            margin-bottom: 0;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .form-group input,
-        .form-group select {
+        .btn-save {
             width: 100%;
-            height: 40px;
-            padding: 0 12px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            outline: none;
-            background: #fffefa;
-            color: var(--text);
-            font-family: inherit;
-            font-size: 12px;
-            box-sizing: border-box;
         }
 
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: var(--orange);
+        .logout-button {
+            width: 100%;
         }
+    }
+</style>
 
-        .save-btn {
-            margin-top: 18px;
-            border: none;
-            border-radius: 10px;
-            padding: 10px 17px;
-            background: var(--orange);
-            color: white;
-            font-family: inherit;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .save-btn:hover {
-            background: var(--orange-dark);
-        }
-
-        /* NOTIFICATION */
-
-        .setting-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .setting-row:first-child {
-            padding-top: 0;
-        }
-
-        .setting-row:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .setting-text strong {
-            display: block;
-            color: var(--text);
-            font-size: 12px;
-            margin-bottom: 3px;
-        }
-
-        .setting-text span {
-            color: var(--text-light);
-            font-size: 10px;
-            line-height: 1.5;
-        }
-
-        /* TOGGLE */
-
-        .toggle {
-            position: relative;
-            width: 40px;
-            height: 22px;
-            flex-shrink: 0;
-        }
-
-        .toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            inset: 0;
-            cursor: pointer;
-            background: #D8D2C9;
-            border-radius: 20px;
-            transition: .2s;
-        }
-
-        .slider:before {
-            content: "";
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            left: 3px;
-            top: 3px;
-            background: white;
-            border-radius: 50%;
-            transition: .2s;
-        }
-
-        .toggle input:checked + .slider {
-            background: var(--orange);
-        }
-
-        .toggle input:checked + .slider:before {
-            transform: translateX(18px);
-        }
-
-        /* SECURITY */
-
-        .security-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            padding: 13px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .security-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .security-icon {
-            width: 36px;
-            height: 36px;
-            flex-shrink: 0;
-            border-radius: 10px;
-            background: var(--orange-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .security-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-        }
-
-        .security-left strong {
-            display: block;
-            color: var(--text);
-            font-size: 12px;
-            margin-bottom: 3px;
-        }
-
-        .security-left span {
-            color: var(--text-light);
-            font-size: 10px;
-        }
-
-        .action-btn {
-            border: 1px solid var(--border);
-            background: white;
-            color: var(--orange-dark);
-            padding: 7px 10px;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 10px;
-            cursor: pointer;
-        }
-
-        .action-btn:hover {
-            background: var(--orange-light);
-        }
-
-        /* CHILD */
-
-        .child-info {
-            display: flex;
-            align-items: center;
-            gap: 13px;
-        }
-
-        .child-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--orange-light);
-            color: var(--orange-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-        }
-
-        .child-info strong {
-            display: block;
-            color: var(--text);
-            font-size: 13px;
-            margin-bottom: 3px;
-        }
-
-        .child-info span {
-            color: var(--text-light);
-            font-size: 10px;
-        }
-
-        .settings-note {
-            margin-top: 20px;
-            padding: 15px 18px;
-            background: var(--orange-light);
-            border-radius: 14px;
-            color: var(--text-light);
-            font-size: 11px;
-            line-height: 1.6;
-        }
-
-        .settings-note strong {
-            color: var(--orange-dark);
-        }
-
-        .page-footer {
-            text-align: center;
-            color: var(--text-light);
-            font-size: 11px;
-            padding: 25px 0 20px;
-        }
-
-        @media (max-width: 768px) {
-
-            .page-content {
-                padding: 22px 17px;
-            }
-
-            .page-header h1 {
-                font-size: 23px;
-            }
-
-            .settings-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .settings-card.full {
-                grid-column: auto;
-            }
-        }
-
-        @media (max-width: 480px) {
-
-            .page-content {
-                padding: 18px 14px;
-            }
-
-            .page-header h1 {
-                font-size: 21px;
-            }
-
-            .settings-body {
-                padding: 16px;
-            }
-
-            .setting-row {
-                gap: 12px;
-            }
-
-            .setting-text span {
-                font-size: 9px;
-            }
-        }
-    </style>
 </head>
 
 <body>
 
-    <!-- SIDEBAR -->
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
 
-    <aside class="sidebar">
+    <div class="sidebar-logo">
+        <img src="images/logo.png" alt="Logo TAUD SAQU DARUL IMAN">
 
-        <div class="sidebar-logo">
+        <div>
+            <strong>TAUD SAQU</strong>
+            <span>DARUL IMAN</span>
+        </div>
+    </div>
 
-            <img src="images/logo.png" alt="Logo TAUD SAQU DARUL IMAN">
+    <!-- PENTING:
+         ID ini harus sama dengan yang dicari JavaScript:
+         document.querySelector('#sidebarNav')
+    -->
+    <nav class="sidebar-menu" id="sidebarNav"></nav>
 
-            <div>
-                <strong>TAUD SAQU</strong>
-                <span>DARUL IMAN</span>
+</aside>
+
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+
+        <button
+            class="menu-toggle"
+            type="button"
+            aria-label="Buka menu"
+        >
+            ☰
+        </button>
+
+        <div class="topbar-title">
+            <span>Pengaturan</span>
+        </div>
+
+        <div class="profile-wrapper">
+
+            <button
+                class="profile-mini"
+                id="profileButton"
+                type="button"
+            >
+
+                <div class="profile-avatar" id="profileAvatar">
+                    ?
+                </div>
+
+                <div class="profile-info">
+                    <strong id="profileNameTop">
+                        Memuat...
+                    </strong>
+
+                    <span id="profileRoleTop">
+                        ...
+                    </span>
+                </div>
+
+                <span class="profile-arrow">⌄</span>
+
+            </button>
+
+
+            <div
+                class="profile-dropdown"
+                id="profileDropdown"
+            >
+
+                <a href="pengaturan.html">
+                    ⚙ Pengaturan
+                </a>
+
+                <a
+                    href="#"
+                    class="dropdown-logout"
+                    id="logoutTop"
+                >
+                    ↪ Keluar
+                </a>
+
             </div>
 
         </div>
 
-        <nav class="sidebar-menu">
-
-            <a href="parent-dashboard.html" class="menu-item">
-                <span>⌂</span>
-                Dashboard
-            </a>
-
-            <a href="child.html" class="menu-item">
-                <span>👧</span>
-                Anak Saya
-            </a>
-
-            <a href="buku-penghubung.html" class="menu-item">
-                <span>📖</span>
-                Buku Penghubung
-            </a>
-
-            <a href="perkembangan.html" class="menu-item">
-                <span>📊</span>
-                Perkembangan
-            </a>
-
-            <a href="bintang-prestasi.html" class="menu-item">
-                <span>⭐</span>
-                Bintang Prestasi
-            </a>
-
-            <a href="absensi.html" class="menu-item">
-                <span>📅</span>
-                Absensi
-            </a>
-
-            <a href="pengumuman.html" class="menu-item">
-                <span>📢</span>
-                Pengumuman
-            </a>
-
-            <a href="komunikasi.html" class="menu-item">
-                <span>💬</span>
-                komunikasi
-            </a>
-
-            <div class="menu-divider"></div>
-
-            <a href="pengaturan.html" class="menu-item active">
-                <span>⚙</span>
-                Pengaturan
-            </a>
-
-            <a href="index.html" class="menu-item logout">
-                <span>↪</span>
-                Keluar
-            </a>
-
-        </nav>
-
-    </aside>
+    </header>
 
 
-    <!-- MAIN -->
+    <!-- CONTENT -->
+    <section class="content">
 
-    <main class="main-content">
+        <div class="settings-page">
 
-        <header class="topbar">
+            <div class="settings-header">
 
-            <button class="menu-toggle" type="button">
-                ☰
-            </button>
+                <h1>Pengaturan</h1>
 
-            <div class="topbar-title">
-                Pengaturan
+                <p>
+                    Kelola informasi akun dan keamanan akun Anda.
+                </p>
+
             </div>
 
-            <div class="topbar-right">
 
-                <button class="notification" type="button">
-                    🔔
-                    <span class="notification-dot"></span>
-                </button>
+            <!-- PROFIL -->
+            <div class="settings-card">
 
-                <div class="profile-mini">
+                <h2>Profil Akun</h2>
 
-                    <div class="profile-avatar">
-                        A
+                <p class="settings-card-description">
+                    Informasi yang digunakan pada akun School Connect.
+                </p>
+
+
+                <div class="profile-preview">
+
+                    <div
+                        class="profile-preview-avatar"
+                        id="profileAvatarLarge"
+                    >
+                        ?
                     </div>
 
-                    <div class="profile-info">
-                        <strong>Ayah/Bunda</strong>
-                        <span>Orang Tua</span>
+                    <div class="profile-preview-info">
+
+                        <strong id="profilePreviewName">
+                            Memuat...
+                        </strong>
+
+                        <span id="profilePreviewRole">
+                            Memuat...
+                        </span>
+
                     </div>
 
                 </div>
 
-            </div>
 
-        </header>
+                <form id="profileForm">
 
+                    <div class="form-group">
 
-        <!-- CONTENT -->
+                        <label for="nama">
+                            Nama
+                        </label>
 
-        <section class="page-content">
-
-            <div class="page-header">
-
-                <p class="greeting">
-                    Assalamu'alaikum 👋
-                </p>
-
-                <h1>
-                    Pengaturan ⚙️
-                </h1>
-
-                <p>
-                    Kelola akun dan preferensi School Connect.
-                </p>
-
-            </div>
-
-
-            <div class="settings-grid">
-
-
-                <!-- PROFILE -->
-
-                <div class="settings-card">
-
-                    <div class="settings-card-header">
-
-                        <h2>
-                            Profil Orang Tua
-                        </h2>
-
-                        <p>
-                            Informasi akun Ayah/Bunda
-                        </p>
+                        <input
+                            type="text"
+                            id="nama"
+                            autocomplete="name"
+                            required
+                        >
 
                     </div>
 
-                    <div class="settings-body">
 
-                        <div class="profile-setting">
+                    <div class="form-group">
 
-                            <div class="large-avatar">
-                                A
-                            </div>
+                        <label for="email">
+                            Email
+                        </label>
 
-                            <div>
-                                <strong>Ayah/Bunda</strong>
-                                <span>Orang Tua Shidqia</span>
-                            </div>
+                        <input
+                            type="email"
+                            id="email"
+                            disabled
+                        >
 
-                        </div>
+                        <span class="form-hint">
+                            Email akun tidak dapat diubah dari halaman ini.
+                        </span>
 
-
-                        <div class="form-group">
-
-                            <label>
-                                Nama
-                            </label>
-
-                            <input
-                                type="text"
-                                value="Ayah/Bunda"
-                            >
-
-                        </div>
+                    </div>
 
 
-                        <div class="form-group">
+                    <div class="form-group">
 
-                            <label>
-                                Nomor WhatsApp
-                            </label>
+                        <label for="noHp">
+                            Nomor HP
+                        </label>
 
-                            <input
-                                type="tel"
-                                value="08xxxxxxxxxx"
-                            >
+                        <input
+                            type="tel"
+                            id="noHp"
+                            placeholder="Masukkan nomor HP"
+                            autocomplete="tel"
+                        >
 
-                        </div>
+                    </div>
 
 
-                        <button class="save-btn" type="button">
+                    <div class="button-row">
+
+                        <button
+                            type="submit"
+                            class="btn-save"
+                            id="saveProfileButton"
+                        >
                             Simpan Perubahan
                         </button>
 
                     </div>
 
-                </div>
-
-
-                <!-- NOTIFICATION -->
-
-                <div class="settings-card">
-
-                    <div class="settings-card-header">
-
-                        <h2>
-                            Notifikasi
-                        </h2>
-
-                        <p>
-                            Atur pemberitahuan yang ingin diterima
-                        </p>
-
-                    </div>
-
-                    <div class="settings-body">
-
-
-                        <div class="setting-row">
-
-                            <div class="setting-text">
-
-                                <strong>
-                                    Pengumuman Sekolah
-                                </strong>
-
-                                <span>
-                                    Notifikasi saat ada pengumuman baru
-                                </span>
-
-                            </div>
-
-                            <label class="toggle">
-
-                                <input
-                                    type="checkbox"
-                                    checked
-                                >
-
-                                <span class="slider"></span>
-
-                            </label>
-
-                        </div>
-
-
-                        <div class="setting-row">
-
-                            <div class="setting-text">
-
-                                <strong>
-                                    komunikasi dari Guru
-                                </strong>
-
-                                <span>
-                                    Pemberitahuan saat ada komunikasi baru
-                                </span>
-
-                            </div>
-
-                            <label class="toggle">
-
-                                <input
-                                    type="checkbox"
-                                    checked
-                                >
-
-                                <span class="slider"></span>
-
-                            </label>
-
-                        </div>
-
-
-                        <div class="setting-row">
-
-                            <div class="setting-text">
-
-                                <strong>
-                                    Absensi
-                                </strong>
-
-                                <span>
-                                    Pemberitahuan mengenai kehadiran anak
-                                </span>
-
-                            </div>
-
-                            <label class="toggle">
-
-                                <input
-                                    type="checkbox"
-                                    checked
-                                >
-
-                                <span class="slider"></span>
-
-                            </label>
-
-                        </div>
-
-
-                        <div class="setting-row">
-
-                            <div class="setting-text">
-
-                                <strong>
-                                    Perkembangan Anak
-                                </strong>
-
-                                <span>
-                                    Pemberitahuan perkembangan terbaru
-                                </span>
-
-                            </div>
-
-                            <label class="toggle">
-
-                                <input
-                                    type="checkbox"
-                                >
-
-                                <span class="slider"></span>
-
-                            </label>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- CHILD -->
-
-                <div class="settings-card">
-
-                    <div class="settings-card-header">
-
-                        <h2>
-                            Data Anak
-                        </h2>
-
-                        <p>
-                            Anak yang terhubung dengan akun ini
-                        </p>
-
-                    </div>
-
-                    <div class="settings-body">
-
-                        <div class="child-info">
-
-                            <div class="child-avatar">
-                                S
-                            </div>
-
-                            <div>
-
-                                <strong>
-                                    Shidqia
-                                </strong>
-
-                                <span>
-                                    Kelas Alif Tsaniyah • Tahun Ajaran 2026/2027
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- SECURITY -->
-
-                <div class="settings-card">
-
-                    <div class="settings-card-header">
-
-                        <h2>
-                            Keamanan
-                        </h2>
-
-                        <p>
-                            Kelola keamanan akun
-                        </p>
-
-                    </div>
-
-                    <div class="settings-body">
-
-
-                        <div class="security-item">
-
-                            <div class="security-left">
-
-                                <div class="security-icon">
-                                    🔑
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        Kata Sandi
-                                    </strong>
-
-                                    <span>
-                                        Terakhir diubah beberapa waktu lalu
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-                            <button class="action-btn" type="button">
-                                Ubah
-                            </button>
-
-                        </div>
-
-
-                        <div class="security-item">
-
-                            <div class="security-left">
-
-                                <div class="security-icon">
-                                    📱
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        Nomor Telepon
-                                    </strong>
-
-                                    <span>
-                                        Digunakan untuk pemulihan akun
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-                            <button class="action-btn" type="button">
-                                Kelola
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- PREFERENCE -->
-
-                <div class="settings-card full">
-
-                    <div class="settings-card-header">
-
-                        <h2>
-                            Preferensi
-                        </h2>
-
-                        <p>
-                            Pengaturan tampilan dan pengalaman penggunaan
-                        </p>
-
-                    </div>
-
-                    <div class="settings-body">
-
-                        <div class="setting-row">
-
-                            <div class="setting-text">
-
-                                <strong>
-                                    Bahasa
-                                </strong>
-
-                                <span>
-                                    Bahasa yang digunakan dalam aplikasi
-                                </span>
-
-                            </div>
-
-                            <select style="width:120px;height:35px;border:1px solid var(--border);border-radius:8px;padding:0 8px;color:var(--text);background:white;">
-                                <option>Indonesia</option>
-                                <option>English</option>
-                            </select>
-
-                        </div>
-
-                    </div>
-
-                </div>
+                </form>
 
             </div>
 
 
-            <div class="settings-note">
+            <!-- PASSWORD -->
+            <div class="settings-card">
 
-                🔒 <strong>Keamanan akun:</strong>
-                Jangan membagikan kata sandi kepada orang lain.
-                Pastikan informasi akun selalu dijaga dengan baik.
+                <h2>Keamanan Akun</h2>
+
+                <p class="settings-card-description">
+                    Ubah password untuk menjaga keamanan akun Anda.
+                </p>
+
+
+                <form id="passwordForm">
+
+                    <div class="form-group">
+
+                        <label for="newPassword">
+                            Password Baru
+                        </label>
+
+                        <input
+                            type="password"
+                            id="newPassword"
+                            placeholder="Minimal 6 karakter"
+                            minlength="6"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="confirmPassword">
+                            Konfirmasi Password Baru
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            placeholder="Ulangi password baru"
+                            minlength="6"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="button-row">
+
+                        <button
+                            type="submit"
+                            class="btn-save"
+                            id="savePasswordButton"
+                        >
+                            Ubah Password
+                        </button>
+
+                    </div>
+
+                </form>
 
             </div>
 
 
-            <div class="page-footer">
+            <!-- KELUAR -->
+            <div class="settings-card logout-card">
 
-                TAUD SAQU DARUL IMAN School Connect
+                <h2>Keluar dari Akun</h2>
 
-                <br>
+                <p class="settings-card-description">
+                    Keluar dari akun School Connect pada perangkat ini.
+                </p>
 
-                Memudahkan komunikasi sekolah dan keluarga. 🌷
+                <button
+                    type="button"
+                    class="logout-button"
+                    id="logoutButton"
+                >
+                    ↪ Keluar
+                </button>
 
             </div>
 
-        </section>
+        </div>
 
-    </main>
+    </section>
+
+</main>
 
 
-    <!-- MOBILE MENU -->
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
 
-    <script>
 
-        const menuToggle = document.querySelector('.menu-toggle');
-        const sidebar = document.querySelector('.sidebar');
+<script>
 
-        if (menuToggle && sidebar) {
+    let currentUser = null;
+    let currentProfile = null;
 
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('show');
-            });
+
+    /* =========================
+       ELEMENT
+    ========================= */
+
+    const menuToggle =
+        document.querySelector('.menu-toggle');
+
+    const sidebar =
+        document.querySelector('.sidebar');
+
+    const profileButton =
+        document.querySelector('#profileButton');
+
+    const profileDropdown =
+        document.querySelector('#profileDropdown');
+
+    const profileForm =
+        document.querySelector('#profileForm');
+
+    const passwordForm =
+        document.querySelector('#passwordForm');
+
+    const logoutButton =
+        document.querySelector('#logoutButton');
+
+    const logoutTop =
+        document.querySelector('#logoutTop');
+
+
+    /* =========================
+       MOBILE MENU
+    ========================= */
+
+    if (menuToggle && sidebar) {
+
+        menuToggle.addEventListener('click', () => {
+
+            sidebar.classList.toggle('show');
+
+        });
+
+    }
+
+
+    /* =========================
+       PROFILE DROPDOWN
+    ========================= */
+
+    if (profileButton && profileDropdown) {
+
+        profileButton.addEventListener(
+            'click',
+            (event) => {
+
+                event.stopPropagation();
+
+                profileDropdown.classList.toggle('show');
+
+            }
+        );
+
+
+        document.addEventListener(
+            'click',
+            () => {
+
+                profileDropdown.classList.remove('show');
+
+            }
+        );
+
+    }
+
+
+    /* =========================
+       INITIAL
+    ========================= */
+
+    async function init() {
+
+        const {
+            data: authData,
+            error: authError
+        } = await supabaseClient.auth.getUser();
+
+
+        if (
+            authError ||
+            !authData ||
+            !authData.user
+        ) {
+
+            window.location.href = 'login.html';
+
+            return;
 
         }
 
-    </script>
 
-</body>
-</html>
+        currentUser = authData.user;
+
+
+        /* =========================
+           AMBIL PROFIL
+        ========================= */
+
+        const {
+            data: profile,
+            error: profileError
+        } = await supabaseClient
+
+            .from('users')
+
+            .select(`
+                id,
+                nama,
+                email,
+                role,
+                no_hp,
+                auth_id
+            `)
+
+            .eq('auth_id', currentUser.id)
+
+            .maybeSingle();
+
+
+        if (profileError) {
+
+            console.error(
+                'Gagal mengambil profil:',
+                profileError
+            );
+
+            alert(
+                'Gagal mengambil data profil pengguna.'
+            );
+
+            return;
+
+        }
+
+
+        if (!profile) {
+
+            alert(
+                'Profil pengguna tidak ditemukan.'
+            );
+
+            await supabaseClient.auth.signOut();
+
+            window.location.href = 'login.html';
+
+            return;
+
+        }
+
+
+        currentProfile = profile;
+
+
+        /* =========================
+           CEK ROLE
+        ========================= */
+
+        if (
+            profile.role !== 'guru' &&
+            profile.role !== 'orang_tua'
+        ) {
+
+            alert(
+                'Role akun tidak dapat menggunakan halaman ini.'
+            );
+
+            await supabaseClient.auth.signOut();
+
+            window.location.href = 'login.html';
+
+            return;
+
+        }
+
+
+        /* =========================
+           DATA PROFIL
+        ========================= */
+
+        const nama =
+            profile.nama ||
+            currentUser.email ||
+            'Pengguna';
+
+
+        const roleText =
+            profile.role === 'guru'
+                ? 'Guru'
+                : 'Orang Tua';
+
+
+        const initial =
+            nama
+                .trim()
+                .charAt(0)
+                .toUpperCase();
+
+
+        document.querySelector('#nama').value =
+            profile.nama || '';
+
+
+        document.querySelector('#email').value =
+            profile.email ||
+            currentUser.email ||
+            '';
+
+
+        document.querySelector('#noHp').value =
+            profile.no_hp || '';
+
+
+        document.querySelector('#profileNameTop')
+            .textContent = nama;
+
+
+        document.querySelector('#profileRoleTop')
+            .textContent = roleText;
+
+
+        document.querySelector('#profileAvatar')
+            .textContent = initial;
+
+
+        document.querySelector('#profilePreviewName')
+            .textContent = nama;
+
+
+        document.querySelector('#profilePreviewRole')
+            .textContent = roleText;
+
+
+        document.querySelector('#profileAvatarLarge')
+            .textContent = initial;
+
+
+        /* =========================
+           BUILD SIDEBAR SESUAI ROLE
+        ========================= */
+
+        buildSidebar(profile.role);
+
+    }
+
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    function buildSidebar(role) {
+
+        const nav =
+            document.querySelector('#sidebarNav');
+
+
+        if (!nav) {
+
+            console.error(
+                'sidebarNav tidak ditemukan.'
+            );
+
+            return;
+
+        }
+
+
+        /* =========================
+           GURU
+        ========================= */
+
+        if (role === 'guru') {
+
+            nav.innerHTML = `
+
+                <a
+                    href="guru-dashboard.html"
+                    class="menu-item"
+                >
+                    <span>⌂</span>
+                    Dashboard
+                </a>
+
+
+                <a
+                    href="guru-child.html"
+                    class="menu-item"
+                >
+                    <span>👧</span>
+                    Data Anak
+                </a>
+
+
+                <a
+                    href="guru-buku-penghubung.html"
+                    class="menu-item"
+                >
+                    <span>📖</span>
+                    Buku Penghubung
+                </a>
+
+
+                <a
+                    href="guru-absensi.html"
+                    class="menu-item"
+                >
+                    <span>📅</span>
+                    Absensi
+                </a>
+
+
+                <a
+                    href="guru-pengumuman.html"
+                    class="menu-item"
+                >
+                    <span>📢</span>
+                    Pengumuman
+                </a>
+
+
+                <a
+                    href="guru-komunikasi.html"
+                    class="menu-item"
+                >
+                    <span>💬</span>
+                    Komunikasi
+                </a>
+
+
+                <div class="menu-divider"></div>
+
+
+                <a
+                    href="pengaturan.html"
+                    class="menu-item active"
+                >
+                    <span>⚙</span>
+                    Pengaturan
+                </a>
+
+
+                <a
+                    href="index.html"
+                    class="menu-item logout"
+                >
+                    <span>↪</span>
+                    Keluar
+                </a>
+
+            `;
+
+        }
+
+
+        /* =========================
+           ORANG TUA
+        ========================= */
+
+        else if (role === 'orang_tua') {
+
+            nav.innerHTML = `
+
+                <a
+                    href="parent-dashboard.html"
+                    class="menu-item"
+                >
+                    <span>⌂</span>
+                    Dashboard
+                </a>
+
+
+                <a
+                    href="child.html"
+                    class="menu-item"
+                >
+                    <span>👧</span>
+                    Anak Saya
+                </a>
+
+
+                <a
+                    href="buku-penghubung.html"
+                    class="menu-item"
+                >
+                    <span>📖</span>
+                    Buku Penghubung
+                </a>
+
+
+                <a
+                    href="absensi.html"
+                    class="menu-item"
+                >
+                    <span>📅</span>
+                    Absensi
+                </a>
+
+
+                <a
+                    href="pengumuman.html"
+                    class="menu-item"
+                >
+                    <span>📢</span>
+                    Pengumuman
+                </a>
+
+
+                <a
+                    href="komunikasi.html"
+                    class="menu-item"
+                >
+                    <span>💬</span>
+                    Komunikasi
+                </a>
+
+
+                <div class="menu-divider"></div>
+
+
+                <a
+                    href="pengaturan.html"
+                    class="menu-item active"
+                >
+                    <span>⚙</span>
+                    Pengaturan
+                </a>
+
+
+                <a
+                    href="index.html"
+                    class="menu-item logout"
+                >
+                    <span>↪</span>
+                    Keluar
+                </a>
+
+            `;
+
+        }
+
+    }
+
+
+    /* =========================
+       UPDATE PROFILE
+    ========================= */
+
+    profileForm.addEventListener(
+        'submit',
+        async (event) => {
+
+            event.preventDefault();
+
+
+            if (!currentProfile) {
+                return;
+            }
+
+
+            const button =
+                document.querySelector(
+                    '#saveProfileButton'
+                );
+
+
+            const nama =
+                document.querySelector(
+                    '#nama'
+                ).value.trim();
+
+
+            const noHp =
+                document.querySelector(
+                    '#noHp'
+                ).value.trim();
+
+
+            if (!nama) {
+
+                alert(
+                    'Nama tidak boleh kosong.'
+                );
+
+                return;
+
+            }
+
+
+            button.disabled = true;
+
+            button.textContent =
+                'Menyimpan...';
+
+
+            const {
+                error
+            } = await supabaseClient
+
+                .from('users')
+
+                .update({
+                    nama: nama,
+                    no_hp: noHp || null
+                })
+
+                .eq('id', currentProfile.id);
+
+
+            if (error) {
+
+                console.error(error);
+
+                alert(
+                    'Gagal menyimpan perubahan profil: ' +
+                    error.message
+                );
+
+                button.disabled = false;
+
+                button.textContent =
+                    'Simpan Perubahan';
+
+                return;
+
+            }
+
+
+            currentProfile.nama = nama;
+
+            currentProfile.no_hp = noHp;
+
+
+            const initial =
+                nama
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase();
+
+
+            document.querySelector(
+                '#profileNameTop'
+            ).textContent = nama;
+
+
+            document.querySelector(
+                '#profileAvatar'
+            ).textContent = initial;
+
+
+            document.querySelector(
+                '#profilePreviewName'
+            ).textContent = nama;
+
+
+            document.querySelector(
+                '#profileAvatarLarge'
+            ).textContent = initial;
+
+
+            alert(
+                'Profil berhasil diperbarui.'
+            );
+
+
+            button.disabled = false;
+
+            button.textContent =
+                'Simpan Perubahan';
+
+        }
+    );
+
+
+    /* =========================
+       UPDATE PASSWORD
+    ========================= */
+
+    passwordForm.addEventListener(
+        'submit',
+        async (event) => {
+
+            event.preventDefault();
+
+
+            const newPassword =
+                document.querySelector(
+                    '#newPassword'
+                ).value;
+
+
+            const confirmPassword =
+                document.querySelector(
+                    '#confirmPassword'
+                ).value;
+
+
+            if (newPassword.length < 6) {
+
+                alert(
+                    'Password baru minimal 6 karakter.'
+                );
+
+                return;
+
+            }
+
+
+            if (
+                newPassword !==
+                confirmPassword
+            ) {
+
+                alert(
+                    'Konfirmasi password tidak sama.'
+                );
+
+                return;
+
+            }
+
+
+            const button =
+                document.querySelector(
+                    '#savePasswordButton'
+                );
+
+
+            button.disabled = true;
+
+            button.textContent =
+                'Mengubah...';
+
+
+            const {
+                error
+            } = await supabaseClient.auth.updateUser({
+                password: newPassword
+            });
+
+
+            if (error) {
+
+                console.error(error);
+
+                alert(
+                    'Gagal mengubah password: ' +
+                    error.message
+                );
+
+                button.disabled = false;
+
+                button.textContent =
+                    'Ubah Password';
+
+                return;
+
+            }
+
+
+            document.querySelector(
+                '#newPassword'
+            ).value = '';
+
+
+            document.querySelector(
+                '#confirmPassword'
+            ).value = '';
+
+
+            alert(
+                'Password berhasil diubah.'
+            );
+
+
+            button.disabled = false;
+
+            button.textContent =
+                'Ubah Password';
+
+        }
+    );
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    async function logout() {
+
+        const confirmLogout =
+            confirm(
+                'Apakah Anda yakin ingin keluar?'
+            );
+
+
+        if (!confirmLogout) {
+            return;
+        }
+
+
+        const {
+            error
+        } = await supabaseClient.auth.signOut();
+
+
+        if (error) {
+
+            alert(
+                'Gagal keluar: ' +
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        window.location.href =
+            'login.html';
+
+    }
+
+
+    if (logoutButton) {
+
+        logoutButton.addEventListener(
+            'click',
+            logout
+        );
+
+    }
+
+
+    if (logoutTop) {
+
+        logoutTop.addEventListener(
+            'click',
+            (event) => {
+
+                event.preventDefault();
+
+                logout();
+
+            }
+        );
+
+    }
+
+
+    /* =========================
+       JALANKAN
+    ========================= */
+
+    init();
+
+</script>
+
+</body> </html>
