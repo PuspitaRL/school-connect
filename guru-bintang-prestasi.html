@@ -119,7 +119,7 @@
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 18px 20px;
-            margin-bottom: 25px;
+            margin-bottom: 18px;
 
             display: flex;
             align-items: center;
@@ -163,6 +163,41 @@
         .date-selector input:focus {
             outline: none;
             border-color: var(--orange);
+        }
+
+
+        /* =========================
+           CLASS FILTER
+        ========================= */
+
+        .class-filter {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .class-filter-btn {
+            border: 1px solid var(--border);
+            background: var(--white);
+            color: var(--text-light);
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .class-filter-btn:hover {
+            border-color: var(--orange);
+            color: var(--orange);
+        }
+
+        .class-filter-btn.active {
+            background: var(--orange);
+            border-color: var(--orange);
+            color: white;
         }
 
 
@@ -420,6 +455,14 @@
             .date-selector input {
                 width: 100%;
                 box-sizing: border-box;
+            }
+
+            .class-filter {
+                width: 100%;
+            }
+
+            .class-filter-btn {
+                flex: 1;
             }
 
         }
@@ -750,6 +793,31 @@
             </div>
 
 
+            <!-- =========================
+                 FILTER KELAS
+            ========================= -->
+
+            <div class="class-filter">
+
+                <button
+                    type="button"
+                    class="class-filter-btn active"
+                    data-class="Kelas Alif 'Ula"
+                >
+                    Alif 'Ula
+                </button>
+
+                <button
+                    type="button"
+                    class="class-filter-btn"
+                    data-class="Kelas Alif Tsani"
+                >
+                    Alif Tsani
+                </button>
+
+            </div>
+
+
             <!-- SECTION -->
 
             <div class="section-heading">
@@ -823,6 +891,8 @@
         document.getElementById(
             'tableWrapper'
         );
+
+    let activeClass = "Kelas Alif 'Ula";
 
 
     /* =========================
@@ -959,7 +1029,7 @@
 
 
     /* =========================
-       LOAD SEMUA SISWA
+       LOAD SISWA
     ========================= */
 
     async function loadStudents() {
@@ -978,7 +1048,7 @@
         try {
 
             /* -------------------------
-               AMBIL SEMUA ANAK
+               AMBIL SISWA
             ------------------------- */
 
             const {
@@ -988,6 +1058,10 @@
                 .from('children')
                 .select(
                     'id, nama, kelas, tahun_ajaran'
+                )
+                .eq(
+                    'kelas',
+                    activeClass
                 )
                 .order(
                     'nama',
@@ -1002,6 +1076,10 @@
             }
 
 
+            /* -------------------------
+               CEK DATA SISWA
+            ------------------------- */
+
             if (
                 !children ||
                 children.length === 0
@@ -1009,15 +1087,20 @@
 
                 tableWrapper.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-icon">👧</div>
+
+                        <div class="empty-icon">
+                            👧
+                        </div>
 
                         <strong>
                             Belum ada data siswa
                         </strong>
 
                         <p>
-                            Data siswa belum tersedia di sistem.
+                            Belum ada siswa di kelas
+                            ${escapeHtml(activeClass)}.
                         </p>
+
                     </div>
                 `;
 
@@ -1067,8 +1150,7 @@
                BUAT MAP DATA
             ------------------------- */
 
-            const achievementMap =
-                {};
+            const achievementMap = {};
 
 
             (
@@ -1360,6 +1442,52 @@
         () => {
 
             loadStudents();
+
+        }
+    );
+
+
+    /* =========================
+       CLASS FILTER
+    ========================= */
+
+    const classFilterButtons =
+        document.querySelectorAll(
+            '.class-filter-btn'
+        );
+
+
+    classFilterButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                'click',
+                () => {
+
+                    classFilterButtons.forEach(
+                        btn => {
+
+                            btn.classList.remove(
+                                'active'
+                            );
+
+                        }
+                    );
+
+
+                    button.classList.add(
+                        'active'
+                    );
+
+
+                    activeClass =
+                        button.dataset.class;
+
+
+                    loadStudents();
+
+                }
+            );
 
         }
     );

@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 
@@ -7,8 +8,8 @@
 
     <title>Buku Penghubung Guru | TAUD SAQU DARUL IMAN</title>
 
-    <link rel="stylesheet" href="css/dashboard.css">
-
+    <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
     <style>
         .report-content {
             padding: 30px;
@@ -26,6 +27,37 @@
         .page-header p {
             margin: 0;
             color: var(--text-light);
+        }
+
+        /* FILTER KELAS */
+        .class-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .class-filter button {
+            border: 1px solid var(--border);
+            background: var(--white);
+            color: var(--text);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .class-filter button:hover {
+            border-color: var(--orange);
+            color: var(--orange-dark);
+        }
+
+        .class-filter button.active {
+            background: var(--orange);
+            border-color: var(--orange);
+            color: white;
         }
 
         .selection-card {
@@ -171,6 +203,15 @@
             .selection-card,
             .report-section {
                 padding: 18px;
+            }
+
+            .class-filter {
+                gap: 8px;
+            }
+
+            .class-filter button {
+                flex: 1;
+                padding: 10px 12px;
             }
         }
     </style>
@@ -331,6 +372,28 @@
                 <p>
                     Isi laporan kegiatan harian anak untuk orang tua.
                 </p>
+
+            </div>
+
+
+            <!-- FILTER KELAS -->
+            <div class="class-filter">
+
+                <button
+                    type="button"
+                    class="class-filter-btn active"
+                    data-class="Kelas Alif 'Ula"
+                >
+                    Alif 'Ula
+                </button>
+
+                <button
+                    type="button"
+                    class="class-filter-btn"
+                    data-class="Kelas Alif Tsani"
+                >
+                    Alif Tsani
+                </button>
 
             </div>
 
@@ -687,6 +750,27 @@
 
         let currentGuruId = null;
 
+        // Semua siswa yang diambil dari database
+        let allChildren = [];
+
+        // Default kelas
+        let activeClass = "Kelas Alif 'Ula";
+
+
+        function getClassLabel(classValue) {
+
+            if (classValue === "Kelas Alif 'Ula") {
+                return "Alif 'Ula";
+            }
+
+            if (classValue === "Kelas Alif Tsani") {
+                return "Alif Tsani";
+            }
+
+            return classValue;
+
+        }
+
 
         async function loadGuruProfile() {
 
@@ -803,6 +887,34 @@
             }
 
 
+            // Simpan semua siswa
+            allChildren = children || [];
+
+
+            // Tampilkan siswa sesuai kelas aktif
+            renderChildrenOptions();
+
+        }
+
+
+        function renderChildrenOptions() {
+
+            const childSelect =
+                document.querySelector('#childSelect');
+
+
+            if (!childSelect) {
+                return;
+            }
+
+
+            const filteredChildren =
+                allChildren.filter(
+                    child =>
+                        child.kelas === activeClass
+                );
+
+
             childSelect.innerHTML = `
                 <option value="">
                     Pilih anak
@@ -810,18 +922,117 @@
             `;
 
 
-            (children || []).forEach(child => {
+            if (!filteredChildren.length) {
+
+                childSelect.innerHTML = `
+                    <option value="">
+                        Belum ada siswa di ${getClassLabel(activeClass)}
+                    </option>
+                `;
+
+                return;
+
+            }
+
+
+            filteredChildren.forEach(child => {
 
                 const option =
                     document.createElement('option');
 
+
                 option.value =
                     child.id;
 
+
                 option.textContent =
-                    `${child.nama} — ${child.kelas}`;
+                    child.nama;
+
 
                 childSelect.appendChild(option);
+
+            });
+
+        }
+
+
+        function setupClassFilter() {
+
+            const classFilterButtons =
+                document.querySelectorAll(
+                    '.class-filter-btn'
+                );
+
+
+            classFilterButtons.forEach(button => {
+
+                button.addEventListener(
+                    'click',
+                    () => {
+
+                        activeClass =
+                            button.dataset.class;
+
+
+                        classFilterButtons.forEach(
+                            btn => {
+                                btn.classList.remove(
+                                    'active'
+                                );
+                            }
+                        );
+
+
+                        button.classList.add(
+                            'active'
+                        );
+
+
+                        // Tampilkan siswa dari kelas baru
+                        renderChildrenOptions();
+
+
+                        // Reset pilihan anak
+                        document.querySelector(
+                            '#childSelect'
+                        ).value = '';
+
+
+                        // Tutup form laporan yang sedang terbuka
+                        const reportForm =
+                            document.querySelector(
+                                '#reportForm'
+                            );
+
+
+                        if (reportForm) {
+
+                            reportForm.style.display =
+                                'none';
+
+                        }
+
+
+                        // Bersihkan form laporan
+                        resetForm();
+
+
+                        // Bersihkan status simpan
+                        const saveStatus =
+                            document.querySelector(
+                                '#saveStatus'
+                            );
+
+
+                        if (saveStatus) {
+
+                            saveStatus.textContent =
+                                '';
+
+                        }
+
+                    }
+                );
 
             });
 
@@ -833,16 +1044,20 @@
             const reportDate =
                 document.querySelector('#reportDate');
 
+
             const today =
                 new Date();
 
+
             const year =
                 today.getFullYear();
+
 
             const month =
                 String(
                     today.getMonth() + 1
                 ).padStart(2, '0');
+
 
             const day =
                 String(
@@ -861,26 +1076,34 @@
             document.querySelector('#adabBerdoa').value =
                 'false';
 
+
             document.querySelector('#murojaah').value =
                 'Baik';
+
 
             document.querySelector('#hafalanBaru').value =
                 '';
 
+
             document.querySelector('#memahamiMateri').value =
                 'Baik';
+
 
             document.querySelector('#kemandirian').value =
                 'Baik';
 
+
             document.querySelector('#interaksiTeman').value =
                 'Baik';
+
 
             document.querySelector('#adabKepadaGuru').value =
                 'Baik';
 
+
             document.querySelector('#tanggungJawab').value =
                 'Baik';
+
 
             document.querySelector('#catatanGuru').value =
                 '';
@@ -892,6 +1115,7 @@
 
             const childId =
                 document.querySelector('#childSelect').value;
+
 
             const tanggal =
                 document.querySelector('#reportDate').value;
@@ -973,298 +1197,346 @@
 
         document
             .querySelector('#startReport')
-            .addEventListener('click', async () => {
+            .addEventListener(
+                'click',
+                async () => {
 
-                const childId =
-                    document.querySelector('#childSelect').value;
+                    const childId =
+                        document.querySelector(
+                            '#childSelect'
+                        ).value;
 
-                const tanggal =
-                    document.querySelector('#reportDate').value;
+
+                    const tanggal =
+                        document.querySelector(
+                            '#reportDate'
+                        ).value;
 
 
-                if (!childId) {
+                    if (!childId) {
 
-                    alert(
-                        'Silakan pilih anak terlebih dahulu.'
-                    );
+                        alert(
+                            'Silakan pilih anak terlebih dahulu.'
+                        );
 
-                    return;
+                        return;
+
+                    }
+
+
+                    if (!tanggal) {
+
+                        alert(
+                            'Silakan pilih tanggal.'
+                        );
+
+                        return;
+
+                    }
+
+
+                    await loadExistingReport();
+
+
+                    const reportForm =
+                        document.querySelector(
+                            '#reportForm'
+                        );
+
+
+                    reportForm.style.display =
+                        'block';
+
+
+                    reportForm.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
 
                 }
-
-
-                if (!tanggal) {
-
-                    alert(
-                        'Silakan pilih tanggal.'
-                    );
-
-                    return;
-
-                }
-
-
-                await loadExistingReport();
-
-
-                const reportForm =
-                    document.querySelector('#reportForm');
-
-
-                reportForm.style.display =
-                    'block';
-
-
-                reportForm.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-
-            });
+            );
 
 
         document
             .querySelector('#saveReport')
-            .addEventListener('click', async () => {
+            .addEventListener(
+                'click',
+                async () => {
 
-                const childId =
-                    document.querySelector('#childSelect').value;
-
-                const tanggal =
-                    document.querySelector('#reportDate').value;
-
-
-                if (!childId || !tanggal) {
-
-                    alert(
-                        'Anak dan tanggal wajib dipilih.'
-                    );
-
-                    return;
-
-                }
+                    const childId =
+                        document.querySelector(
+                            '#childSelect'
+                        ).value;
 
 
-                const saveButton =
-                    document.querySelector('#saveReport');
-
-                const saveStatus =
-                    document.querySelector('#saveStatus');
-
-
-                saveButton.disabled = true;
-
-                saveButton.textContent =
-                    'Menyimpan...';
-
-                saveStatus.textContent =
-                    '';
+                    const tanggal =
+                        document.querySelector(
+                            '#reportDate'
+                        ).value;
 
 
-                try {
+                    if (!childId || !tanggal) {
 
-                    /*
-                     * Pastikan sesi Guru masih aktif.
-                     */
-                    const {
-                        data: authData,
-                        error: authError
-                    } =
-                        await supabaseClient.auth.getUser();
-
-
-                    if (
-                        authError ||
-                        !authData ||
-                        !authData.user
-                    ) {
-
-                        throw new Error(
-                            'Sesi login tidak ditemukan.'
+                        alert(
+                            'Anak dan tanggal wajib dipilih.'
                         );
+
+                        return;
 
                     }
 
 
-                    /*
-                     * Ambil profil Guru.
-                     */
-                    const {
-                        data: guru,
-                        error: guruError
-                    } =
-                        await supabaseClient
-                            .from('users')
-                            .select('id, nama, role, auth_id')
-                            .eq(
-                                'auth_id',
-                                authData.user.id
-                            )
-                            .maybeSingle();
-
-
-                    if (
-                        guruError ||
-                        !guru ||
-                        guru.role !== 'guru'
-                    ) {
-
-                        throw new Error(
-                            'Profil Guru tidak ditemukan.'
+                    const saveButton =
+                        document.querySelector(
+                            '#saveReport'
                         );
 
-                    }
+
+                    const saveStatus =
+                        document.querySelector(
+                            '#saveStatus'
+                        );
 
 
-                    currentGuruId =
-                        guru.id;
+                    saveButton.disabled = true;
 
 
-                    /*
-                     * Data sesuai dengan kolom
-                     * tabel daily_reports.
-                     */
-                    const reportData = {
-
-                        child_id:
-                            childId,
-
-                        tanggal:
-                            tanggal,
-
-                        guru_id:
-                            guru.id,
-
-                        shalat_dhuha:
-                            false,
-
-                        adab_berdoa:
-                            document
-                                .querySelector('#adabBerdoa')
-                                .value === 'true',
-
-                        murojaah:
-                            document
-                                .querySelector('#murojaah')
-                                .value,
-
-                        hafalan_baru:
-                            document
-                                .querySelector('#hafalanBaru')
-                                .value
-                                .trim(),
-
-                        memahami_materi:
-                            document
-                                .querySelector('#memahamiMateri')
-                                .value,
-
-                        kemandirian:
-                            document
-                                .querySelector('#kemandirian')
-                                .value,
-
-                        interaksi_teman:
-                            document
-                                .querySelector('#interaksiTeman')
-                                .value,
-
-                        adab_kepada_guru:
-                            document
-                                .querySelector('#adabKepadaGuru')
-                                .value,
-
-                        tanggung_jawab:
-                            document
-                                .querySelector('#tanggungJawab')
-                                .value,
-
-                        catatan_guru:
-                            document
-                                .querySelector('#catatanGuru')
-                                .value
-                                .trim()
-
-                    };
+                    saveButton.textContent =
+                        'Menyimpan...';
 
 
-                    /*
-                     * INSERT jika belum ada.
-                     * UPDATE jika sudah ada.
-                     */
-                    const {
-                        data,
-                        error
-                    } =
-                        await supabaseClient
-                            .from('daily_reports')
-                            .upsert(
-                                reportData,
-                                {
-                                    onConflict:
-                                        'child_id,tanggal'
-                                }
-                            )
-                            .select()
-                            .single();
+                    saveStatus.textContent =
+                        '';
 
 
-                    if (error) {
+                    try {
+
+                        /*
+                         * Pastikan sesi Guru masih aktif.
+                         */
+                        const {
+                            data: authData,
+                            error: authError
+                        } =
+                            await supabaseClient
+                                .auth
+                                .getUser();
+
+
+                        if (
+                            authError ||
+                            !authData ||
+                            !authData.user
+                        ) {
+
+                            throw new Error(
+                                'Sesi login tidak ditemukan.'
+                            );
+
+                        }
+
+
+                        /*
+                         * Ambil profil Guru.
+                         */
+                        const {
+                            data: guru,
+                            error: guruError
+                        } =
+                            await supabaseClient
+                                .from('users')
+                                .select(
+                                    'id, nama, role, auth_id'
+                                )
+                                .eq(
+                                    'auth_id',
+                                    authData.user.id
+                                )
+                                .maybeSingle();
+
+
+                        if (
+                            guruError ||
+                            !guru ||
+                            guru.role !== 'guru'
+                        ) {
+
+                            throw new Error(
+                                'Profil Guru tidak ditemukan.'
+                            );
+
+                        }
+
+
+                        currentGuruId =
+                            guru.id;
+
+
+                        /*
+                         * Data sesuai dengan kolom
+                         * tabel daily_reports.
+                         */
+                        const reportData = {
+
+                            child_id:
+                                childId,
+
+                            tanggal:
+                                tanggal,
+
+                            guru_id:
+                                guru.id,
+
+                            shalat_dhuha:
+                                false,
+
+                            adab_berdoa:
+                                document
+                                    .querySelector(
+                                        '#adabBerdoa'
+                                    )
+                                    .value === 'true',
+
+                            murojaah:
+                                document
+                                    .querySelector(
+                                        '#murojaah'
+                                    )
+                                    .value,
+
+                            hafalan_baru:
+                                document
+                                    .querySelector(
+                                        '#hafalanBaru'
+                                    )
+                                    .value
+                                    .trim(),
+
+                            memahami_materi:
+                                document
+                                    .querySelector(
+                                        '#memahamiMateri'
+                                    )
+                                    .value,
+
+                            kemandirian:
+                                document
+                                    .querySelector(
+                                        '#kemandirian'
+                                    )
+                                    .value,
+
+                            interaksi_teman:
+                                document
+                                    .querySelector(
+                                        '#interaksiTeman'
+                                    )
+                                    .value,
+
+                            adab_kepada_guru:
+                                document
+                                    .querySelector(
+                                        '#adabKepadaGuru'
+                                    )
+                                    .value,
+
+                            tanggung_jawab:
+                                document
+                                    .querySelector(
+                                        '#tanggungJawab'
+                                    )
+                                    .value,
+
+                            catatan_guru:
+                                document
+                                    .querySelector(
+                                        '#catatanGuru'
+                                    )
+                                    .value
+                                    .trim()
+
+                        };
+
+
+                        /*
+                         * INSERT jika belum ada.
+                         * UPDATE jika sudah ada.
+                         */
+                        const {
+                            data,
+                            error
+                        } =
+                            await supabaseClient
+                                .from('daily_reports')
+                                .upsert(
+                                    reportData,
+                                    {
+                                        onConflict:
+                                            'child_id,tanggal'
+                                    }
+                                )
+                                .select()
+                                .single();
+
+
+                        if (error) {
+
+                            console.error(
+                                'Supabase error:',
+                                error
+                            );
+
+                            throw new Error(
+                                error.message
+                            );
+
+                        }
+
+
+                        console.log(
+                            'Data Buku Penghubung tersimpan:',
+                            data
+                        );
+
+
+                        saveStatus.textContent =
+                            '✓ Buku Penghubung berhasil disimpan.';
+
+
+                        alert(
+                            'Buku Penghubung berhasil disimpan.'
+                        );
+
+
+                    } catch (error) {
 
                         console.error(
-                            'Supabase error:',
+                            'Gagal menyimpan Buku Penghubung:',
                             error
                         );
 
-                        throw new Error(
+
+                        saveStatus.textContent =
+                            'Gagal menyimpan data.';
+
+
+                        alert(
+                            'Gagal menyimpan Buku Penghubung:\n\n' +
                             error.message
                         );
 
+                    } finally {
+
+                        saveButton.disabled = false;
+
+
+                        saveButton.textContent =
+                            'Simpan Buku Penghubung';
+
                     }
 
-
-                    console.log(
-                        'Data Buku Penghubung tersimpan:',
-                        data
-                    );
-
-
-                    saveStatus.textContent =
-                        '✓ Buku Penghubung berhasil disimpan.';
-
-
-                    alert(
-                        'Buku Penghubung berhasil disimpan.'
-                    );
-
-
-                } catch (error) {
-
-                    console.error(
-                        'Gagal menyimpan Buku Penghubung:',
-                        error
-                    );
-
-
-                    saveStatus.textContent =
-                        'Gagal menyimpan data.';
-
-
-                    alert(
-                        'Gagal menyimpan Buku Penghubung:\n\n' +
-                        error.message
-                    );
-
-                } finally {
-
-                    saveButton.disabled = false;
-
-                    saveButton.textContent =
-                        'Simpan Buku Penghubung';
-
                 }
-
-            });
+            );
 
 
         async function initializePage() {
@@ -1280,7 +1552,14 @@
             }
 
 
+            // Pasang filter kelas
+            setupClassFilter();
+
+
+            // Ambil semua siswa lalu tampilkan
+            // sesuai kelas aktif
             await loadChildren();
+
 
             setDefaultDate();
 
@@ -1294,3 +1573,4 @@
 </body>
 
 </html>
+```

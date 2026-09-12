@@ -124,7 +124,7 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
         .child-avatar {
@@ -171,8 +171,9 @@
             flex-shrink: 0;
         }
 
-        .child-action a {
+        .child-action button {
             display: inline-block;
+            border: none;
             text-decoration: none;
             background: var(--orange);
             color: var(--white);
@@ -180,10 +181,292 @@
             border-radius: 10px;
             font-size: 12px;
             font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: .2s ease;
         }
 
-        .child-action a:hover {
+        .child-action button:hover {
             background: var(--orange-dark);
+            transform: translateY(-1px);
+        }
+
+        /* ================================
+           CHILD PROFILE MODAL
+        ================================= */
+
+        .child-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(31, 27, 22, .48);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 9999;
+            overflow-y: auto;
+        }
+
+        .child-modal.show {
+            display: flex;
+        }
+
+        .child-modal-card {
+            width: min(680px, 100%);
+            max-height: 90vh;
+            overflow-y: auto;
+            background: var(--white);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .18);
+            animation: modalIn .2s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .child-modal-header {
+            position: relative;
+            padding: 26px 28px 22px;
+            background: var(--orange-light);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .child-modal-header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-right: 40px;
+        }
+
+        .modal-child-avatar {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: var(--white);
+            color: var(--orange-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .child-modal-header h2 {
+            margin: 0 0 4px;
+            font-size: 23px;
+            color: var(--text);
+        }
+
+        .child-modal-header p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .8);
+            color: var(--text);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--white);
+        }
+
+        .child-modal-body {
+            padding: 24px 28px 28px;
+        }
+
+        /* ================================
+           IDENTITY
+        ================================= */
+
+        .identity-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .identity-item {
+            background: #F8F5F0;
+            border-radius: 13px;
+            padding: 13px;
+        }
+
+        .identity-item span {
+            display: block;
+            color: var(--text-light);
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .identity-item strong {
+            display: block;
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        /* ================================
+           MODAL SECTION
+        ================================= */
+
+        .profile-section {
+            margin-top: 22px;
+        }
+
+        .profile-section:first-child {
+            margin-top: 0;
+        }
+
+        .profile-section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .profile-section-title h3 {
+            margin: 0;
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        /* ================================
+           ACHIEVEMENT
+        ================================= */
+
+        .achievement-card {
+            background: var(--orange-light);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .achievement-number {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--orange-dark);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .achievement-label {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        /* ================================
+           ATTENDANCE
+        ================================= */
+
+        .attendance-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 9px;
+        }
+
+        .attendance-item {
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 13px 8px;
+            text-align: center;
+        }
+
+        .attendance-item strong {
+            display: block;
+            font-size: 20px;
+            color: var(--text);
+            margin-bottom: 3px;
+        }
+
+        .attendance-item span {
+            color: var(--text-light);
+            font-size: 11px;
+        }
+
+        /* ================================
+           LEARNING
+        ================================= */
+
+        .learning-card {
+            background: #F8F5F0;
+            border-radius: 16px;
+            padding: 18px;
+        }
+
+        .learning-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .learning-top span {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .learning-percent {
+            font-size: 25px;
+            font-weight: 800;
+            color: var(--orange-dark);
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #E9E3DA;
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            background: var(--orange);
+            border-radius: 99px;
+            transition: width .5s ease;
+        }
+
+        .learning-note {
+            margin: 9px 0 0;
+            font-size: 11px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* ================================
+           MODAL LOADING
+        ================================= */
+
+        .modal-loading {
+            text-align: center;
+            padding: 45px 20px;
+            color: var(--text-light);
+            font-size: 13px;
         }
 
         /* ================================
@@ -286,9 +569,34 @@
                 margin-left: 74px;
             }
 
-            .child-action a {
+            .child-action button {
                 display: block;
+                width: 100%;
                 text-align: center;
+            }
+
+            .identity-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .attendance-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .child-modal {
+                padding: 12px;
+            }
+
+            .child-modal-card {
+                max-height: 94vh;
+            }
+
+            .child-modal-header {
+                padding: 22px 20px 18px;
+            }
+
+            .child-modal-body {
+                padding: 20px;
             }
         }
 
@@ -312,6 +620,20 @@
 
             .child-action {
                 margin-left: 0;
+            }
+
+            .identity-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .child-modal-header h2 {
+                font-size: 20px;
+            }
+
+            .modal-child-avatar {
+                width: 54px;
+                height: 54px;
+                font-size: 21px;
             }
         }
     </style>
@@ -365,10 +687,12 @@
             <span>⭐</span>
             Bintang Prestasi
         </a>
-		<a href="guru-absensi.html" class="menu-item">
-           <span>📅</span>
+
+        <a href="guru-absensi.html" class="menu-item">
+            <span>📅</span>
             Absensi
-		</a>
+        </a>
+
         <a href="guru-pengumuman.html" class="menu-item">
             <span>📢</span>
             Pengumuman
@@ -402,8 +726,6 @@
 
 <main class="main-content">
 
-    <!-- TOPBAR -->
-
     <header class="topbar">
 
         <button
@@ -429,8 +751,6 @@
                 🔔
                 <span class="notification-dot"></span>
             </button>
-
-            <!-- PROFILE GURU -->
 
             <div class="profile-wrapper">
 
@@ -490,13 +810,7 @@
     </header>
 
 
-    <!-- ================================
-         CONTENT
-    ================================= -->
-
     <section class="page-content">
-
-        <!-- WELCOME -->
 
         <div class="welcome-section">
 
@@ -516,8 +830,6 @@
         </div>
 
 
-        <!-- STATISTICS -->
-
         <div class="section-heading">
 
             <div>
@@ -529,6 +841,7 @@
             </div>
 
         </div>
+
 
         <div class="stats-grid">
 
@@ -597,8 +910,6 @@
         </div>
 
 
-        <!-- CHILD LIST -->
-
         <div class="section-heading">
 
             <div>
@@ -611,6 +922,7 @@
 
         </div>
 
+
         <div id="childrenList">
 
             <div class="loading-box">
@@ -619,8 +931,6 @@
 
         </div>
 
-
-        <!-- QUICK MENU -->
 
         <div class="section-heading">
 
@@ -633,6 +943,7 @@
             </div>
 
         </div>
+
 
         <div class="quick-menu">
 
@@ -751,12 +1062,85 @@
 
 
 <!-- ================================
-     JAVASCRIPT
+     CHILD PROFILE MODAL
 ================================= -->
+
+<div
+    class="child-modal"
+    id="childModal"
+    aria-hidden="true"
+>
+
+    <div
+        class="child-modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalChildName"
+    >
+
+        <div class="child-modal-header">
+
+            <button
+                type="button"
+                class="modal-close"
+                id="modalClose"
+                aria-label="Tutup"
+            >
+                ×
+            </button>
+
+            <div class="child-modal-header-content">
+
+                <div
+                    class="modal-child-avatar"
+                    id="modalChildAvatar"
+                >
+                    A
+                </div>
+
+                <div>
+
+                    <h2 id="modalChildName">
+                        Profil Anak
+                    </h2>
+
+                    <p id="modalChildClass">
+                        -
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="child-modal-body"
+            id="childModalBody"
+        >
+
+            <div class="modal-loading">
+                Memuat data anak...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 <script>
 
     let currentGuruId = null;
+
+    /*
+     * Cache data siswa.
+     * Jadi ketika popup dibuka,
+     * kita tidak perlu query children lagi.
+     */
+    let allChildrenData = [];
 
 
     /* =====================================
@@ -848,8 +1232,6 @@
         }
 
 
-        /* KHUSUS GURU */
-
         if (profile.role !== 'guru') {
 
             alert(
@@ -903,10 +1285,83 @@
 
 
     /* =====================================
+       CALCULATE AGE
+    ===================================== */
+
+    function calculateAge(dateOfBirth) {
+
+        if (!dateOfBirth) {
+            return '-';
+        }
+
+        const birth =
+            new Date(
+                dateOfBirth + 'T00:00:00'
+            );
+
+        const today =
+            new Date();
+
+        let age =
+            today.getFullYear() -
+            birth.getFullYear();
+
+        const monthDifference =
+            today.getMonth() -
+            birth.getMonth();
+
+        if (
+            monthDifference < 0 ||
+            (
+                monthDifference === 0 &&
+                today.getDate() < birth.getDate()
+            )
+        ) {
+
+            age--;
+
+        }
+
+        return age >= 0
+            ? `${age} tahun`
+            : '-';
+    }
+
+
+    /* =====================================
+       FORMAT DATE
+    ===================================== */
+
+    function formatDate(dateValue) {
+
+        if (!dateValue) {
+            return '-';
+        }
+
+        return new Date(
+            dateValue + 'T00:00:00'
+        ).toLocaleDateString(
+            'id-ID',
+            {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            }
+        );
+    }
+
+
+    /* =====================================
        LOAD CHILDREN
     ===================================== */
 
     async function loadChildren() {
+
+        const childrenList =
+            document.getElementById(
+                'childrenList'
+            );
+
 
         const {
             data: children,
@@ -914,7 +1369,7 @@
         } = await supabaseClient
             .from('children')
             .select(
-                'id, nama, kelas, tahun_ajaran'
+                'id, nama, kelas, tahun_ajaran, tanggal_lahir'
             )
             .order(
                 'nama',
@@ -931,9 +1386,7 @@
                 error
             );
 
-            document.getElementById(
-                'childrenList'
-            ).innerHTML = `
+            childrenList.innerHTML = `
                 <div class="empty-box">
                     Gagal memuat data siswa.
                 </div>
@@ -943,23 +1396,18 @@
         }
 
 
+        allChildrenData =
+            children || [];
+
+
         document.getElementById(
             'totalChildren'
         ).textContent =
-            children
-                ? children.length
-                : 0;
-
-
-        const childrenList =
-            document.getElementById(
-                'childrenList'
-            );
+            allChildrenData.length;
 
 
         if (
-            !children ||
-            children.length === 0
+            allChildrenData.length === 0
         ) {
 
             childrenList.innerHTML = `
@@ -975,67 +1423,830 @@
         childrenList.innerHTML = '';
 
 
-        children.forEach(child => {
+        allChildrenData.forEach(
+            child => {
 
-            const card =
-                document.createElement('div');
+                const card =
+                    document.createElement(
+                        'div'
+                    );
 
-            card.className =
-                'child-card';
-
-
-            const initial =
-                (child.nama || 'S')
-                    .trim()
-                    .charAt(0)
-                    .toUpperCase();
+                card.className =
+                    'child-card';
 
 
-            card.innerHTML = `
+                const initial =
+                    (child.nama || 'S')
+                        .trim()
+                        .charAt(0)
+                        .toUpperCase();
 
-                <div class="child-avatar">
-                    ${initial}
+
+                card.innerHTML = `
+
+                    <div class="child-avatar">
+                        ${initial}
+                    </div>
+
+                    <div class="child-info">
+
+                        <span class="small-label">
+                            SISWA
+                        </span>
+
+                        <h2>
+                            ${escapeHtml(
+                                child.nama
+                            )}
+                        </h2>
+
+                        <p>
+                            ${escapeHtml(
+                                child.kelas || '-'
+                            )}
+
+                            ${
+                                child.tahun_ajaran
+                                    ? ' • ' +
+                                      escapeHtml(
+                                          child.tahun_ajaran
+                                      )
+                                    : ''
+                            }
+                        </p>
+
+                    </div>
+
+                    <div class="child-action">
+
+                        <button
+                            type="button"
+                            class="view-child-btn"
+                        >
+                            Lihat Data
+                        </button>
+
+                    </div>
+                `;
+
+
+                const button =
+                    card.querySelector(
+                        '.view-child-btn'
+                    );
+
+
+                button.addEventListener(
+                    'click',
+                    () => {
+                        openChildProfile(
+                            child.id
+                        );
+                    }
+                );
+
+
+                childrenList.appendChild(
+                    card
+                );
+
+            }
+        );
+
+
+        return allChildrenData;
+    }
+
+
+    /* =====================================
+       OPEN CHILD PROFILE
+    ===================================== */
+
+    async function openChildProfile(
+        childId
+    ) {
+
+        const modal =
+            document.getElementById(
+                'childModal'
+            );
+
+        const modalBody =
+            document.getElementById(
+                'childModalBody'
+            );
+
+
+        modal.classList.add(
+            'show'
+        );
+
+        modal.setAttribute(
+            'aria-hidden',
+            'false'
+        );
+
+        document.body.style.overflow =
+            'hidden';
+
+
+        modalBody.innerHTML = `
+            <div class="modal-loading">
+                Memuat data anak...
+            </div>
+        `;
+
+
+        /* =================================
+           AMBIL DATA ANAK DARI CACHE
+        ================================= */
+
+        const child =
+            allChildrenData.find(
+                item =>
+                    item.id === childId
+            );
+
+
+        if (!child) {
+
+            modalBody.innerHTML = `
+                <div class="empty-box">
+                    Data anak tidak ditemukan.
                 </div>
+            `;
 
-                <div class="child-info">
+            return;
+        }
 
-                    <span class="small-label">
-                        SISWA
+
+        const initial =
+            (child.nama || 'S')
+                .trim()
+                .charAt(0)
+                .toUpperCase();
+
+
+        document.getElementById(
+            'modalChildAvatar'
+        ).textContent =
+            initial;
+
+
+        document.getElementById(
+            'modalChildName'
+        ).textContent =
+            child.nama || 'Anak';
+
+
+        document.getElementById(
+            'modalChildClass'
+        ).textContent =
+            child.kelas || '-';
+
+
+        /* =================================
+           30 HARI TERAKHIR
+        ================================= */
+
+        const today =
+            new Date();
+
+
+        const startDate =
+            new Date(today);
+
+
+        startDate.setDate(
+            startDate.getDate() - 29
+        );
+
+
+        const startDateString =
+            `${startDate.getFullYear()}-${String(
+                startDate.getMonth() + 1
+            ).padStart(2, '0')}-${String(
+                startDate.getDate()
+            ).padStart(2, '0')`;
+
+
+        const todayString =
+            getTodayLocal();
+
+
+        /* =================================
+           LOAD SEMUA DETAIL SEKALIGUS
+        ================================= */
+
+        const [
+            attendanceResult,
+            achievementsResult,
+            lessonsResult
+        ] = await Promise.all([
+
+            supabaseClient
+                .from('attendance')
+                .select(
+                    'id, tanggal, status'
+                )
+                .eq(
+                    'child_id',
+                    child.id
+                ),
+
+            supabaseClient
+                .from('achievements')
+                .select(`
+                    murojaah_surat,
+                    mendengarkan_20x,
+                    murojaah_tibyan,
+                    tarbiyah
+                `)
+                .eq(
+                    'child_id',
+                    child.id
+                ),
+
+            child.kelas
+                ? supabaseClient
+                    .from('daily_lessons')
+                    .select(
+                        'tanggal, kelas, kegiatan_belajar'
+                    )
+                    .eq(
+                        'kelas',
+                        child.kelas
+                    )
+                    .gte(
+                        'tanggal',
+                        startDateString
+                    )
+                    .lte(
+                        'tanggal',
+                        todayString
+                    )
+                : Promise.resolve({
+                    data: [],
+                    error: null
+                })
+
+        ]);
+
+
+        /* =================================
+           ABSENSI
+        ================================= */
+
+        if (
+            attendanceResult.error
+        ) {
+
+            console.error(
+                'Child attendance error:',
+                attendanceResult.error
+            );
+
+        }
+
+
+        const attendance =
+            attendanceResult.data || [];
+
+
+        const totalAttendance =
+            attendance.length;
+
+
+        const attendanceCount = {
+
+            hadir: 0,
+            sakit: 0,
+            izin: 0,
+            alfa: 0
+
+        };
+
+
+        attendance.forEach(
+            item => {
+
+                const status =
+                    String(
+                        item.status || ''
+                    )
+                    .toLowerCase()
+                    .trim();
+
+
+                if (
+                    Object.prototype.hasOwnProperty.call(
+                        attendanceCount,
+                        status
+                    )
+                ) {
+
+                    attendanceCount[
+                        status
+                    ]++;
+
+                }
+
+            }
+        );
+
+
+        function attendancePercent(
+            count
+        ) {
+
+            if (
+                !totalAttendance
+            ) {
+
+                return 0;
+
+            }
+
+
+            return Math.round(
+                (
+                    count /
+                    totalAttendance
+                ) * 100
+            );
+
+        }
+
+
+        /* =================================
+           BINTANG PRESTASI
+        ================================= */
+
+        if (
+            achievementsResult.error
+        ) {
+
+            console.error(
+                'Achievements error:',
+                achievementsResult.error
+            );
+
+        }
+
+
+        const achievements =
+            achievementsResult.data || [];
+
+
+        let totalStars = 0;
+
+
+        achievements.forEach(
+            item => {
+
+                if (
+                    item.murojaah_surat
+                ) {
+
+                    totalStars++;
+
+                }
+
+
+                if (
+                    item.mendengarkan_20x
+                ) {
+
+                    totalStars++;
+
+                }
+
+
+                if (
+                    item.murojaah_tibyan
+                ) {
+
+                    totalStars++;
+
+                }
+
+
+                if (
+                    item.tarbiyah
+                ) {
+
+                    totalStars++;
+
+                }
+
+            }
+        );
+
+
+        /* =================================
+           PEMBELAJARAN
+        ================================= */
+
+        let learningPercent = 0;
+
+        let learningDays = 0;
+
+        const learningTotalDays =
+            30;
+
+
+        if (
+            lessonsResult.error
+        ) {
+
+            console.error(
+                'Learning error:',
+                lessonsResult.error
+            );
+
+        } else {
+
+            const lessonDates =
+                new Set();
+
+
+            (
+                lessonsResult.data || []
+            ).forEach(
+                lesson => {
+
+                    if (
+                        lesson.tanggal &&
+                        lesson.kegiatan_belajar &&
+                        String(
+                            lesson.kegiatan_belajar
+                        ).trim()
+                    ) {
+
+                        lessonDates.add(
+                            lesson.tanggal
+                        );
+
+                    }
+
+                }
+            );
+
+
+            learningDays =
+                lessonDates.size;
+
+
+            learningPercent =
+                Math.min(
+                    100,
+                    Math.round(
+                        (
+                            learningDays /
+                            learningTotalDays
+                        ) * 100
+                    )
+                );
+
+        }
+
+
+        /* =================================
+           RENDER MODAL
+        ================================= */
+
+        modalBody.innerHTML = `
+
+            <div class="identity-grid">
+
+                <div class="identity-item">
+
+                    <span>
+                        Nama
                     </span>
 
-                    <h2>
-                        ${escapeHtml(child.nama)}
-                    </h2>
+                    <strong>
+                        ${escapeHtml(
+                            child.nama || '-'
+                        )}
+                    </strong>
 
-                    <p>
-                        ${escapeHtml(child.kelas || '-')}
-                        ${child.tahun_ajaran
-                            ? ' • ' + escapeHtml(child.tahun_ajaran)
-                            : ''
-                        }
+                </div>
+
+
+                <div class="identity-item">
+
+                    <span>
+                        Usia
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            calculateAge(
+                                child.tanggal_lahir
+                            )
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="identity-item">
+
+                    <span>
+                        Tanggal Lahir
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            formatDate(
+                                child.tanggal_lahir
+                            )
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="identity-item">
+
+                    <span>
+                        Kelas
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            child.kelas || '-'
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="identity-item">
+
+                    <span>
+                        Tahun Ajaran
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            child.tahun_ajaran || '-'
+                        )}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- BINTANG PRESTASI -->
+
+            <div class="profile-section">
+
+                <div class="profile-section-title">
+
+                    <span>⭐</span>
+
+                    <h3>
+                        Bintang Prestasi
+                    </h3>
+
+                </div>
+
+                <div class="achievement-card">
+
+                    <div class="achievement-number">
+                        ${totalStars} ⭐
+                    </div>
+
+                    <div class="achievement-label">
+                        Total bintang prestasi
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ABSENSI -->
+
+            <div class="profile-section">
+
+                <div class="profile-section-title">
+
+                    <span>📅</span>
+
+                    <h3>
+                        Kehadiran
+                    </h3>
+
+                </div>
+
+                <div class="attendance-grid">
+
+                    <div class="attendance-item">
+
+                        <strong>
+                            ${attendancePercent(
+                                attendanceCount.hadir
+                            )}%
+                        </strong>
+
+                        <span>
+                            Hadir
+                        </span>
+
+                    </div>
+
+
+                    <div class="attendance-item">
+
+                        <strong>
+                            ${attendancePercent(
+                                attendanceCount.sakit
+                            )}%
+                        </strong>
+
+                        <span>
+                            Sakit
+                        </span>
+
+                    </div>
+
+
+                    <div class="attendance-item">
+
+                        <strong>
+                            ${attendancePercent(
+                                attendanceCount.izin
+                            )}%
+                        </strong>
+
+                        <span>
+                            Izin
+                        </span>
+
+                    </div>
+
+
+                    <div class="attendance-item">
+
+                        <strong>
+                            ${attendancePercent(
+                                attendanceCount.alfa
+                            )}%
+                        </strong>
+
+                        <span>
+                            Alfa
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PEMBELAJARAN -->
+
+            <div class="profile-section">
+
+                <div class="profile-section-title">
+
+                    <span>📚</span>
+
+                    <h3>
+                        Pembelajaran
+                    </h3>
+
+                </div>
+
+                <div class="learning-card">
+
+                    <div class="learning-top">
+
+                        <span>
+                            Pembelajaran tercatat
+                            dalam 30 hari terakhir
+                        </span>
+
+                        <div class="learning-percent">
+                            ${learningPercent}%
+                        </div>
+
+                    </div>
+
+                    <div class="progress-bar">
+
+                        <div
+                            class="progress-fill"
+                            style="width: ${learningPercent}%"
+                        ></div>
+
+                    </div>
+
+                    <p class="learning-note">
+                        Tercatat ${learningDays}
+                        dari ${learningTotalDays}
+                        hari pembelajaran.
                     </p>
 
                 </div>
 
-                <div class="child-action">
+            </div>
 
-                    <a
-                        href="guru-child.html?child_id=${encodeURIComponent(child.id)}"
-                    >
-                        Lihat Data
-                    </a>
-
-                </div>
-            `;
-
-
-            childrenList.appendChild(card);
-
-        });
-
-
-        return children;
+        `;
     }
+
+
+    /* =====================================
+       CLOSE CHILD PROFILE
+    ===================================== */
+
+    function closeChildProfile() {
+
+        const modal =
+            document.getElementById(
+                'childModal'
+            );
+
+
+        modal.classList.remove(
+            'show'
+        );
+
+
+        modal.setAttribute(
+            'aria-hidden',
+            'true'
+        );
+
+
+        document.body.style.overflow =
+            '';
+
+    }
+
+
+    const modalClose =
+        document.getElementById(
+            'modalClose'
+        );
+
+
+    if (modalClose) {
+
+        modalClose.addEventListener(
+            'click',
+            closeChildProfile
+        );
+
+    }
+
+
+    const childModal =
+        document.getElementById(
+            'childModal'
+        );
+
+
+    if (childModal) {
+
+        childModal.addEventListener(
+            'click',
+            event => {
+
+                if (
+                    event.target ===
+                    childModal
+                ) {
+
+                    closeChildProfile();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    document.addEventListener(
+        'keydown',
+        event => {
+
+            if (
+                event.key === 'Escape'
+            ) {
+
+                closeChildProfile();
+
+            }
+
+        }
+    );
 
 
     /* =====================================
@@ -1053,7 +2264,9 @@
             error
         } = await supabaseClient
             .from('attendance')
-            .select('id, status')
+            .select(
+                'id, status'
+            )
             .eq(
                 'tanggal',
                 today
@@ -1073,13 +2286,17 @@
                 '—';
 
             return;
+
         }
 
 
         const hadir =
-            (data || []).filter(
+            (
+                data || []
+            ).filter(
                 item =>
-                    item.status === 'hadir'
+                    item.status ===
+                    'hadir'
             ).length;
 
 
@@ -1087,6 +2304,7 @@
             'todayPresent'
         ).textContent =
             hadir;
+
     }
 
 
@@ -1101,7 +2319,9 @@
             error
         } = await supabaseClient
             .from('parent_notes')
-            .select('id, status')
+            .select(
+                'id, status'
+            )
             .eq(
                 'status',
                 'baru'
@@ -1121,6 +2341,7 @@
                 '—';
 
             return;
+
         }
 
 
@@ -1130,22 +2351,38 @@
             data
                 ? data.length
                 : 0;
+
     }
 
 
     /* =====================================
        ESCAPE HTML
-       Mencegah data database merusak HTML.
     ===================================== */
 
     function escapeHtml(value) {
 
         return String(value)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+            .replace(
+                /&/g,
+                '&amp;'
+            )
+            .replace(
+                /</g,
+                '&lt;'
+            )
+            .replace(
+                />/g,
+                '&gt;'
+            )
+            .replace(
+                /"/g,
+                '&quot;'
+            )
+            .replace(
+                /'/g,
+                '&#039;'
+            );
+
     }
 
 
@@ -1157,6 +2394,7 @@
         document.getElementById(
             'profileButton'
         );
+
 
     const profileDropdown =
         document.getElementById(
@@ -1217,6 +2455,7 @@
             'menuToggle'
         );
 
+
     const sidebar =
         document.querySelector(
             '.sidebar'
@@ -1257,11 +2496,19 @@
         }
 
 
-        await loadChildren();
+        /*
+         * Semua data dashboard dimuat
+         * secara bersamaan.
+         */
+        await Promise.all([
 
-        await loadTodayAttendance();
+            loadChildren(),
 
-        await loadNewMessages();
+            loadTodayAttendance(),
+
+            loadNewMessages()
+
+        ]);
 
     }
 

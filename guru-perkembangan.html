@@ -1,5 +1,7 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,6 +41,37 @@
             margin: 0;
             color: var(--text-light);
             font-size: 14px;
+        }
+
+        /* FILTER KELAS */
+        .class-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .class-filter button {
+            border: 1px solid var(--border);
+            background: var(--white);
+            color: var(--text);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .class-filter button:hover {
+            border-color: var(--orange);
+            color: var(--orange-dark);
+        }
+
+        .class-filter button.active {
+            background: var(--orange);
+            border-color: var(--orange);
+            color: white;
         }
 
         .form-card {
@@ -161,6 +194,15 @@
                 font-size: 22px;
             }
 
+            .class-filter {
+                gap: 8px;
+            }
+
+            .class-filter button {
+                flex: 1;
+                padding: 10px 12px;
+            }
+
         }
 
     </style>
@@ -251,28 +293,50 @@
 
             <div class="profile-wrapper">
 
-                <button class="profile-mini" id="profileButton" type="button">
+                <button
+                    class="profile-mini"
+                    id="profileButton"
+                    type="button"
+                >
 
-                    <div class="profile-avatar" id="guruAvatar">
+                    <div
+                        class="profile-avatar"
+                        id="guruAvatar"
+                    >
                         G
                     </div>
 
                     <div class="profile-info">
-                        <strong id="guruName">Guru</strong>
-                        <span id="guruRole">Guru</span>
+
+                        <strong id="guruName">
+                            Guru
+                        </strong>
+
+                        <span id="guruRole">
+                            Guru
+                        </span>
+
                     </div>
 
-                    <span class="profile-arrow">⌄</span>
+                    <span class="profile-arrow">
+                        ⌄
+                    </span>
 
                 </button>
 
-                <div class="profile-dropdown" id="profileDropdown">
+                <div
+                    class="profile-dropdown"
+                    id="profileDropdown"
+                >
 
                     <a href="pengaturan.html">
                         ⚙ Pengaturan
                     </a>
 
-                    <a href="index.html" class="dropdown-logout">
+                    <a
+                        href="index.html"
+                        class="dropdown-logout"
+                    >
                         ↪ Keluar
                     </a>
 
@@ -293,18 +357,47 @@
                 👩‍🏫 GURU
             </div>
 
-            <h1>Pembelajaran Hari Ini</h1>
+            <h1>
+                Pembelajaran Hari Ini
+            </h1>
 
             <p>
-                Isi kegiatan belajar dan catatan murojaah yang akan diterima orang tua.
+                Isi kegiatan belajar dan catatan murojaah
+                yang akan diterima orang tua.
             </p>
 
         </section>
 
 
+        <!-- FILTER KELAS -->
+        <div class="class-filter">
+
+            <button
+                type="button"
+                class="class-filter-btn active"
+                data-class="Kelas Alif 'Ula"
+            >
+                Alif 'Ula
+            </button>
+
+            <button
+                type="button"
+                class="class-filter-btn"
+                data-class="Kelas Alif Tsani"
+            >
+                Alif Tsani
+            </button>
+
+        </div>
+
+
         <div class="form-card">
 
-            <div id="statusMessage" class="status-message"></div>
+            <div
+                id="statusMessage"
+                class="status-message"
+            ></div>
+
 
             <form id="learningForm">
 
@@ -396,7 +489,10 @@
             </form>
 
 
-            <div id="existingInfo" class="existing-info"></div>
+            <div
+                id="existingInfo"
+                class="existing-info"
+            ></div>
 
         </div>
 
@@ -408,33 +504,68 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 
+
 <script>
 
 let currentGuruId = null;
+
+
+/*
+ * Kelas yang sedang aktif.
+ * Default: Alif 'Ula
+ */
+let activeClass = "Kelas Alif 'Ula";
 
 
 function getToday() {
 
     const now = new Date();
 
-    const year = now.getFullYear();
+    const year =
+        now.getFullYear();
 
-    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const month =
+        String(
+            now.getMonth() + 1
+        ).padStart(2, '0');
 
-    const day = String(now.getDate()).padStart(2, '0');
+    const day =
+        String(
+            now.getDate()
+        ).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
 
 }
 
 
+function getClassLabel(classValue) {
+
+    if (classValue === "Kelas Alif 'Ula") {
+        return "Alif 'Ula";
+    }
+
+    if (classValue === "Kelas Alif Tsani") {
+        return "Alif Tsani";
+    }
+
+    return classValue;
+
+}
+
+
 function showStatus(message, type) {
 
-    const element = document.getElementById('statusMessage');
+    const element =
+        document.getElementById(
+            'statusMessage'
+        );
 
-    element.textContent = message;
+    element.textContent =
+        message;
 
-    element.className = `status-message ${type}`;
+    element.className =
+        `status-message ${type}`;
 
 }
 
@@ -444,11 +575,19 @@ async function loadGuruProfile() {
     const {
         data: authData,
         error: authError
-    } = await supabaseClient.auth.getUser();
+    } =
+        await supabaseClient
+            .auth
+            .getUser();
 
-    if (authError || !authData.user) {
 
-        window.location.href = 'login.html';
+    if (
+        authError ||
+        !authData.user
+    ) {
+
+        window.location.href =
+            'login.html';
 
         return false;
 
@@ -458,46 +597,78 @@ async function loadGuruProfile() {
     const {
         data: profile,
         error: profileError
-    } = await supabaseClient
-        .from('users')
-        .select('id, nama, role, auth_id')
-        .eq('auth_id', authData.user.id)
-        .maybeSingle();
+    } =
+        await supabaseClient
+            .from('users')
+            .select(
+                'id, nama, role, auth_id'
+            )
+            .eq(
+                'auth_id',
+                authData.user.id
+            )
+            .maybeSingle();
 
 
-    if (profileError || !profile) {
+    if (
+        profileError ||
+        !profile
+    ) {
 
-        alert('Profil Guru tidak ditemukan.');
+        alert(
+            'Profil Guru tidak ditemukan.'
+        );
 
-        window.location.href = 'login.html';
+        window.location.href =
+            'login.html';
 
         return false;
 
     }
 
 
-    if (profile.role !== 'guru') {
+    if (
+        profile.role !== 'guru'
+    ) {
 
-        alert('Halaman ini hanya dapat diakses oleh Guru.');
+        alert(
+            'Halaman ini hanya dapat diakses oleh Guru.'
+        );
 
-        window.location.href = 'login.html';
+        window.location.href =
+            'login.html';
 
         return false;
 
     }
 
 
-    currentGuruId = profile.id;
+    currentGuruId =
+        profile.id;
 
 
-    const guruName = profile.nama || 'Guru';
+    const guruName =
+        profile.nama || 'Guru';
 
-    document.getElementById('guruName').textContent = guruName;
 
-    document.getElementById('guruRole').textContent = 'Guru';
+    document.getElementById(
+        'guruName'
+    ).textContent =
+        guruName;
 
-    document.getElementById('guruAvatar').textContent =
-        guruName.charAt(0).toUpperCase();
+
+    document.getElementById(
+        'guruRole'
+    ).textContent =
+        'Guru';
+
+
+    document.getElementById(
+        'guruAvatar'
+    ).textContent =
+        guruName
+            .charAt(0)
+            .toUpperCase();
 
 
     return true;
@@ -505,34 +676,68 @@ async function loadGuruProfile() {
 }
 
 
+/*
+ * Mengambil pembelajaran berdasarkan:
+ *
+ * 1. tanggal
+ * 2. kelas aktif
+ *
+ * Jadi Alif 'Ula dan Alif Tsani
+ * bisa memiliki pembelajaran berbeda
+ * pada tanggal yang sama.
+ */
 async function loadExistingLesson() {
 
-    const tanggal = document.getElementById('tanggal').value;
+    const tanggal =
+        document.getElementById(
+            'tanggal'
+        ).value;
 
-    if (!tanggal) return;
+
+    if (!tanggal) {
+        return;
+    }
 
 
     const {
         data,
         error
-    } = await supabaseClient
-        .from('daily_lessons')
-        .select(`
-            id,
-            tanggal,
-            kegiatan_belajar,
-            murajaah_rumah
-        `)
-        .eq('tanggal', tanggal)
-        .maybeSingle();
+    } =
+        await supabaseClient
+            .from('daily_lessons')
+            .select(`
+                id,
+                tanggal,
+                kelas,
+                kegiatan_belajar,
+                murajaah_rumah
+            `)
+            .eq(
+                'tanggal',
+                tanggal
+            )
+            .eq(
+                'kelas',
+                activeClass
+            )
+            .maybeSingle();
 
 
-    const existingInfo = document.getElementById('existingInfo');
+    const existingInfo =
+        document.getElementById(
+            'existingInfo'
+        );
 
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            'Gagal mengambil pembelajaran:',
+            error
+        );
+
+        existingInfo.style.display =
+            'none';
 
         return;
 
@@ -541,48 +746,84 @@ async function loadExistingLesson() {
 
     if (!data) {
 
-        document.getElementById('kegiatanBelajar').value = '';
+        document.getElementById(
+            'kegiatanBelajar'
+        ).value = '';
 
-        document.getElementById('murajaahRumah').value = '';
 
-        existingInfo.style.display = 'none';
+        document.getElementById(
+            'murajaahRumah'
+        ).value = '';
+
+
+        existingInfo.style.display =
+            'none';
 
         return;
 
     }
 
 
-    document.getElementById('kegiatanBelajar').value =
+    document.getElementById(
+        'kegiatanBelajar'
+    ).value =
         data.kegiatan_belajar || '';
 
-    document.getElementById('murajaahRumah').value =
+
+    document.getElementById(
+        'murajaahRumah'
+    ).value =
         data.murajaah_rumah || '';
 
 
-    existingInfo.style.display = 'block';
+    existingInfo.style.display =
+        'block';
+
 
     existingInfo.textContent =
-        'ℹ️ Pembelajaran untuk tanggal ini sudah ada. Jika disimpan kembali, data akan diperbarui.';
+        `ℹ️ Pembelajaran ${getClassLabel(activeClass)} untuk tanggal ini sudah ada. Jika disimpan kembali, data akan diperbarui.`;
 
 }
 
 
+/*
+ * Menyimpan pembelajaran berdasarkan:
+ *
+ * tanggal + kelas
+ */
 async function saveLesson(event) {
 
     event.preventDefault();
 
 
     const tanggal =
-        document.getElementById('tanggal').value;
+        document.getElementById(
+            'tanggal'
+        ).value;
+
 
     const kegiatanBelajar =
-        document.getElementById('kegiatanBelajar').value.trim();
+        document
+            .getElementById(
+                'kegiatanBelajar'
+            )
+            .value
+            .trim();
+
 
     const murajaahRumah =
-        document.getElementById('murajaahRumah').value.trim();
+        document
+            .getElementById(
+                'murajaahRumah'
+            )
+            .value
+            .trim();
 
 
-    if (!tanggal || !kegiatanBelajar) {
+    if (
+        !tanggal ||
+        !kegiatanBelajar
+    ) {
 
         showStatus(
             'Tanggal dan kegiatan belajar wajib diisi.',
@@ -595,23 +836,41 @@ async function saveLesson(event) {
 
 
     const saveButton =
-        document.getElementById('saveButton');
+        document.getElementById(
+            'saveButton'
+        );
 
-    saveButton.disabled = true;
 
-    saveButton.textContent = 'Menyimpan...';
+    saveButton.disabled =
+        true;
+
+
+    saveButton.textContent =
+        'Menyimpan...';
 
 
     try {
 
+        /*
+         * Cari data berdasarkan
+         * tanggal DAN kelas.
+         */
         const {
             data: existing,
             error: existingError
-        } = await supabaseClient
-            .from('daily_lessons')
-            .select('id')
-            .eq('tanggal', tanggal)
-            .maybeSingle();
+        } =
+            await supabaseClient
+                .from('daily_lessons')
+                .select('id')
+                .eq(
+                    'tanggal',
+                    tanggal
+                )
+                .eq(
+                    'kelas',
+                    activeClass
+                )
+                .maybeSingle();
 
 
         if (existingError) {
@@ -622,28 +881,66 @@ async function saveLesson(event) {
         let result;
 
 
+        /*
+         * Jika sudah ada,
+         * update pembelajaran kelas tersebut.
+         */
         if (existing) {
 
-            result = await supabaseClient
-                .from('daily_lessons')
-                .update({
-                    kegiatan_belajar: kegiatanBelajar,
-                    murajaah_rumah: murajaahRumah,
-                    guru_id: currentGuruId,
-                    updated_at: new Date().toISOString()
-                })
-                .eq('id', existing.id);
+            result =
+                await supabaseClient
+                    .from('daily_lessons')
+                    .update({
 
-        } else {
+                        kegiatan_belajar:
+                            kegiatanBelajar,
 
-            result = await supabaseClient
-                .from('daily_lessons')
-                .insert({
-                    tanggal: tanggal,
-                    kegiatan_belajar: kegiatanBelajar,
-                    murajaah_rumah: murajaahRumah,
-                    guru_id: currentGuruId
-                });
+                        murajaah_rumah:
+                            murajaahRumah,
+
+                        guru_id:
+                            currentGuruId,
+
+                        updated_at:
+                            new Date()
+                                .toISOString()
+
+                    })
+                    .eq(
+                        'id',
+                        existing.id
+                    );
+
+        }
+
+
+        /*
+         * Jika belum ada,
+         * buat data baru untuk kelas tersebut.
+         */
+        else {
+
+            result =
+                await supabaseClient
+                    .from('daily_lessons')
+                    .insert({
+
+                        tanggal:
+                            tanggal,
+
+                        kelas:
+                            activeClass,
+
+                        kegiatan_belajar:
+                            kegiatanBelajar,
+
+                        murajaah_rumah:
+                            murajaahRumah,
+
+                        guru_id:
+                            currentGuruId
+
+                    });
 
         }
 
@@ -654,7 +951,7 @@ async function saveLesson(event) {
 
 
         showStatus(
-            'Pembelajaran berhasil disimpan. Orang tua sekarang dapat melihat informasinya.',
+            `Pembelajaran ${getClassLabel(activeClass)} berhasil disimpan. Orang tua sekarang dapat melihat informasinya.`,
             'success'
         );
 
@@ -664,91 +961,256 @@ async function saveLesson(event) {
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            error
+        );
+
 
         showStatus(
-            'Gagal menyimpan pembelajaran: ' + error.message,
+            'Gagal menyimpan pembelajaran: ' +
+            error.message,
             'error'
         );
 
     } finally {
 
-        saveButton.disabled = false;
+        saveButton.disabled =
+            false;
 
-        saveButton.textContent = '💾 Simpan Pembelajaran';
+
+        saveButton.textContent =
+            '💾 Simpan Pembelajaran';
 
     }
 
 }
 
 
+/*
+ * FILTER KELAS
+ */
+function setupClassFilter() {
+
+    const buttons =
+        document.querySelectorAll(
+            '.class-filter-btn'
+        );
+
+
+    buttons.forEach(button => {
+
+        button.addEventListener(
+            'click',
+            async () => {
+
+                activeClass =
+                    button.dataset.class;
+
+
+                /*
+                 * Ubah tombol aktif
+                 */
+                buttons.forEach(btn => {
+
+                    btn.classList.remove(
+                        'active'
+                    );
+
+                });
+
+
+                button.classList.add(
+                    'active'
+                );
+
+
+                /*
+                 * Bersihkan pesan status
+                 */
+                const statusMessage =
+                    document.getElementById(
+                        'statusMessage'
+                    );
+
+
+                statusMessage.textContent =
+                    '';
+
+
+                statusMessage.className =
+                    'status-message';
+
+
+                /*
+                 * Tutup informasi data lama
+                 */
+                const existingInfo =
+                    document.getElementById(
+                        'existingInfo'
+                    );
+
+
+                existingInfo.style.display =
+                    'none';
+
+
+                /*
+                 * Load pembelajaran
+                 * khusus kelas yang dipilih.
+                 */
+                await loadExistingLesson();
+
+            }
+        );
+
+    });
+
+}
+
+
+/*
+ * Saat tanggal berubah,
+ * ambil data berdasarkan
+ * tanggal + kelas aktif.
+ */
 document
-    .getElementById('tanggal')
-    .addEventListener('change', loadExistingLesson);
+    .getElementById(
+        'tanggal'
+    )
+    .addEventListener(
+        'change',
+        loadExistingLesson
+    );
 
 
+/*
+ * Submit form
+ */
 document
-    .getElementById('learningForm')
-    .addEventListener('submit', saveLesson);
+    .getElementById(
+        'learningForm'
+    )
+    .addEventListener(
+        'submit',
+        saveLesson
+    );
 
 
+/*
+ * Menu mobile
+ */
 const menuToggle =
-    document.querySelector('.menu-toggle');
+    document.querySelector(
+        '.menu-toggle'
+    );
+
 
 const sidebar =
-    document.querySelector('.sidebar');
+    document.querySelector(
+        '.sidebar'
+    );
 
 
-if (menuToggle && sidebar) {
+if (
+    menuToggle &&
+    sidebar
+) {
 
-    menuToggle.addEventListener('click', () => {
+    menuToggle.addEventListener(
+        'click',
+        () => {
 
-        sidebar.classList.toggle('show');
+            sidebar.classList.toggle(
+                'show'
+            );
 
-    });
+        }
+    );
 
 }
 
 
+/*
+ * Profile dropdown
+ */
 const profileButton =
-    document.querySelector('#profileButton');
+    document.querySelector(
+        '#profileButton'
+    );
+
 
 const profileDropdown =
-    document.querySelector('#profileDropdown');
+    document.querySelector(
+        '#profileDropdown'
+    );
 
 
-if (profileButton && profileDropdown) {
+if (
+    profileButton &&
+    profileDropdown
+) {
 
-    profileButton.addEventListener('click', (e) => {
+    profileButton.addEventListener(
+        'click',
+        (e) => {
 
-        e.stopPropagation();
+            e.stopPropagation();
 
-        profileDropdown.classList.toggle('show');
+            profileDropdown.classList.toggle(
+                'show'
+            );
 
-    });
+        }
+    );
 
 
-    document.addEventListener('click', () => {
+    document.addEventListener(
+        'click',
+        () => {
 
-        profileDropdown.classList.remove('show');
+            profileDropdown.classList.remove(
+                'show'
+            );
 
-    });
+        }
+    );
 
 }
 
 
+/*
+ * INIT
+ */
 async function init() {
 
     const profileLoaded =
         await loadGuruProfile();
 
-    if (!profileLoaded) return;
+
+    if (!profileLoaded) {
+        return;
+    }
 
 
-    document.getElementById('tanggal').value =
+    /*
+     * Pasang filter kelas
+     */
+    setupClassFilter();
+
+
+    /*
+     * Default tanggal hari ini
+     */
+    document.getElementById(
+        'tanggal'
+    ).value =
         getToday();
 
 
+    /*
+     * Load pembelajaran
+     * Alif 'Ula untuk hari ini
+     */
     await loadExistingLesson();
 
 }
@@ -760,3 +1222,4 @@ init();
 
 </body>
 </html>
+```

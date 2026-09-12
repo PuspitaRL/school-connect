@@ -26,6 +26,38 @@
             font-size: 14px;
         }
 
+        /* CLASS FILTER */
+        .class-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .class-filter-btn {
+            flex: 1;
+            padding: 11px 16px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            color: var(--text);
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.15s ease;
+        }
+
+        .class-filter-btn:hover {
+            background: var(--orange-light);
+            border-color: var(--orange);
+        }
+
+        .class-filter-btn.active {
+            background: var(--orange);
+            border-color: var(--orange);
+            color: white;
+        }
+
         /* WEEK CONTROL */
         .week-control {
             background: var(--white);
@@ -326,9 +358,48 @@
             display: none;
         }
 
+        /* FIX SIDEBAR & TOPBAR GURU */
+        .sidebar {
+            width: 250px;
+            overflow: hidden;
+        }
+
+        .main-content {
+            margin-left: 250px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .topbar-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .profile-wrapper {
+            position: relative;
+            flex-shrink: 0;
+        }
+
         @media (max-width: 768px) {
+
             .page-header h1 {
                 font-size: 22px;
+            }
+
+            .class-filter {
+                gap: 8px;
+            }
+
+            .class-filter-btn {
+                padding: 10px 8px;
+                font-size: 12px;
             }
 
             .week-control {
@@ -352,9 +423,23 @@
             .edit-hint {
                 font-size: 12px;
             }
+
+            .sidebar {
+                width: 250px;
+                min-width: 250px;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .topbar-right {
+                margin-left: auto;
+            }
         }
 
         @media (max-width: 480px) {
+
             .legend {
                 gap: 10px 15px;
             }
@@ -363,59 +448,6 @@
                 padding: 18px;
             }
         }
-        /* =========================================
-   FIX SIDEBAR & TOPBAR GURU
-========================================= */
-
-/* Samakan ukuran sidebar dengan halaman Guru lainnya */
-.sidebar {
-    width: 250px;
-    overflow:hidden
-}
-
-/* Pastikan area utama mengikuti lebar sidebar */
-.main-content {
-    margin-left: 250px;
-}
-
-/* Profil Guru + notifikasi selalu di kanan */
-.topbar {
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.topbar-right {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 15px;
-}
-
-/* Jangan biarkan profile terdorong */
-.profile-wrapper {
-    position: relative;
-    flex-shrink: 0;
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-
-    .sidebar {
-        width: 250px;
-        min-width: 250px;
-    }
-
-    .main-content {
-        margin-left: 0;
-    }
-
-    .topbar-right {
-        margin-left: auto;
-    }
-
-}
 
     </style>
 </head>
@@ -574,6 +606,26 @@
                 <p>
                     Pantau dan koreksi kehadiran seluruh anak.
                 </p>
+
+            </div>
+
+
+            <!-- CLASS FILTER -->
+            <div class="class-filter">
+
+                <button
+                    type="button"
+                    class="class-filter-btn active"
+                    data-class="Kelas Alif 'Ula">
+                    Alif 'Ula
+                </button>
+
+                <button
+                    type="button"
+                    class="class-filter-btn"
+                    data-class="Kelas Alif Tsani">
+                    Alif Tsani
+                </button>
 
             </div>
 
@@ -875,6 +927,9 @@
         const statusOptions =
             document.querySelectorAll('.status-option');
 
+        const classFilterButtons =
+            document.querySelectorAll('.class-filter-btn');
+
 
         /* =========================================
            STATE
@@ -883,6 +938,8 @@
         let currentGuruId = null;
 
         let children = [];
+
+        let activeClass = "Kelas Alif 'Ula";
 
         let currentWeekStart =
             getMonday(new Date());
@@ -1283,7 +1340,7 @@
                 attendanceBody.innerHTML = `
                     <tr>
                         <td colspan="7">
-                            Belum ada data anak.
+                            Tidak ada siswa di kelas ini.
                         </td>
                     </tr>
                 `;
@@ -1344,9 +1401,6 @@
                     );
 
 
-                    /*
-                     * HANYA SENIN - JUMAT
-                     */
                     for (
                         let day = 0;
                         day < 5;
@@ -1627,13 +1681,6 @@
 
             if (existingRecord) {
 
-                /*
-                 * UPDATE
-                 *
-                 * Keterangan dari orang tua
-                 * tetap dipertahankan.
-                 */
-
                 result =
                     await supabaseClient
                         .from('attendance')
@@ -1646,12 +1693,6 @@
                         );
 
             } else {
-
-                /*
-                 * INSERT
-                 *
-                 * Jika belum ada data absensi.
-                 */
 
                 result =
                     await supabaseClient
@@ -1730,6 +1771,10 @@
                     kelas,
                     tahun_ajaran
                 `)
+                .eq(
+                    'kelas',
+                    activeClass
+                )
                 .order(
                     'nama',
                     {
@@ -1767,6 +1812,46 @@
             await loadAttendance();
 
         }
+
+
+        /* =========================================
+           CLASS FILTER
+        ========================================= */
+
+        classFilterButtons.forEach(
+            button => {
+
+                button.addEventListener(
+                    'click',
+                    async () => {
+
+                        classFilterButtons.forEach(
+                            btn => {
+
+                                btn.classList.remove(
+                                    'active'
+                                );
+
+                            }
+                        );
+
+
+                        button.classList.add(
+                            'active'
+                        );
+
+
+                        activeClass =
+                            button.dataset.class;
+
+
+                        await loadChildren();
+
+                    }
+                );
+
+            }
+        );
 
 
         /* =========================================

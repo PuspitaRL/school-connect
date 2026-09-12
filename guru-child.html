@@ -1,1096 +1,1266 @@
 <!DOCTYPE html>
+
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Data Siswa - Guru | TAUD SAQU DARUL IMAN</title>
+```
+<title>Data Siswa - Guru | TAUD SAQU DARUL IMAN</title>
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
 
-    <!-- SUPABASE -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase.js"></script>
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
 
-    <style>
-        /* =========================
-           PAGE HEADER
-        ========================== */
+<style>
+    /* =========================
+       PAGE HEADER
+    ========================== */
 
-        .page-header {
-            margin-bottom: 25px;
+    .page-header {
+        margin-bottom: 20px;
+    }
+
+    .page-header h1 {
+        margin: 0 0 6px;
+        font-size: 26px;
+        color: var(--text);
+    }
+
+    .page-header p {
+        margin: 0;
+        color: var(--text-light);
+        font-size: 14px;
+    }
+
+
+    /* =========================
+       CLASS FILTER
+    ========================== */
+
+    .class-filter {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
+
+    .class-filter button {
+        border: 1px solid var(--border);
+        background: var(--white);
+        color: var(--text);
+        padding: 10px 18px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .class-filter button:hover {
+        border-color: var(--orange);
+        color: var(--orange-dark);
+    }
+
+    .class-filter button.active {
+        background: var(--orange);
+        border-color: var(--orange);
+        color: white;
+    }
+
+
+    /* =========================
+       CLASS TITLE
+    ========================== */
+
+    .class-title {
+        grid-column: 1 / -1;
+        margin-bottom: -5px;
+    }
+
+    .class-title h2 {
+        margin: 0 0 4px;
+        font-size: 18px;
+        color: var(--text);
+    }
+
+    .class-title span {
+        font-size: 13px;
+        color: var(--text-light);
+    }
+
+
+    /* =========================
+       CHILDREN GRID
+    ========================== */
+
+    .children-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+
+    /* =========================
+       STUDENT CARD
+    ========================== */
+
+    .student-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 22px;
+        transition: 0.2s ease;
+    }
+
+    .student-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--orange);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+
+    /* =========================
+       STUDENT HEADER
+    ========================== */
+
+    .student-top {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .student-avatar {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background: var(--orange-light);
+        color: var(--orange-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .student-info {
+        min-width: 0;
+    }
+
+    .student-info .label {
+        display: block;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--text-light);
+        letter-spacing: 0.8px;
+        margin-bottom: 4px;
+    }
+
+    .student-info h2 {
+        margin: 0 0 4px;
+        font-size: 19px;
+        color: var(--text);
+    }
+
+    .student-info p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--text-light);
+    }
+
+
+    /* =========================
+       IDENTITY
+    ========================== */
+
+    .student-details {
+        border-top: 1px solid var(--border);
+        padding-top: 17px;
+
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .detail-box {
+        background: var(--ivory);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 13px 14px;
+    }
+
+    .detail-box span {
+        display: block;
+        font-size: 11px;
+        color: var(--text-light);
+        margin-bottom: 6px;
+    }
+
+    .detail-box strong {
+        display: block;
+        font-size: 14px;
+        color: var(--text);
+    }
+
+
+    /* =========================
+       EMPTY STATE
+    ========================== */
+
+    .empty-state {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 45px 20px;
+        text-align: center;
+        color: var(--text-light);
+        grid-column: 1 / -1;
+    }
+
+    .empty-state strong {
+        display: block;
+        color: var(--text);
+        margin-bottom: 6px;
+        font-size: 15px;
+    }
+
+    .empty-state span {
+        font-size: 13px;
+    }
+
+
+    /* =========================
+       RESPONSIVE
+    ========================== */
+
+    @media (max-width: 768px) {
+
+        .children-grid {
+            grid-template-columns: 1fr;
         }
 
         .page-header h1 {
-            margin: 0 0 6px;
-            font-size: 26px;
-            color: var(--text);
+            font-size: 22px;
         }
 
-        .page-header p {
-            margin: 0;
-            color: var(--text-light);
-            font-size: 14px;
-        }
+    }
 
 
-        /* =========================
-           CHILDREN GRID
-        ========================== */
-
-        .children-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
-        }
-
-
-        /* =========================
-           STUDENT CARD
-        ========================== */
+    @media (max-width: 480px) {
 
         .student-card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 22px;
-            transition: 0.2s ease;
+            padding: 18px;
         }
-
-        .student-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--orange);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-        }
-
-
-        /* =========================
-           STUDENT HEADER
-        ========================== */
-
-        .student-top {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-
-        .student-avatar {
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            background: var(--orange-light);
-            color: var(--orange-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-
-        .student-info {
-            min-width: 0;
-        }
-
-
-        .student-info .label {
-            display: block;
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--text-light);
-            letter-spacing: 0.8px;
-            margin-bottom: 4px;
-        }
-
-
-        .student-info h2 {
-            margin: 0 0 4px;
-            font-size: 19px;
-            color: var(--text);
-        }
-
-
-        .student-info p {
-            margin: 0;
-            font-size: 13px;
-            color: var(--text-light);
-        }
-
-
-        /* =========================
-           IDENTITY
-        ========================== */
 
         .student-details {
-            border-top: 1px solid var(--border);
-            padding-top: 17px;
-
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            grid-template-columns: 1fr;
         }
 
-
-        .detail-box {
-            background: var(--ivory);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 13px 14px;
+        .class-filter {
+            gap: 8px;
         }
 
-
-        .detail-box span {
-            display: block;
-            font-size: 11px;
-            color: var(--text-light);
-            margin-bottom: 6px;
+        .class-filter button {
+            flex: 1;
+            padding: 10px 12px;
         }
 
-
-        .detail-box strong {
-            display: block;
-            font-size: 14px;
-            color: var(--text);
-        }
-
-
-        /* =========================
-           EMPTY STATE
-        ========================== */
-
-        .empty-state {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 45px 20px;
-            text-align: center;
-            color: var(--text-light);
-            grid-column: 1 / -1;
-        }
-
-
-        .empty-state strong {
-            display: block;
-            color: var(--text);
-            margin-bottom: 6px;
-            font-size: 15px;
-        }
-
-
-        .empty-state span {
-            font-size: 13px;
-        }
-
-
-        /* =========================
-           RESPONSIVE
-        ========================== */
-
-        @media (max-width: 768px) {
-
-            .children-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .page-header h1 {
-                font-size: 22px;
-            }
-
-        }
-
-
-        @media (max-width: 480px) {
-
-            .student-card {
-                padding: 18px;
-            }
-
-            .student-details {
-                grid-template-columns: 1fr;
-            }
-
-        }
-    </style>
+    }
+</style>
+```
 
 </head>
 
-
 <body>
 
+```
+<!-- =========================
+     SIDEBAR
+========================== -->
 
-    <!-- =========================
-         SIDEBAR
-    ========================== -->
+<aside class="sidebar" id="sidebar">
 
-    <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
 
-        <div class="sidebar-logo">
+        <img
+            src="images/logo.png"
+            alt="Logo TAUD SAQU DARUL IMAN"
+        >
 
-            <img
-                src="images/logo.png"
-                alt="Logo TAUD SAQU DARUL IMAN"
+        <div>
+            <strong>TAUD SAQU</strong>
+            <span>DARUL IMAN</span>
+        </div>
+
+    </div>
+
+
+    <nav class="sidebar-menu">
+
+        <a href="guru-dashboard.html" class="menu-item">
+            <span>⌂</span>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="guru-child.html" class="menu-item active">
+            <span>👧</span>
+            <span>Siswa</span>
+        </a>
+
+        <a href="guru-buku-penghubung.html" class="menu-item">
+            <span>📖</span>
+            <span>Buku Penghubung</span>
+        </a>
+
+        <a href="guru-perkembangan.html" class="menu-item">
+            <span>📊</span>
+            <span>Pembelajaran hari Ini</span>
+        </a>
+
+        <a href="guru-bintang-prestasi.html" class="menu-item">
+            <span>⭐</span>
+            <span>Bintang Prestasi</span>
+        </a>
+
+        <a href="guru-absensi.html" class="menu-item">
+            <span>📅</span>
+            <span>Absensi</span>
+        </a>
+
+        <a href="guru-pengumuman.html" class="menu-item">
+            <span>📢</span>
+            <span>Pengumuman</span>
+        </a>
+
+        <a href="guru-komunikasi.html" class="menu-item">
+            <span>💬</span>
+            <span>Komunikasi</span>
+        </a>
+
+        <div class="menu-divider"></div>
+
+        <a href="pengaturan.html" class="menu-item">
+            <span>⚙</span>
+            <span>Pengaturan</span>
+        </a>
+
+        <a href="index.html" class="menu-item logout">
+            <span>↪</span>
+            <span>Keluar</span>
+        </a>
+
+    </nav>
+
+</aside>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================== -->
+
+<main class="main-content">
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <button
+            class="menu-toggle"
+            id="menuToggle"
+            type="button"
+            aria-label="Buka menu"
+        >
+            ☰
+        </button>
+
+        <div class="topbar-title">
+            Data Siswa
+        </div>
+
+        <div class="topbar-right">
+
+            <button
+                class="notification"
+                type="button"
+                aria-label="Notifikasi"
             >
+                🔔
+            </button>
 
-            <div>
-                <strong>TAUD SAQU</strong>
-                <span>DARUL IMAN</span>
+            <!-- PROFILE -->
+
+            <div class="profile-wrapper">
+
+                <button
+                    class="profile-mini"
+                    id="profileButton"
+                    type="button"
+                >
+
+                    <div
+                        class="profile-avatar"
+                        id="guruAvatar"
+                    >
+                        G
+                    </div>
+
+                    <div class="profile-info">
+
+                        <strong id="guruName">
+                            Guru
+                        </strong>
+
+                        <span id="guruRole">
+                            Guru
+                        </span>
+
+                    </div>
+
+                    <span class="profile-arrow">
+                        ⌄
+                    </span>
+
+                </button>
+
+
+                <div
+                    class="profile-dropdown"
+                    id="profileDropdown"
+                >
+
+                    <a href="pengaturan.html">
+                        ⚙ Pengaturan
+                    </a>
+
+                    <a
+                        href="index.html"
+                        class="dropdown-logout"
+                    >
+                        ↪ Keluar
+                    </a>
+
+                </div>
+
             </div>
 
         </div>
 
-
-        <nav class="sidebar-menu">
-
-            <a href="guru-dashboard.html" class="menu-item">
-                <span>⌂</span>
-                <span>Dashboard</span>
-            </a>
-
-
-            <a href="guru-child.html" class="menu-item active">
-                <span>👧</span>
-                <span>Siswa</span>
-            </a>
-
-
-            <a href="guru-buku-penghubung.html" class="menu-item">
-                <span>📖</span>
-                <span>Buku Penghubung</span>
-            </a>
-
-
-            <a href="guru-perkembangan.html" class="menu-item">
-                <span>📊</span>
-                <span>Pembelajaran hari Ini</span>
-            </a>
-
-
-            <a href="guru-bintang-prestasi.html" class="menu-item">
-                <span>⭐</span>
-                <span>Bintang Prestasi</span>
-            </a>
-
-
-            <a href="guru-absensi.html" class="menu-item">
-                <span>📅</span>
-                <span>Absensi</span>
-            </a>
-
-
-            <a href="guru-pengumuman.html" class="menu-item">
-                <span>📢</span>
-                <span>Pengumuman</span>
-            </a>
-
-
-            <a href="guru-komunikasi.html" class="menu-item">
-                <span>💬</span>
-                <span>Komunikasi</span>
-            </a>
-
-
-            <div class="menu-divider"></div>
-
-
-            <a href="pengaturan.html" class="menu-item">
-                <span>⚙</span>
-                <span>Pengaturan</span>
-            </a>
-
-
-            <a href="index.html" class="menu-item logout">
-                <span>↪</span>
-                <span>Keluar</span>
-            </a>
-
-        </nav>
-
-    </aside>
+    </header>
 
 
     <!-- =========================
-         MAIN CONTENT
+         CONTENT
     ========================== -->
 
-    <main class="main-content">
+    <section class="dashboard-content">
 
+        <div class="page-header">
 
-        <!-- TOPBAR -->
-
-        <header class="topbar">
-
-            <button
-                class="menu-toggle"
-                id="menuToggle"
-                type="button"
-                aria-label="Buka menu"
-            >
-                ☰
-            </button>
-
-
-            <div class="topbar-title">
+            <h1>
                 Data Siswa
-            </div>
+            </h1>
 
+            <p>
+                Identitas peserta didik TAUD SAQU DARUL IMAN.
+            </p>
 
-            <div class="topbar-right">
-
-                <button
-                    class="notification"
-                    type="button"
-                    aria-label="Notifikasi"
-                >
-                    🔔
-                </button>
-
-
-                <!-- PROFILE -->
-
-                <div class="profile-wrapper">
-
-                    <button
-                        class="profile-mini"
-                        id="profileButton"
-                        type="button"
-                    >
-
-                        <div
-                            class="profile-avatar"
-                            id="guruAvatar"
-                        >
-                            G
-                        </div>
-
-
-                        <div class="profile-info">
-
-                            <strong id="guruName">
-                                Guru
-                            </strong>
-
-                            <span id="guruRole">
-                                Guru
-                            </span>
-
-                        </div>
-
-
-                        <span class="profile-arrow">
-                            ⌄
-                        </span>
-
-                    </button>
-
-
-                    <div
-                        class="profile-dropdown"
-                        id="profileDropdown"
-                    >
-
-                        <a href="pengaturan.html">
-                            ⚙ Pengaturan
-                        </a>
-
-
-                        <a
-                            href="index.html"
-                            class="dropdown-logout"
-                        >
-                            ↪ Keluar
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </header>
+        </div>
 
 
         <!-- =========================
-             CONTENT
+             CLASS FILTER
         ========================== -->
+<div class="class-filter">
 
-        <section class="dashboard-content">
+    <button
+        type="button"
+        class="class-filter-btn active"
+        data-class="Kelas Alif 'Ula"
+    >
+        Alif 'Ula
+    </button>
 
-            <div class="page-header">
+    <button
+        type="button"
+        class="class-filter-btn"
+        data-class="Kelas Alif Tsani"
+    >
+        Alif Tsani
+    </button>
 
-                <h1>
-                    Data Siswa
-                </h1>
+        </div>
 
-                <p>
-                    Identitas peserta didik TAUD SAQU DARUL IMAN.
-                </p>
+
+        <div
+            id="childrenList"
+            class="children-grid"
+        >
+
+            <div class="empty-state">
+
+                <strong>
+                    Memuat data siswa...
+                </strong>
+
+                <span>
+                    Mohon tunggu sebentar.
+                </span>
 
             </div>
 
+        </div>
 
-            <div
-                id="childrenList"
-                class="children-grid"
-            >
+    </section>
+
+</main>
+
+
+<!-- =========================
+     MOBILE MENU
+========================== -->
+
+<script>
+
+    const menuToggle =
+        document.getElementById('menuToggle');
+
+    const sidebar =
+        document.getElementById('sidebar');
+
+
+    if (menuToggle && sidebar) {
+
+        menuToggle.addEventListener(
+            'click',
+            () => {
+                sidebar.classList.toggle('show');
+            }
+        );
+
+    }
+
+</script>
+
+
+<!-- =========================
+     PROFILE DROPDOWN
+========================== -->
+
+<script>
+
+    const profileButton =
+        document.getElementById('profileButton');
+
+    const profileDropdown =
+        document.getElementById('profileDropdown');
+
+
+    if (
+        profileButton &&
+        profileDropdown
+    ) {
+
+        profileButton.addEventListener(
+            'click',
+            (event) => {
+
+                event.stopPropagation();
+
+                profileDropdown.classList.toggle('show');
+
+            }
+        );
+
+
+        document.addEventListener(
+            'click',
+            (event) => {
+
+                if (
+                    !profileDropdown.contains(event.target) &&
+                    !profileButton.contains(event.target)
+                ) {
+
+                    profileDropdown.classList.remove('show');
+
+                }
+
+            }
+        );
+
+    }
+
+</script>
+
+
+<!-- =========================
+     LOAD GURU PROFILE
+========================== -->
+
+<script>
+
+    async function loadGuruProfile() {
+
+        try {
+
+            const {
+                data: authData,
+                error: authError
+            } =
+                await supabaseClient.auth.getUser();
+
+
+            if (
+                authError ||
+                !authData ||
+                !authData.user
+            ) {
+
+                window.location.href =
+                    'login.html';
+
+                return;
+
+            }
+
+
+            const user =
+                authData.user;
+
+
+            const {
+                data: profile,
+                error: profileError
+            } =
+                await supabaseClient
+                    .from('users')
+                    .select(
+                        'id, nama, role, auth_id'
+                    )
+                    .eq(
+                        'auth_id',
+                        user.id
+                    )
+                    .maybeSingle();
+
+
+            if (profileError) {
+
+                console.error(
+                    'Gagal mengambil profil Guru:',
+                    profileError
+                );
+
+                return;
+
+            }
+
+
+            if (!profile) {
+
+                window.location.href =
+                    'login.html';
+
+                return;
+
+            }
+
+
+            if (profile.role !== 'guru') {
+
+                alert(
+                    'Halaman ini hanya dapat diakses oleh Guru.'
+                );
+
+                window.location.href =
+                    'login.html';
+
+                return;
+
+            }
+
+
+            const nama =
+                profile.nama || 'Guru';
+
+
+            const guruName =
+                document.getElementById(
+                    'guruName'
+                );
+
+            const guruAvatar =
+                document.getElementById(
+                    'guruAvatar'
+                );
+
+            const guruRole =
+                document.getElementById(
+                    'guruRole'
+                );
+
+
+            if (guruName) {
+                guruName.textContent = nama;
+            }
+
+
+            if (guruAvatar) {
+
+                guruAvatar.textContent =
+                    nama
+                        .trim()
+                        .charAt(0)
+                        .toUpperCase();
+
+            }
+
+
+            if (guruRole) {
+                guruRole.textContent = 'Guru';
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(
+                'Terjadi kesalahan profil Guru:',
+                error
+            );
+
+        }
+
+    }
+
+
+    loadGuruProfile();
+
+</script>
+
+
+<!-- =========================
+     HITUNG USIA
+========================== -->
+
+<script>
+
+    function calculateAge(
+        birthDate
+    ) {
+
+        if (!birthDate) {
+            return null;
+        }
+
+        const today =
+            new Date();
+
+        const birth =
+            new Date(
+                birthDate + 'T00:00:00'
+            );
+
+        let age =
+            today.getFullYear() -
+            birth.getFullYear();
+
+        const monthDifference =
+            today.getMonth() -
+            birth.getMonth();
+
+        if (
+            monthDifference < 0 ||
+            (
+                monthDifference === 0 &&
+                today.getDate() < birth.getDate()
+            )
+        ) {
+
+            age--;
+
+        }
+
+        return age;
+
+    }
+
+</script>
+
+
+<!-- =========================
+     FORMAT TANGGAL
+========================== -->
+
+<script>
+
+    function formatBirthDate(
+        dateString
+    ) {
+
+        if (!dateString) {
+            return '-';
+        }
+
+        const date =
+            new Date(
+                dateString + 'T00:00:00'
+            );
+
+        return date.toLocaleDateString(
+            'id-ID',
+            {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            }
+        );
+
+    }
+
+</script>
+
+
+<!-- =========================
+     LOAD CHILDREN
+========================== -->
+
+<script>
+
+    let allChildren = [];
+
+    let activeClass = 'all';
+
+
+    async function loadChildren() {
+
+        const childrenList =
+            document.getElementById(
+                'childrenList'
+            );
+
+
+        if (!childrenList) {
+            return;
+        }
+
+
+        try {
+
+            const {
+                data: children,
+                error
+            } =
+                await supabaseClient
+                    .from('children')
+                    .select(
+                        'id, nama, kelas, tanggal_lahir'
+                    )
+                    .order(
+                        'nama',
+                        {
+                            ascending: true
+                        }
+                    );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            allChildren =
+                children || [];
+
+
+            renderChildren();
+
+        }
+
+        catch (error) {
+
+            console.error(
+                'Gagal mengambil data siswa:',
+                error
+            );
+
+
+            childrenList.innerHTML = `
 
                 <div class="empty-state">
 
                     <strong>
-                        Memuat data siswa...
+                        Data siswa gagal dimuat
                     </strong>
 
                     <span>
-                        Mohon tunggu sebentar.
+                        Silakan coba refresh halaman.
                     </span>
 
                 </div>
 
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- =========================
-         MOBILE MENU
-    ========================== -->
-
-    <script>
-
-        const menuToggle =
-            document.getElementById('menuToggle');
-
-        const sidebar =
-            document.getElementById('sidebar');
-
-
-        if (menuToggle && sidebar) {
-
-            menuToggle.addEventListener(
-                'click',
-                () => {
-                    sidebar.classList.toggle('show');
-                }
-            );
+            `;
 
         }
 
-    </script>
+    }
 
 
-    <!-- =========================
-         PROFILE DROPDOWN
-    ========================== -->
+    function renderChildren() {
 
-    <script>
+        const childrenList =
+            document.getElementById(
+                'childrenList'
+            );
 
-        const profileButton =
-            document.getElementById('profileButton');
 
-        const profileDropdown =
-            document.getElementById('profileDropdown');
+        if (!childrenList) {
+            return;
+        }
+
+
+        let filteredChildren;
+
+
+        if (activeClass === 'all') {
+
+            filteredChildren =
+                allChildren;
+
+        } else {
+
+            filteredChildren =
+                allChildren.filter(
+                    (child) =>
+                        child.kelas === activeClass
+                );
+
+        }
 
 
         if (
-            profileButton &&
-            profileDropdown
+            !filteredChildren ||
+            filteredChildren.length === 0
         ) {
 
-            profileButton.addEventListener(
-                'click',
-                (event) => {
+            let emptyMessage =
+                'Belum ada data siswa.';
 
-                    event.stopPropagation();
+            if (
+                activeClass ===
+                "Kelas Alif 'Ula"
+            ) {
 
-                    profileDropdown.classList.toggle('show');
+                emptyMessage =
+                    "Belum ada siswa di Kelas Alif 'Ula.";
 
-                }
-            );
+            }
+
+            if (
+                activeClass ===
+                'Kelas Alif Tsani'
+            ) {
+
+                emptyMessage =
+                    'Belum ada siswa di Kelas Alif Tsani.';
+
+            }
 
 
-            document.addEventListener(
-                'click',
-                (event) => {
+            childrenList.innerHTML = `
 
-                    if (
-                        !profileDropdown.contains(event.target) &&
-                        !profileButton.contains(event.target)
-                    ) {
+                <div class="empty-state">
 
-                        profileDropdown.classList.remove('show');
+                    <strong>
+                        ${emptyMessage}
+                    </strong>
 
-                    }
+                    <span>
+                        Data siswa belum tersedia.
+                    </span>
 
-                }
-            );
+                </div>
+
+            `;
+
+            return;
 
         }
 
-    </script>
+
+        childrenList.innerHTML = '';
 
 
-    <!-- =========================
-         LOAD GURU PROFILE
-    ========================== -->
+        filteredChildren.forEach(
+            (child) => {
 
-    <script>
-
-        async function loadGuruProfile() {
-
-            try {
-
-                const {
-                    data: authData,
-                    error: authError
-                } =
-                    await supabaseClient.auth.getUser();
-
-
-                if (
-                    authError ||
-                    !authData ||
-                    !authData.user
-                ) {
-
-                    window.location.href =
-                        'login.html';
-
-                    return;
-
-                }
-
-
-                const user =
-                    authData.user;
-
-
-                const {
-                    data: profile,
-                    error: profileError
-                } =
-                    await supabaseClient
-                        .from('users')
-                        .select(
-                            'id, nama, role, auth_id'
-                        )
-                        .eq(
-                            'auth_id',
-                            user.id
-                        )
-                        .maybeSingle();
-
-
-                if (profileError) {
-
-                    console.error(
-                        'Gagal mengambil profil Guru:',
-                        profileError
+                const card =
+                    document.createElement(
+                        'div'
                     );
 
-                    return;
-
-                }
-
-
-                if (!profile) {
-
-                    window.location.href =
-                        'login.html';
-
-                    return;
-
-                }
+                card.className =
+                    'student-card';
 
 
-                if (profile.role !== 'guru') {
+                // =====================
+                // HEADER
+                // =====================
 
-                    alert(
-                        'Halaman ini hanya dapat diakses oleh Guru.'
+                const studentTop =
+                    document.createElement(
+                        'div'
                     );
 
-                    window.location.href =
-                        'login.html';
+                studentTop.className =
+                    'student-top';
 
-                    return;
 
-                }
+                const avatar =
+                    document.createElement(
+                        'div'
+                    );
+
+                avatar.className =
+                    'student-avatar';
 
 
                 const nama =
-                    profile.nama || 'Guru';
+                    (
+                        child.nama || '?'
+                    ).trim();
 
 
-                const guruName =
-                    document.getElementById(
-                        'guruName'
+                avatar.textContent =
+                    nama
+                        .charAt(0)
+                        .toUpperCase();
+
+
+                const info =
+                    document.createElement(
+                        'div'
                     );
 
-                const guruAvatar =
-                    document.getElementById(
-                        'guruAvatar'
+                info.className =
+                    'student-info';
+
+
+                const label =
+                    document.createElement(
+                        'span'
                     );
 
-                const guruRole =
-                    document.getElementById(
-                        'guruRole'
+                label.className =
+                    'label';
+
+                label.textContent =
+                    'DATA PESERTA DIDIK';
+
+
+                const name =
+                    document.createElement(
+                        'h2'
+                    );
+
+                name.textContent =
+                    child.nama ||
+                    'Tanpa Nama';
+
+
+                const classInfo =
+                    document.createElement(
+                        'p'
+                    );
+
+                classInfo.textContent =
+                    child.kelas ||
+                    '-';
+
+
+                info.appendChild(label);
+                info.appendChild(name);
+                info.appendChild(classInfo);
+
+
+                studentTop.appendChild(avatar);
+                studentTop.appendChild(info);
+
+
+                // =====================
+                // IDENTITY DETAILS
+                // =====================
+
+                const details =
+                    document.createElement(
+                        'div'
+                    );
+
+                details.className =
+                    'student-details';
+
+
+                // USIA
+                const ageBox =
+                    document.createElement(
+                        'div'
+                    );
+
+                ageBox.className =
+                    'detail-box';
+
+
+                const ageLabel =
+                    document.createElement(
+                        'span'
+                    );
+
+                ageLabel.textContent =
+                    'Usia';
+
+
+                const ageValue =
+                    document.createElement(
+                        'strong'
                     );
 
 
-                if (guruName) {
-                    guruName.textContent = nama;
-                }
+                const age =
+                    calculateAge(
+                        child.tanggal_lahir
+                    );
 
 
-                if (guruAvatar) {
-
-                    guruAvatar.textContent =
-                        nama
-                            .trim()
-                            .charAt(0)
-                            .toUpperCase();
-
-                }
+                ageValue.textContent =
+                    age !== null
+                        ? `${age} tahun`
+                        : '-';
 
 
-                if (guruRole) {
-                    guruRole.textContent = 'Guru';
-                }
+                ageBox.appendChild(ageLabel);
+                ageBox.appendChild(ageValue);
 
-            }
 
-            catch (error) {
+                // TANGGAL LAHIR
+                const birthBox =
+                    document.createElement(
+                        'div'
+                    );
 
-                console.error(
-                    'Terjadi kesalahan profil Guru:',
-                    error
+                birthBox.className =
+                    'detail-box';
+
+
+                const birthLabel =
+                    document.createElement(
+                        'span'
+                    );
+
+                birthLabel.textContent =
+                    'Tanggal Lahir';
+
+
+                const birthValue =
+                    document.createElement(
+                        'strong'
+                    );
+
+                birthValue.textContent =
+                    formatBirthDate(
+                        child.tanggal_lahir
+                    );
+
+
+                birthBox.appendChild(
+                    birthLabel
+                );
+
+                birthBox.appendChild(
+                    birthValue
+                );
+
+
+                details.appendChild(ageBox);
+                details.appendChild(birthBox);
+
+
+                // =====================
+                // BUILD CARD
+                // =====================
+
+                card.appendChild(
+                    studentTop
+                );
+
+                card.appendChild(
+                    details
+                );
+
+
+                childrenList.appendChild(
+                    card
                 );
 
             }
+        );
 
-        }
-
-
-        loadGuruProfile();
-
-    </script>
+    }
 
 
-    <!-- =========================
-         HITUNG USIA
-    ========================== -->
+    // =========================
+    // CLASS FILTER BUTTONS
+    // =========================
 
-    <script>
-
-        function calculateAge(
-            birthDate
-        ) {
-
-            if (!birthDate) {
-                return null;
-            }
+    const classFilterButtons =
+        document.querySelectorAll(
+            '.class-filter-btn'
+        );
 
 
-            const today =
-                new Date();
+    classFilterButtons.forEach(
+        (button) => {
+
+            button.addEventListener(
+                'click',
+                () => {
+
+                    activeClass =
+                        button.dataset.class;
 
 
-            const birth =
-                new Date(
-                    birthDate + 'T00:00:00'
-                );
+                    classFilterButtons.forEach(
+                        (btn) => {
+                            btn.classList.remove(
+                                'active'
+                            );
+                        }
+                    );
 
 
-            let age =
-                today.getFullYear() -
-                birth.getFullYear();
+                    button.classList.add(
+                        'active'
+                    );
 
 
-            const monthDifference =
-                today.getMonth() -
-                birth.getMonth();
+                    renderChildren();
 
-
-            if (
-                monthDifference < 0 ||
-                (
-                    monthDifference === 0 &&
-                    today.getDate() < birth.getDate()
-                )
-            ) {
-
-                age--;
-
-            }
-
-
-            return age;
-
-        }
-
-    </script>
-
-
-    <!-- =========================
-         FORMAT TANGGAL
-    ========================== -->
-
-    <script>
-
-        function formatBirthDate(
-            dateString
-        ) {
-
-            if (!dateString) {
-                return '-';
-            }
-
-
-            const date =
-                new Date(
-                    dateString + 'T00:00:00'
-                );
-
-
-            return date.toLocaleDateString(
-                'id-ID',
-                {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
                 }
             );
 
         }
+    );
 
-    </script>
 
+    loadChildren();
 
-    <!-- =========================
-         LOAD CHILDREN
-    ========================== -->
-
-    <script>
-
-        async function loadChildren() {
-
-            const childrenList =
-                document.getElementById(
-                    'childrenList'
-                );
-
-
-            if (!childrenList) {
-                return;
-            }
-
-
-            try {
-
-                const {
-                    data: children,
-                    error
-                } =
-                    await supabaseClient
-                        .from('children')
-                        .select(
-                            'id, nama, kelas, tanggal_lahir'
-                        )
-                        .order(
-                            'nama',
-                            {
-                                ascending: true
-                            }
-                        );
-
-
-                if (error) {
-                    throw error;
-                }
-
-
-                if (
-                    !children ||
-                    children.length === 0
-                ) {
-
-                    childrenList.innerHTML = `
-
-                        <div class="empty-state">
-
-                            <strong>
-                                Belum ada data siswa
-                            </strong>
-
-                            <span>
-                                Data siswa belum tersedia.
-                            </span>
-
-                        </div>
-
-                    `;
-
-                    return;
-
-                }
-
-
-                childrenList.innerHTML = '';
-
-
-                children.forEach(
-                    (child) => {
-
-                        const card =
-                            document.createElement(
-                                'div'
-                            );
-
-                        card.className =
-                            'student-card';
-
-
-                        // =====================
-                        // HEADER
-                        // =====================
-
-                        const studentTop =
-                            document.createElement(
-                                'div'
-                            );
-
-                        studentTop.className =
-                            'student-top';
-
-
-                        const avatar =
-                            document.createElement(
-                                'div'
-                            );
-
-                        avatar.className =
-                            'student-avatar';
-
-
-                        const nama =
-                            (
-                                child.nama || '?'
-                            ).trim();
-
-
-                        avatar.textContent =
-                            nama
-                                .charAt(0)
-                                .toUpperCase();
-
-
-                        const info =
-                            document.createElement(
-                                'div'
-                            );
-
-                        info.className =
-                            'student-info';
-
-
-                        const label =
-                            document.createElement(
-                                'span'
-                            );
-
-                        label.className =
-                            'label';
-
-                        label.textContent =
-                            'DATA PESERTA DIDIK';
-
-
-                        const name =
-                            document.createElement(
-                                'h2'
-                            );
-
-                        name.textContent =
-                            child.nama ||
-                            'Tanpa Nama';
-
-
-                        const classInfo =
-                            document.createElement(
-                                'p'
-                            );
-
-                        classInfo.textContent =
-                            child.kelas ||
-                            '-';
-
-
-                        info.appendChild(label);
-                        info.appendChild(name);
-                        info.appendChild(classInfo);
-
-
-                        studentTop.appendChild(avatar);
-                        studentTop.appendChild(info);
-
-
-                        // =====================
-                        // IDENTITY DETAILS
-                        // =====================
-
-                        const details =
-                            document.createElement(
-                                'div'
-                            );
-
-                        details.className =
-                            'student-details';
-
-
-                        // USIA
-                        const ageBox =
-                            document.createElement(
-                                'div'
-                            );
-
-                        ageBox.className =
-                            'detail-box';
-
-
-                        const ageLabel =
-                            document.createElement(
-                                'span'
-                            );
-
-                        ageLabel.textContent =
-                            'Usia';
-
-
-                        const ageValue =
-                            document.createElement(
-                                'strong'
-                            );
-
-
-                        const age =
-                            calculateAge(
-                                child.tanggal_lahir
-                            );
-
-
-                        ageValue.textContent =
-                            age !== null
-                                ? `${age} tahun`
-                                : '-';
-
-
-                        ageBox.appendChild(ageLabel);
-                        ageBox.appendChild(ageValue);
-
-
-                        // TANGGAL LAHIR
-                        const birthBox =
-                            document.createElement(
-                                'div'
-                            );
-
-                        birthBox.className =
-                            'detail-box';
-
-
-                        const birthLabel =
-                            document.createElement(
-                                'span'
-                            );
-
-                        birthLabel.textContent =
-                            'Tanggal Lahir';
-
-
-                        const birthValue =
-                            document.createElement(
-                                'strong'
-                            );
-
-                        birthValue.textContent =
-                            formatBirthDate(
-                                child.tanggal_lahir
-                            );
-
-
-                        birthBox.appendChild(
-                            birthLabel
-                        );
-
-                        birthBox.appendChild(
-                            birthValue
-                        );
-
-
-                        details.appendChild(ageBox);
-                        details.appendChild(birthBox);
-
-
-                        // =====================
-                        // BUILD CARD
-                        // =====================
-
-                        card.appendChild(
-                            studentTop
-                        );
-
-                        card.appendChild(
-                            details
-                        );
-
-
-                        childrenList.appendChild(
-                            card
-                        );
-
-                    }
-                );
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    'Gagal mengambil data siswa:',
-                    error
-                );
-
-
-                childrenList.innerHTML = `
-
-                    <div class="empty-state">
-
-                        <strong>
-                            Data siswa gagal dimuat
-                        </strong>
-
-                        <span>
-                            Silakan coba refresh halaman.
-                        </span>
-
-                    </div>
-
-                `;
-
-            }
-
-        }
-
-
-        loadChildren();
-
-    </script>
-
+</script>
+```
 
 </body>
 
