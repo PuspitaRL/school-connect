@@ -302,12 +302,12 @@
 
     <nav class="sidebar-menu">
 
-        <a href="guru-dashboard.html" class="menu-item active">
+        <a href="guru-dashboard.html" class="menu-item ">
             <span>⌂</span>
             Dashboard
         </a>
 
-        <a href="guru-child.html" class="menu-item">
+        <a href="guru-child.html" class="menu-item active">
             <span>👧</span>
             Siswa
         </a>
@@ -349,10 +349,14 @@
             Pengaturan
         </a>
 
-        <a href="index.html" class="menu-item logout">
+        <div class="sidebar-bottom">
+
+        <a href="index.html" class="menu-item">
             <span>↪</span>
             Keluar
         </a>
+
+    </div>
 
     </nav>
 
@@ -529,8 +533,11 @@
     const menuToggle =
         document.getElementById('menuToggle');
 
-    const sidebar =
-        document.getElementById('sidebar');
+const sidebar =
+        document.querySelector(
+            '.sidebar'
+        );
+
 
 
     if (menuToggle && sidebar) {
@@ -1259,7 +1266,7 @@
     loadChildren();
 
 </script>
-```
+
 
 </body>
 
