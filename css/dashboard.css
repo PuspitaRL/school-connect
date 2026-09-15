@@ -1562,4 +1562,90 @@ textarea {
     font-size: 11px;
     visibility: visible;
 }
+/* =========================================
+   GURU SIDEBAR — FIX FIT TO SCREEN
+========================================= */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 250px;
+    height: 100vh;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* LOGO */
+.sidebar-logo {
+    flex-shrink: 0;
+}
+
+/* MENU */
+.sidebar-menu {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    overflow: hidden;
+
+    padding-bottom: 12px;
+}
+
+/* SEMUA MENU SAMA */
+.sidebar-menu .menu-item {
+    min-height: 42px;
+
+    padding: 0 16px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    box-sizing: border-box;
+
+    font-size: 13px;
+    line-height: 1;
+
+    flex-shrink: 0;
+}
+
+/* ICON SEMUA SAMA */
+.sidebar-menu .menu-item > span:first-child {
+    width: 22px;
+
+    min-width: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 17px;
+}
+
+/* TEKS SEMUA SAMA */
+.sidebar-menu .menu-item > span:last-child {
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+/* PEMBATAS */
+.sidebar-menu .menu-divider {
+    flex-shrink: 0;
+    margin: 6px 16px;
+}
+
+/* LOGOUT */
+.sidebar-menu .logout {
+    margin-top: 0;
 }
