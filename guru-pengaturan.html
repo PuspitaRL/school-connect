@@ -173,47 +173,6 @@
         }
 
         /* ================================
-           PASSWORD
-        ================================= */
-
-        .password-button {
-            width: 100%;
-            border: none;
-            background: var(--orange);
-            color: white;
-            border-radius: 10px;
-            padding: 11px 15px;
-            font-family: inherit;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: .2s ease;
-        }
-
-        .password-button:hover {
-            background: var(--orange-dark);
-        }
-
-        .password-button:disabled {
-            opacity: .6;
-            cursor: not-allowed;
-        }
-
-        .password-message {
-            margin-top: 10px;
-            font-size: 11px;
-            line-height: 1.5;
-        }
-
-        .password-message.success {
-            color: #3d8b5f;
-        }
-
-        .password-message.error {
-            color: #b44b3d;
-        }
-
-        /* ================================
            INFO
         ================================= */
 
@@ -309,7 +268,7 @@
 <body>
 
 <!-- ================================
-     SIDEBAR ORANG TUA
+     SIDEBAR GURU
 ================================= -->
 
 <aside class="sidebar">
@@ -328,68 +287,58 @@
 
     </div>
 
-
     <nav class="sidebar-menu">
 
-        <a href="parent-dashboard.html" class="menu-item">
+        <a href="guru-dashboard.html" class="menu-item">
             <span>🏠</span>
-            <span>Dashboard</span>
+            Dashboard
         </a>
 
-        <a href="child.html" class="menu-item">
+        <a href="guru-child.html" class="menu-item">
             <span>👧</span>
-            <span>Anak Saya</span>
+            Siswa
         </a>
 
-        <a href="buku-penghubung.html" class="menu-item">
+        <a href="guru-buku-penghubung.html" class="menu-item">
             <span>📖</span>
-            <span>Buku Penghubung</span>
+            Buku Penghubung
         </a>
 
-        <a href="perkembangan.html" class="menu-item">
+        <a href="guru-perkembangan.html" class="menu-item">
             <span>📊</span>
-            <span>Perkembangan</span>
+            Pembelajaran hari Ini
         </a>
 
-        <a href="bintang-prestasi.html" class="menu-item">
+        <a href="guru-bintang-prestasi.html" class="menu-item">
             <span>⭐</span>
-            <span>Bintang Prestasi</span>
+            Bintang Prestasi
         </a>
 
-        <a href="absensi.html" class="menu-item">
+        <a href="guru-absensi.html" class="menu-item">
             <span>📅</span>
-            <span>Absensi</span>
+            Absensi
         </a>
 
-        <a href="pengumuman.html" class="menu-item">
+        <a href="guru-pengumuman.html" class="menu-item">
             <span>📢</span>
-            <span>Pengumuman</span>
+            Pengumuman
         </a>
 
-        <a href="komunikasi.html" class="menu-item">
+        <a href="guru-komunikasi.html" class="menu-item">
             <span>💬</span>
-            <span>Komunikasi</span>
+            Komunikasi
         </a>
 
         <div class="menu-divider"></div>
 
-        <!-- AKTIF DI PENGATURAN -->
-
-        <a
-            href="pengaturan.html"
-            class="menu-item active"
-        >
+        <a href="guru-pengaturan.html" class="menu-item active">
             <span>⚙</span>
-            <span>Pengaturan</span>
+            Pengaturan
         </a>
 
-        <a
-            href="index.html"
-            class="menu-item logout"
-            id="logoutLink"
-        >
+        <a href="index.html" class="menu-item logout">
             <span>↪</span>
-            <span>Keluar</span>
+            Keluar
         </a>
 
     </nav>
@@ -407,50 +356,30 @@
 
     <header class="topbar">
 
-        <button
-            class="menu-toggle"
-            type="button"
-        >
+        <button class="menu-toggle" type="button">
             ☰
         </button>
-
 
         <div class="topbar-title">
             Pengaturan
         </div>
 
-
         <div class="topbar-right">
 
-            <button
-                class="notification"
-                type="button"
-            >
+            <button class="notification" type="button">
                 🔔
                 <span class="notification-dot"></span>
             </button>
 
-
             <div class="profile-mini">
 
-                <div
-                    class="profile-avatar"
-                    id="profileAvatar"
-                >
-                    O
+                <div class="profile-avatar" id="profileAvatar">
+                    G
                 </div>
 
-
                 <div class="profile-info">
-
-                    <strong id="profileName">
-                        Orang Tua
-                    </strong>
-
-                    <span>
-                        Orang Tua
-                    </span>
-
+                    <strong id="profileName">Guru</strong>
+                    <span>Guru</span>
                 </div>
 
             </div>
@@ -466,7 +395,6 @@
 
     <section class="page-content">
 
-
         <div class="page-header">
 
             <p class="greeting">
@@ -478,15 +406,13 @@
             </h1>
 
             <p>
-                Kelola informasi akun Orang Tua.
+                Kelola informasi akun Guru.
             </p>
 
         </div>
 
 
-        <!-- ================================
-             PROFIL
-        ================================= -->
+        <!-- PROFIL -->
 
         <div class="settings-card">
 
@@ -501,13 +427,9 @@
 
             <div class="profile-setting">
 
-                <div
-                    class="large-avatar"
-                    id="largeAvatar"
-                >
-                    O
+                <div class="large-avatar" id="largeAvatar">
+                    G
                 </div>
-
 
                 <div class="profile-setting-info">
 
@@ -520,7 +442,7 @@
                     </span>
 
                     <span class="role-badge">
-                        👨‍👩‍👧 Orang Tua
+                        👩🏻‍🏫 Guru
                     </span>
 
                 </div>
@@ -583,9 +505,7 @@
         </div>
 
 
-        <!-- ================================
-             KEAMANAN AKUN
-        ================================= -->
+        <!-- KEAMANAN -->
 
         <div class="settings-card">
 
@@ -594,78 +514,24 @@
             </h2>
 
             <p class="settings-description">
-                Anda dapat mengganti password akun kapan saja
-                untuk menjaga keamanan akun.
+                Untuk menjaga keamanan akun, jangan membagikan
+                password kepada orang lain.
             </p>
-
-
-            <div class="form-group">
-
-                <label class="form-label">
-                    Password Baru
-                </label>
-
-                <input
-                    type="password"
-                    class="form-input"
-                    id="newPasswordInput"
-                    placeholder="Masukkan password baru"
-                    autocomplete="new-password"
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label class="form-label">
-                    Konfirmasi Password Baru
-                </label>
-
-                <input
-                    type="password"
-                    class="form-input"
-                    id="confirmPasswordInput"
-                    placeholder="Ulangi password baru"
-                    autocomplete="new-password"
-                >
-
-            </div>
-
-
-            <button
-                type="button"
-                class="password-button"
-                id="savePasswordButton"
-            >
-                🔐 Simpan Password
-            </button>
-
-
-            <div
-                id="passwordMessage"
-                class="password-message"
-            ></div>
-
-
-            <br>
-
 
             <div class="settings-info">
 
                 💡 <strong>Tips keamanan:</strong><br>
 
                 Gunakan password yang hanya diketahui oleh Anda
-                dan jangan membagikan password kepada orang lain.
+                dan pastikan melakukan logout setelah menggunakan
+                perangkat bersama.
 
             </div>
 
         </div>
 
 
-        <!-- ================================
-             LOGOUT
-        ================================= -->
+        <!-- LOGOUT -->
 
         <div class="settings-card">
 
@@ -674,9 +540,8 @@
             </h2>
 
             <p class="settings-description">
-                Keluar dari akun Orang Tua pada perangkat ini.
+                Keluar dari akun Guru pada perangkat ini.
             </p>
-
 
             <button
                 type="button"
@@ -689,9 +554,7 @@
         </div>
 
 
-        <!-- ================================
-             FOOTER
-        ================================= -->
+        <!-- FOOTER -->
 
         <div class="page-footer">
 
@@ -699,8 +562,8 @@
 
             <br><br>
 
-            Semoga memudahkan aktivitas Orang Tua
-            dan komunikasi dengan Guru. 🌷
+            Semoga memudahkan aktivitas Guru dan komunikasi
+            dengan orang tua. 🌷
 
         </div>
 
@@ -714,14 +577,13 @@
 ================================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script src="js/supabase.js"></script>
 
 
 <script>
 
     /* ================================
-       LOAD PROFILE ORANG TUA
+       LOAD PROFILE GURU
     ================================= */
 
     async function loadProfile() {
@@ -732,29 +594,16 @@
         } = await supabaseClient.auth.getUser();
 
 
-        /* ================================
-           CEK LOGIN
-        ================================= */
+        if (authError || !authData.user) {
 
-        if (
-            authError ||
-            !authData.user
-        ) {
-
-            window.location.href =
-                'login.html';
+            window.location.href = 'login.html';
 
             return false;
         }
 
 
-        const authUser =
-            authData.user;
+        const authUser = authData.user;
 
-
-        /* ================================
-           AMBIL PROFILE
-        ================================= */
 
         const {
             data: profile,
@@ -772,17 +621,10 @@
                 auth_id
             `)
 
-            .eq(
-                'auth_id',
-                authUser.id
-            )
+            .eq('auth_id', authUser.id)
 
             .maybeSingle();
 
-
-        /* ================================
-           ERROR DATABASE
-        ================================= */
 
         if (error) {
 
@@ -799,10 +641,6 @@
         }
 
 
-        /* ================================
-           PROFILE TIDAK DITEMUKAN
-        ================================= */
-
         if (!profile) {
 
             alert(
@@ -814,31 +652,24 @@
 
 
         /* ================================
-           CEK ROLE ORANG TUA
+           CEK ROLE
         ================================= */
 
-        if (
-            profile.role !== 'orang_tua'
-        ) {
+        if (profile.role !== 'guru') {
 
             alert(
-                'Halaman ini hanya dapat diakses oleh Orang Tua.'
+                'Halaman ini hanya dapat diakses oleh Guru.'
             );
 
             window.location.href =
-                'guru-dashboard.html';
+                'parent-dashboard.html';
 
             return false;
         }
 
 
-        /* ================================
-           DATA PROFILE
-        ================================= */
-
         const nama =
-            profile.nama ||
-            'Orang Tua';
+            profile.nama || 'Guru';
 
 
         const email =
@@ -848,8 +679,7 @@
 
 
         const noHp =
-            profile.no_hp ||
-            'Belum tersedia';
+            profile.no_hp || 'Belum tersedia';
 
 
         /* ================================
@@ -864,9 +694,7 @@
         document
             .getElementById('profileAvatar')
             .textContent =
-            nama
-                .charAt(0)
-                .toUpperCase();
+            nama.charAt(0).toUpperCase();
 
 
         /* ================================
@@ -886,9 +714,7 @@
         document
             .getElementById('largeAvatar')
             .textContent =
-            nama
-                .charAt(0)
-                .toUpperCase();
+            nama.charAt(0).toUpperCase();
 
 
         document
@@ -911,187 +737,6 @@
 
 
     /* ================================
-       UBAH PASSWORD
-    ================================= */
-
-    async function changePassword() {
-
-        const newPassword =
-            document
-                .getElementById(
-                    'newPasswordInput'
-                )
-                .value
-                .trim();
-
-
-        const confirmPassword =
-            document
-                .getElementById(
-                    'confirmPasswordInput'
-                )
-                .value
-                .trim();
-
-
-        const message =
-            document.getElementById(
-                'passwordMessage'
-            );
-
-
-        const button =
-            document.getElementById(
-                'savePasswordButton'
-            );
-
-
-        message.textContent = '';
-        message.className =
-            'password-message';
-
-
-        /* ================================
-           VALIDASI
-        ================================= */
-
-        if (!newPassword) {
-
-            message.textContent =
-                'Silakan masukkan password baru.';
-
-            message.classList.add(
-                'error'
-            );
-
-            return;
-        }
-
-
-        if (newPassword.length < 8) {
-
-            message.textContent =
-                'Password minimal 8 karakter.';
-
-            message.classList.add(
-                'error'
-            );
-
-            return;
-        }
-
-
-        if (!confirmPassword) {
-
-            message.textContent =
-                'Silakan konfirmasi password baru.';
-
-            message.classList.add(
-                'error'
-            );
-
-            return;
-        }
-
-
-        if (
-            newPassword !==
-            confirmPassword
-        ) {
-
-            message.textContent =
-                'Konfirmasi password tidak sama.';
-
-            message.classList.add(
-                'error'
-            );
-
-            return;
-        }
-
-
-        /* ================================
-           PROSES UPDATE
-        ================================= */
-
-        button.disabled = true;
-
-        button.textContent =
-            'Menyimpan...';
-
-
-        const {
-            error
-        } = await supabaseClient.auth.updateUser({
-
-            password: newPassword
-
-        });
-
-
-        /* ================================
-           ERROR
-        ================================= */
-
-        if (error) {
-
-            console.error(
-                'Gagal mengubah password:',
-                error
-            );
-
-            message.textContent =
-                'Password gagal diubah: ' +
-                error.message;
-
-            message.classList.add(
-                'error'
-            );
-
-            button.disabled = false;
-
-            button.textContent =
-                '🔐 Simpan Password';
-
-            return;
-        }
-
-
-        /* ================================
-           BERHASIL
-        ================================= */
-
-        message.textContent =
-            '✓ Password berhasil diubah.';
-
-        message.classList.add(
-            'success'
-        );
-
-
-        document
-            .getElementById(
-                'newPasswordInput'
-            )
-            .value = '';
-
-
-        document
-            .getElementById(
-                'confirmPasswordInput'
-            )
-            .value = '';
-
-
-        button.disabled = false;
-
-        button.textContent =
-            '🔐 Simpan Password';
-
-    }
-
-
-    /* ================================
        LOGOUT
     ================================= */
 
@@ -1099,9 +744,7 @@
 
         const {
             error
-        } = await supabaseClient
-            .auth
-            .signOut();
+        } = await supabaseClient.auth.signOut();
 
 
         if (error) {
@@ -1129,33 +772,22 @@
     ================================= */
 
     const menuToggle =
-        document.querySelector(
-            '.menu-toggle'
-        );
-
+        document.querySelector('.menu-toggle');
 
     const sidebar =
-        document.querySelector(
-            '.sidebar'
-        );
+        document.querySelector('.sidebar');
 
 
-    if (
-        menuToggle &&
-        sidebar
-    ) {
+    if (menuToggle && sidebar) {
 
         menuToggle.addEventListener(
             'click',
             () => {
 
-                sidebar.classList.toggle(
-                    'show'
-                );
+                sidebar.classList.toggle('show');
 
             }
         );
-
     }
 
 
@@ -1164,9 +796,7 @@
     ================================= */
 
     document
-        .getElementById(
-            'logoutButton'
-        )
+        .getElementById('logoutButton')
         .addEventListener(
             'click',
             logout
@@ -1174,9 +804,7 @@
 
 
     document
-        .getElementById(
-            'logoutLink'
-        )
+        .getElementById('logoutLink')
         .addEventListener(
             'click',
             async function(event) {
@@ -1186,16 +814,6 @@
                 await logout();
 
             }
-        );
-
-
-    document
-        .getElementById(
-            'savePasswordButton'
-        )
-        .addEventListener(
-            'click',
-            changePassword
         );
 
 
