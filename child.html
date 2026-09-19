@@ -16,20 +16,19 @@
     <aside class="sidebar" id="sidebar">
 
         <div class="sidebar-logo">
-
             <img src="images/logo.png" alt="Logo TAUD SAQU DARUL IMAN">
 
             <div>
                 <strong>TAUD SAQU</strong>
                 <span>DARUL IMAN</span>
             </div>
-
         </div>
+
 
         <nav class="sidebar-menu">
 
             <a href="parent-dashboard.html" class="menu-item">
-                <span🏠span>
+                <span>🏠</span>
                 Dashboard
             </a>
 
@@ -49,8 +48,8 @@
             </a>
 
             <a href="bintang-prestasi.html" class="menu-item">
-                <span>⭐</span>
-                Bintang Prestasi
+                <span>📝</span>
+                Bintang prestasi
             </a>
 
             <a href="absensi.html" class="menu-item">
@@ -65,7 +64,7 @@
 
             <a href="komunikasi.html" class="menu-item">
                 <span>💬</span>
-                Komunikasi
+                komunikasi
             </a>
 
             <div class="menu-divider"></div>
@@ -992,90 +991,87 @@
            SUMBER: achievements
         ========================= */
 
-     async function loadAchievements() {
+        async function loadAchievements() {
 
-    const {
-        data: achievement,
-        error
-    } = await supabaseClient
-        .from("achievements")
-        .select(`
-            id,
-            tanggal,
-            murojaah_surat,
-            mendengarkan_20x,
-            murojaah_tibyan,
-            tarbiyah
-        `)
-        .eq("child_id", currentChild.id)
-        .eq("tanggal", getToday())
-        .maybeSingle();
-
-
-    if (error) {
-
-        console.error(
-            "Gagal mengambil bintang prestasi:",
-            error
-        );
-
-        return;
-    }
+            const {
+                data: achievement,
+                error
+            } = await supabaseClient
+                .from("achievements")
+                .select(`
+                    id,
+                    tanggal,
+                    murojaah_surat,
+                    mendengarkan_20x,
+                    murojaah_tibyan,
+                    tarbiyah
+                `)
+                .eq("child_id", currentChild.id)
+                .order("tanggal", {
+                    ascending: false
+                })
+                .limit(1)
+                .maybeSingle();
 
 
-    /*
-     * BELUM ADA DATA BINTANG HARI INI
-     */
+            if (error) {
 
-    if (!achievement) {
+                console.error(
+                    "Gagal mengambil bintang prestasi:",
+                    error
+                );
 
-        document.getElementById(
-            "achievementValue"
-        ).textContent = "0/4";
-
-        document.getElementById(
-            "achievementProgress"
-        ).style.width = "0%";
-
-        return;
-    }
+                return;
+            }
 
 
-    /*
-     * HITUNG BINTANG HARI INI
-     */
+            if (!achievement) {
 
-    let completed = 0;
+                document.getElementById(
+                    "achievementValue"
+                ).textContent = "0/4";
 
+                document.getElementById(
+                    "achievementProgress"
+                ).style.width = "0%";
 
-    if (achievement.murojaah_surat) {
-        completed++;
-    }
-
-    if (achievement.mendengarkan_20x) {
-        completed++;
-    }
-
-    if (achievement.murojaah_tibyan) {
-        completed++;
-    }
-
-    if (achievement.tarbiyah) {
-        completed++;
-    }
+                return;
+            }
 
 
-    document.getElementById(
-        "achievementValue"
-    ).textContent =
-        completed + "/4";
+            let completed = 0;
 
 
-    document.getElementById(
-        "achievementProgress"
-    ).style.width =
-        ((completed / 4) * 100) + "%";
-}
+            if (achievement.murojaah_surat) {
+                completed++;
+            }
+
+            if (achievement.mendengarkan_20x) {
+                completed++;
+            }
+
+            if (achievement.murojaah_tibyan) {
+                completed++;
+            }
+
+            if (achievement.tarbiyah) {
+                completed++;
+            }
+
+
+            document.getElementById(
+                "achievementValue"
+            ).textContent =
+                completed + "/4";
+
+
+            document.getElementById(
+                "achievementProgress"
+            ).style.width =
+                ((completed / 4) * 100) + "%";
+        }
+
+
         /* =========================
            INIT
         ========================= */
