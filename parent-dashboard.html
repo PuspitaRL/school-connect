@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="id">
 
@@ -205,76 +205,125 @@
      SIDEBAR
 ========================== -->
 
-<aside class="sidebar" id="sidebar">
+<aside
+    class="sidebar"
+    id="sidebar"
+>
 
-        <div class="sidebar-logo">
+    <div class="sidebar-logo">
 
-            <img src="images/logo.png" alt="Logo TAUD SAQU DARUL IMAN">
+        <img
+            src="images/logo.png"
+            alt="Logo TAUD SAQU DARUL IMAN"
+        >
 
-            <div>
-                <strong>TAUD SAQU</strong>
-                <span>DARUL IMAN</span>
-            </div>
-
+        <div>
+            <strong>TAUD SAQU</strong>
+            <span>DARUL IMAN</span>
         </div>
 
-        <nav class="sidebar-menu">
+    </div>
 
-            <a href="parent-dashboard.html" class="menu-item active">
-                <span>🏠</span>
-                Dashboard
-            </a>
 
-            <a href="child.html" class="menu-item">
-                <span>👧</span>
-                Anak Saya
-            </a>
+    <nav class="sidebar-menu">
 
-            <a href="buku-penghubung.html" class="menu-item">
-                <span>📖</span>
-                Buku Penghubung
-            </a>
+        <a
+            href="parent-dashboard.html"
+            class="menu-item active"
+        >
+            <span>⌂</span>
+            <span>Dashboard</span>
+        </a>
 
-            <a href="perkembangan.html" class="menu-item">
-                <span>📊</span>
-                Pembelajaran hari Ini
-            </a>
 
-            <a href="bintang-prestasi.html" class="menu-item">
-                <span>⭐</span>
-                Bintang Prestasi
-            </a>
+        <a
+            href="child.html"
+            class="menu-item"
+        >
+            <span>👧</span>
+            <span>Anak Saya</span>
+        </a>
 
-            <a href="absensi.html" class="menu-item">
-                <span>📅</span>
-                Absensi
-            </a>
 
-            <a href="pengumuman.html" class="menu-item">
-                <span>📢</span>
-                Pengumuman
-            </a>
+        <a
+            href="buku-penghubung.html"
+            class="menu-item"
+        >
+            <span>📖</span>
+            <span>Buku Penghubung</span>
+        </a>
 
-            <a href="komunikasi.html" class="menu-item">
-                <span>💬</span>
-                Komunikasi
-            </a>
 
-            <div class="menu-divider"></div>
+        <a
+            href="perkembangan.html"
+            class="menu-item"
+        >
+            <span>📊</span>
+            <span>Pembelajaran hari Ini</span>
+        </a>
 
-            <a href="pengaturan.html" class="menu-item">
-                <span>⚙</span>
-                Pengaturan
-            </a>
 
-            <a href="index.html" class="menu-item logout">
-                <span>↪</span>
-                Keluar
-            </a>
+        <a
+            href="bintang-prestasi.html"
+            class="menu-item"
+        >
+            <span>⭐</span>
+            <span>Bintang Prestasi</span>
+        </a>
 
-        </nav>
 
-    </aside>
+        <a
+            href="absensi.html"
+            class="menu-item"
+        >
+            <span>📅</span>
+            <span>Absensi</span>
+        </a>
+
+
+        <a
+            href="pengumuman.html"
+            class="menu-item"
+        >
+            <span>📢</span>
+            <span>Pengumuman</span>
+        </a>
+
+
+        <a
+            href="komunikasi.html"
+            class="menu-item"
+        >
+            <span>💬</span>
+            <span>Komunikasi</span>
+        </a>
+
+
+        <div class="menu-divider"></div>
+
+
+        <a
+            href="pengaturan.html"
+            class="menu-item"
+        >
+            <span>⚙</span>
+            <span>Pengaturan</span>
+        </a>
+
+
+        <a
+            href="index.html"
+            class="menu-item logout"
+        >
+            <span>↪</span>
+            <span>Keluar</span>
+        </a>
+
+    </nav>
+
+</aside>
+
+
 <!-- =========================
      MAIN CONTENT
 ========================== -->
@@ -894,7 +943,441 @@ async function loadParentProfile() {
    LOAD CHILD
 ========================= */
 
+/* =========================
+   LOAD CHILD
+========================= */
+
 async function loadChild() {
+
+    const childCard =
+        document.getElementById('childCard');
+
+
+    try {
+
+        const {
+            data: children,
+            error
+        } =
+            await supabaseClient
+                .from('children')
+                .select(
+                    'id, nama, kelas, tahun_ajaran, tanggal_lahir'
+                )
+                .eq(
+                    'parent_id',
+                    currentParentId
+                )
+                .order(
+                    'nama',
+                    {
+                        ascending: true
+                    }
+                );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        if (
+            !children ||
+            children.length === 0
+        ) {
+
+            document.getElementById(
+                'childName'
+            ).textContent =
+                'Belum ada data anak';
+
+            document.getElementById(
+                'childClass'
+            ).textContent =
+                'Data siswa belum terhubung.';
+
+            document.getElementById(
+                'childAvatar'
+            ).textContent =
+                '?';
+
+            return false;
+
+        }
+
+
+        /*
+         * Card pertama tetap menggunakan
+         * card yang sudah ada di HTML.
+         */
+
+        const firstChild =
+            children[0];
+
+
+        currentChildId =
+            firstChild.id;
+
+
+        const firstName =
+            String(
+                firstChild.nama ||
+                'Nama anak'
+            ).trim();
+
+
+        document.getElementById(
+            'childName'
+        ).textContent =
+            firstName;
+
+
+        document.getElementById(
+            'childClass'
+        ).textContent =
+            firstChild.kelas
+                ? `${firstChild.kelas} · TAUD SAQU DARUL IMAN`
+                : 'Kelas belum tersedia';
+
+
+        document.getElementById(
+            'childAvatar'
+        ).textContent =
+            firstName
+                .charAt(0)
+                .toUpperCase();
+
+
+        /*
+         * Tampilkan status kehadiran
+         * anak pertama.
+         */
+
+        await loadAttendanceForCard(
+            firstChild.id,
+            document.getElementById(
+                'attendanceStatus'
+            ),
+            document.getElementById(
+                'attendanceDot'
+            )
+        );
+
+
+        /*
+         * Kalau ada anak kedua dan seterusnya,
+         * clone card yang sama.
+         *
+         * Desain tetap sama.
+         */
+
+        for (
+            let i = 1;
+            i < children.length;
+            i++
+        ) {
+
+            const child =
+                children[i];
+
+
+            const card =
+                childCard.cloneNode(true);
+
+
+            /*
+             * Hilangkan ID utama agar
+             * tidak ada ID HTML yang sama.
+             */
+
+            card.id =
+                `childCard-${i}`;
+
+
+            const nameElement =
+                card.querySelector(
+                    '#childName'
+                );
+
+
+            const classElement =
+                card.querySelector(
+                    '#childClass'
+                );
+
+
+            const avatarElement =
+                card.querySelector(
+                    '#childAvatar'
+                );
+
+
+            const statusElement =
+                card.querySelector(
+                    '#attendanceStatus'
+                );
+
+
+            const dotElement =
+                card.querySelector(
+                    '#attendanceDot'
+                );
+
+
+            /*
+             * Beri ID unik untuk
+             * setiap card.
+             */
+
+            if (nameElement) {
+                nameElement.id =
+                    `childName-${i}`;
+            }
+
+
+            if (classElement) {
+                classElement.id =
+                    `childClass-${i}`;
+            }
+
+
+            if (avatarElement) {
+                avatarElement.id =
+                    `childAvatar-${i}`;
+            }
+
+
+            if (statusElement) {
+                statusElement.id =
+                    `attendanceStatus-${i}`;
+            }
+
+
+            if (dotElement) {
+                dotElement.id =
+                    `attendanceDot-${i}`;
+            }
+
+
+            /*
+             * Isi data anak.
+             */
+
+            const namaAnak =
+                String(
+                    child.nama ||
+                    'Nama anak'
+                ).trim();
+
+
+            if (nameElement) {
+
+                nameElement.textContent =
+                    namaAnak;
+
+            }
+
+
+            if (classElement) {
+
+                classElement.textContent =
+                    child.kelas
+                        ? `${child.kelas} · TAUD SAQU DARUL IMAN`
+                        : 'Kelas belum tersedia';
+
+            }
+
+
+            if (avatarElement) {
+
+                avatarElement.textContent =
+                    namaAnak
+                        .charAt(0)
+                        .toUpperCase();
+
+            }
+
+
+            /*
+             * Ambil status kehadiran
+             * masing-masing anak.
+             */
+
+            await loadAttendanceForCard(
+                child.id,
+                statusElement,
+                dotElement
+            );
+
+
+            /*
+             * Masukkan card setelah
+             * card sebelumnya.
+             */
+
+            childCard.parentNode.appendChild(
+                card
+            );
+
+        }
+
+
+        /*
+         * Shortcut tetap menggunakan
+         * child pertama seperti sebelumnya.
+         */
+
+        await loadShortcutNotifications();
+
+
+        return true;
+
+
+    } catch (error) {
+
+        console.error(
+            'Gagal memuat data anak:',
+            error
+        );
+
+
+        document.getElementById(
+            'childName'
+        ).textContent =
+            'Gagal memuat data';
+
+
+        document.getElementById(
+            'childClass'
+        ).textContent =
+            'Silakan refresh halaman.';
+
+
+        document.getElementById(
+            'childAvatar'
+        ).textContent =
+            '?';
+
+
+        return false;
+
+    }
+
+}
+
+
+/* =========================
+   ATTENDANCE UNTUK SETIAP ANAK
+========================= */
+
+async function loadAttendanceForCard(
+    childId,
+    statusElement,
+    dot
+) {
+
+    if (
+        !childId ||
+        !statusElement ||
+        !dot
+    ) {
+        return;
+    }
+
+
+    const today =
+        getToday();
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from('attendance')
+                .select(
+                    'status, keterangan'
+                )
+                .eq(
+                    'child_id',
+                    childId
+                )
+                .eq(
+                    'tanggal',
+                    today
+                )
+                .maybeSingle();
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        if (!data) {
+
+            statusElement.textContent =
+                'Belum diisi';
+
+            dot.style.background =
+                '#B0AAA3';
+
+            return;
+
+        }
+
+
+        statusElement.textContent =
+            getAttendanceLabel(
+                data.status
+            );
+
+
+        if (
+            data.status === 'hadir'
+        ) {
+
+            dot.style.background =
+                '#43A047';
+
+        } else if (
+            data.status === 'izin'
+        ) {
+
+            dot.style.background =
+                '#E0A100';
+
+        } else if (
+            data.status === 'sakit'
+        ) {
+
+            dot.style.background =
+                '#E67E22';
+
+        } else {
+
+            dot.style.background =
+                '#C0392B';
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            'Gagal memuat absensi:',
+            error
+        );
+
+
+        statusElement.textContent =
+            '-';
+
+    }
+
+}
 
     const childNameElement =
         document.getElementById(
@@ -2045,4 +2528,4 @@ initDashboard();
 
 </body>
 </html>
-
+```
