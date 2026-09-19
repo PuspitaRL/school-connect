@@ -4,7 +4,6 @@
 
 <script>
 
-
 /* =========================
    MOBILE MENU
 ========================= */
@@ -15,15 +14,12 @@ const menuToggle =
 const sidebar =
     document.querySelector('#sidebar');
 
-
 if (menuToggle && sidebar) {
 
     menuToggle.addEventListener(
         'click',
         () => {
-
             sidebar.classList.toggle('show');
-
         }
     );
 
@@ -39,7 +35,6 @@ const profileButton =
 
 const profileDropdown =
     document.querySelector('#profileDropdown');
-
 
 if (
     profileButton &&
@@ -57,18 +52,13 @@ if (
         }
     );
 
-
     document.addEventListener(
         'click',
         (event) => {
 
             if (
-                !profileDropdown.contains(
-                    event.target
-                ) &&
-                !profileButton.contains(
-                    event.target
-                )
+                !profileDropdown.contains(event.target) &&
+                !profileButton.contains(event.target)
             ) {
 
                 profileDropdown.classList.remove(
@@ -106,7 +96,6 @@ async function loadParentProfile() {
         } =
             await supabaseClient.auth.getUser();
 
-
         if (
             authError ||
             !authData ||
@@ -120,10 +109,8 @@ async function loadParentProfile() {
 
         }
 
-
         currentAuthUserId =
             authData.user.id;
-
 
         const {
             data: profile,
@@ -140,11 +127,9 @@ async function loadParentProfile() {
                 )
                 .maybeSingle();
 
-
         if (profileError) {
             throw profileError;
         }
-
 
         if (!profile) {
 
@@ -158,7 +143,6 @@ async function loadParentProfile() {
             return false;
 
         }
-
 
         if (
             profile.role !==
@@ -176,27 +160,22 @@ async function loadParentProfile() {
 
         }
 
-
         currentParentId =
             profile.id;
-
 
         const nama =
             profile.nama ||
             'Ayah/Bunda';
-
 
         document.getElementById(
             'profileName'
         ).textContent =
             nama;
 
-
         document.getElementById(
             'profileRole'
         ).textContent =
             'Orang Tua';
-
 
         document.getElementById(
             'profileAvatar'
@@ -206,15 +185,12 @@ async function loadParentProfile() {
                 .charAt(0)
                 .toUpperCase();
 
-
         document.getElementById(
             'welcomeTitle'
         ).textContent =
             `Selamat datang, ${nama} 👋`;
 
-
         return true;
-
 
     } catch (error) {
 
@@ -240,16 +216,27 @@ async function loadParentProfile() {
 
 async function loadChild() {
 
-    const childCard =
-        document.getElementById('childCard');
+    const originalCard =
+        document.getElementById(
+            'childCard'
+        );
 
+    if (!originalCard) {
 
-    if (!childCard) {
+        console.error(
+            'childCard tidak ditemukan.'
+        );
+
         return false;
+
     }
 
 
     try {
+
+        /*
+         * AMBIL SEMUA ANAK
+         */
 
         const {
             data: children,
@@ -258,7 +245,7 @@ async function loadChild() {
             await supabaseClient
                 .from('children')
                 .select(
-                    'id, nama, kelas, tahun_ajaran, tanggal_lahir'
+                    'id, nama, kelas, tahun_ajaran, tanggal_lahir, parent_id'
                 )
                 .eq(
                     'parent_id',
@@ -277,75 +264,115 @@ async function loadChild() {
         }
 
 
+        console.log(
+            'DATA ANAK:',
+            children
+        );
+
+
+        /*
+         * TIDAK ADA ANAK
+         */
+
         if (
             !children ||
             children.length === 0
         ) {
 
-            document.getElementById(
-                'childName'
-            ).textContent =
-                'Belum ada data anak';
+            const childName =
+                document.getElementById(
+                    'childName'
+                );
 
-            document.getElementById(
-                'childClass'
-            ).textContent =
-                'Data siswa belum terhubung.';
+            const childClass =
+                document.getElementById(
+                    'childClass'
+                );
 
-            document.getElementById(
-                'childAvatar'
-            ).textContent =
-                '?';
+            const childAvatar =
+                document.getElementById(
+                    'childAvatar'
+                );
+
+            if (childName) {
+                childName.textContent =
+                    'Belum ada data anak';
+            }
+
+            if (childClass) {
+                childClass.textContent =
+                    'Data siswa belum terhubung.';
+            }
+
+            if (childAvatar) {
+                childAvatar.textContent =
+                    '?';
+            }
 
             return false;
 
         }
 
 
-        /* =========================
-           ANAK PERTAMA
-        ========================== */
+        /*
+         * ==================================
+         * SIMPAN CONTAINER KARTU
+         * ==================================
+         */
+
+        const cardContainer =
+            originalCard.parentElement;
+
+
+        /*
+         * ==================================
+         * HAPUS KARTU HASIL RENDER LAMA
+         * ==================================
+         *
+         * Kita pertahankan kartu asli
+         * sebagai template.
+         */
+
+        const oldCards =
+            cardContainer.querySelectorAll(
+                '.child-card'
+            );
+
+        oldCards.forEach(
+            (card, index) => {
+
+                if (index > 0) {
+                    card.remove();
+                }
+
+            }
+        );
+
+
+        /*
+         * ==================================
+         * ANAK PERTAMA
+         * ==================================
+         */
 
         const firstChild =
             children[0];
-
 
         currentChildId =
             firstChild.id;
 
 
-        const firstName =
-            String(
-                firstChild.nama ||
-                'Nama anak'
-            ).trim();
+        setChildData(
+            originalCard,
+            firstChild
+        );
 
 
-        document.getElementById(
-            'childName'
-        ).textContent =
-            firstName;
-
-
-        document.getElementById(
-            'childClass'
-        ).textContent =
-            firstChild.kelas
-                ? `${firstChild.kelas} · TAUD SAQU DARUL IMAN`
-                : 'Kelas belum tersedia';
-
-
-        document.getElementById(
-            'childAvatar'
-        ).textContent =
-            firstName
-                .charAt(0)
-                .toUpperCase();
-
-
-        /* =========================
-           ANAK KEDUA DAN SETERUSNYA
-        ========================== */
+        /*
+         * ==================================
+         * ANAK KEDUA, KETIGA, DST
+         * ==================================
+         */
 
         for (
             let i = 1;
@@ -357,98 +384,81 @@ async function loadChild() {
                 children[i];
 
 
-            const card =
-                childCard.cloneNode(true);
+            /*
+             * Buat kartu baru
+             * dari kartu asli.
+             */
+
+            const newCard =
+                originalCard.cloneNode(
+                    true
+                );
 
 
-            card.id =
-                `childCard-${i}`;
+            newCard.removeAttribute(
+                'id'
+            );
 
 
             /*
-             * Cari elemen di dalam
-             * kartu hasil clone.
+             * Hapus ID dari elemen
+             * di dalam kartu clone.
              */
 
             const nameElement =
-                card.querySelector(
+                newCard.querySelector(
                     '#childName'
                 );
 
-
             const classElement =
-                card.querySelector(
+                newCard.querySelector(
                     '#childClass'
                 );
 
-
             const avatarElement =
-                card.querySelector(
+                newCard.querySelector(
                     '#childAvatar'
                 );
 
-
             const statusElement =
-                card.querySelector(
+                newCard.querySelector(
                     '#attendanceStatus'
                 );
 
-
             const dotElement =
-                card.querySelector(
+                newCard.querySelector(
                     '#attendanceDot'
                 );
 
 
-            const namaAnak =
-                String(
-                    child.nama ||
-                    'Nama anak'
-                ).trim();
-
-
-            /*
-             * Beri ID unik pada kartu kedua,
-             * supaya tidak ada ID HTML yang sama.
-             */
-
             if (nameElement) {
-
-                nameElement.id =
-                    `childName-${i}`;
-
+                nameElement.removeAttribute(
+                    'id'
+                );
             }
-
 
             if (classElement) {
-
-                classElement.id =
-                    `childClass-${i}`;
-
+                classElement.removeAttribute(
+                    'id'
+                );
             }
-
 
             if (avatarElement) {
-
-                avatarElement.id =
-                    `childAvatar-${i}`;
-
+                avatarElement.removeAttribute(
+                    'id'
+                );
             }
-
 
             if (statusElement) {
-
-                statusElement.id =
-                    `attendanceStatus-${i}`;
-
+                statusElement.removeAttribute(
+                    'id'
+                );
             }
 
-
             if (dotElement) {
-
-                dotElement.id =
-                    `attendanceDot-${i}`;
-
+                dotElement.removeAttribute(
+                    'id'
+                );
             }
 
 
@@ -456,56 +466,23 @@ async function loadChild() {
              * Isi data anak.
              */
 
-            if (nameElement) {
-
-                nameElement.textContent =
-                    namaAnak;
-
-            }
-
-
-            if (classElement) {
-
-                classElement.textContent =
-                    child.kelas
-                        ? `${child.kelas} · TAUD SAQU DARUL IMAN`
-                        : 'Kelas belum tersedia';
-
-            }
-
-
-            if (avatarElement) {
-
-                avatarElement.textContent =
-                    namaAnak
-                        .charAt(0)
-                        .toUpperCase();
-
-            }
-
-
-            if (statusElement) {
-
-                statusElement.textContent =
-                    'Memuat...';
-
-            }
-
-
-            /*
-             * Tampilkan kartu anak
-             * SEBELUM memuat absensi.
-             */
-
-            childCard.parentNode.appendChild(
-                card
+            setChildData(
+                newCard,
+                child
             );
 
 
             /*
-             * Absensi anak kedua dan seterusnya
-             * dijalankan setelah kartu tampil.
-             * Tidak menggunakan await.
+             * Tambahkan kartu ke halaman.
+             */
+
+            cardContainer.appendChild(
+                newCard
+            );
+
+
+            /*
+             * Absensi anak tersebut.
              */
 
             loadAttendanceForCard(
@@ -517,9 +494,11 @@ async function loadChild() {
         }
 
 
-        /* =========================
-           ABSENSI ANAK PERTAMA
-        ========================== */
+        /*
+         * ==================================
+         * ABSENSI ANAK PERTAMA
+         * ==================================
+         */
 
         loadAttendanceForCard(
             firstChild.id,
@@ -532,13 +511,10 @@ async function loadChild() {
         );
 
 
-        /* =========================
-           NOTIFIKASI
-        ========================== */
-
         /*
-         * Notifikasi tidak boleh menahan
-         * tampilan data anak.
+         * ==================================
+         * NOTIFIKASI
+         * ==================================
          */
 
         loadShortcutNotifications();
@@ -560,12 +536,10 @@ async function loadChild() {
                 'childName'
             );
 
-
         const childClass =
             document.getElementById(
                 'childClass'
             );
-
 
         const childAvatar =
             document.getElementById(
@@ -580,14 +554,12 @@ async function loadChild() {
 
         }
 
-
         if (childClass) {
 
             childClass.textContent =
                 'Silakan refresh halaman.';
 
         }
-
 
         if (childAvatar) {
 
@@ -598,6 +570,77 @@ async function loadChild() {
 
 
         return false;
+
+    }
+
+}
+
+
+/* =========================
+   SET DATA ANAK KE KARTU
+========================= */
+
+function setChildData(
+    card,
+    child
+) {
+
+    const nameElement =
+        card.querySelector(
+            '#childName'
+        ) ||
+        card.querySelector(
+            '[id^="childName"]'
+        );
+
+    const classElement =
+        card.querySelector(
+            '#childClass'
+        ) ||
+        card.querySelector(
+            '[id^="childClass"]'
+        );
+
+    const avatarElement =
+        card.querySelector(
+            '#childAvatar'
+        ) ||
+        card.querySelector(
+            '[id^="childAvatar"]'
+        );
+
+
+    const namaAnak =
+        String(
+            child.nama ||
+            'Nama anak'
+        ).trim();
+
+
+    if (nameElement) {
+
+        nameElement.textContent =
+            namaAnak;
+
+    }
+
+
+    if (classElement) {
+
+        classElement.textContent =
+            child.kelas
+                ? `${child.kelas} · TAUD SAQU DARUL IMAN`
+                : 'Kelas belum tersedia';
+
+    }
+
+
+    if (avatarElement) {
+
+        avatarElement.textContent =
+            namaAnak
+                .charAt(0)
+                .toUpperCase();
 
     }
 
@@ -709,7 +752,6 @@ async function loadAttendanceForCard(
             error
         );
 
-
         statusElement.textContent =
             '-';
 
@@ -765,14 +807,16 @@ async function loadTodayAttendance() {
                 'attendanceStatus'
             );
 
-
         const dot =
             document.getElementById(
                 'attendanceDot'
             );
 
 
-        if (!statusElement || !dot) {
+        if (
+            !statusElement ||
+            !dot
+        ) {
             return;
         }
 
@@ -797,24 +841,21 @@ async function loadTodayAttendance() {
 
 
         if (
-            data.status ===
-            'hadir'
+            data.status === 'hadir'
         ) {
 
             dot.style.background =
                 '#43A047';
 
         } else if (
-            data.status ===
-            'izin'
+            data.status === 'izin'
         ) {
 
             dot.style.background =
                 '#E0A100';
 
         } else if (
-            data.status ===
-            'sakit'
+            data.status === 'sakit'
         ) {
 
             dot.style.background =
@@ -860,13 +901,24 @@ async function loadTodayAttendance() {
 
 async function loadShortcutNotifications() {
 
-    await loadCommunicationBadge();
+    try {
 
-    await loadAnnouncementBadge();
+        await loadCommunicationBadge();
 
-    await loadLearningBadge();
+        await loadAnnouncementBadge();
 
-    updateTopNotification();
+        await loadLearningBadge();
+
+        updateTopNotification();
+
+    } catch (error) {
+
+        console.error(
+            'Gagal memuat notifikasi:',
+            error
+        );
+
+    }
 
 }
 
@@ -1260,10 +1312,6 @@ async function markShortcutAsRead(
         let referenceIds = [];
 
 
-        /* =====================
-           KOMUNIKASI
-        ====================== */
-
         if (
             notificationType ===
             'komunikasi'
@@ -1313,10 +1361,6 @@ async function markShortcutAsRead(
         }
 
 
-        /* =====================
-           PENGUMUMAN
-        ====================== */
-
         if (
             notificationType ===
             'pengumuman'
@@ -1345,10 +1389,6 @@ async function markShortcutAsRead(
 
         }
 
-
-        /* =====================
-           PEMBELAJARAN
-        ====================== */
 
         if (
             notificationType ===
@@ -1387,10 +1427,6 @@ async function markShortcutAsRead(
             referenceIds
         );
 
-
-        /* =========================
-           HILANGKAN BADGE
-        ========================== */
 
         if (
             notificationType ===
