@@ -1188,7 +1188,8 @@ async function loadChild() {
    TAMPILKAN CARD
 ========================= */
 
-childCard.parentNode.appendChild(
+childCard.insertAdjacentElement(
+    'afterend',
     newCard
 );
 
