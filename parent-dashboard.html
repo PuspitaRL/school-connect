@@ -244,6 +244,11 @@ async function loadChild() {
         document.getElementById('childCard');
 
 
+    if (!childCard) {
+        return false;
+    }
+
+
     try {
 
         const {
@@ -338,17 +343,6 @@ async function loadChild() {
                 .toUpperCase();
 
 
-        await loadAttendanceForCard(
-            firstChild.id,
-            document.getElementById(
-                'attendanceStatus'
-            ),
-            document.getElementById(
-                'attendanceDot'
-            )
-        );
-
-
         /* =========================
            ANAK KEDUA DAN SETERUSNYA
         ========================== */
@@ -370,6 +364,11 @@ async function loadChild() {
             card.id =
                 `childCard-${i}`;
 
+
+            /*
+             * Cari elemen di dalam
+             * kartu hasil clone.
+             */
 
             const nameElement =
                 card.querySelector(
@@ -400,6 +399,18 @@ async function loadChild() {
                     '#attendanceDot'
                 );
 
+
+            const namaAnak =
+                String(
+                    child.nama ||
+                    'Nama anak'
+                ).trim();
+
+
+            /*
+             * Beri ID unik pada kartu kedua,
+             * supaya tidak ada ID HTML yang sama.
+             */
 
             if (nameElement) {
 
@@ -441,12 +452,9 @@ async function loadChild() {
             }
 
 
-            const namaAnak =
-                String(
-                    child.nama ||
-                    'Nama anak'
-                ).trim();
-
+            /*
+             * Isi data anak.
+             */
 
             if (nameElement) {
 
@@ -476,26 +484,64 @@ async function loadChild() {
             }
 
 
-            await loadAttendanceForCard(
-                child.id,
-                statusElement,
-                dotElement
-            );
+            if (statusElement) {
 
+                statusElement.textContent =
+                    'Memuat...';
+
+            }
+
+
+            /*
+             * Tampilkan kartu anak
+             * SEBELUM memuat absensi.
+             */
 
             childCard.parentNode.appendChild(
                 card
+            );
+
+
+            /*
+             * Absensi anak kedua dan seterusnya
+             * dijalankan setelah kartu tampil.
+             * Tidak menggunakan await.
+             */
+
+            loadAttendanceForCard(
+                child.id,
+                statusElement,
+                dotElement
             );
 
         }
 
 
         /* =========================
-           NOTIFIKASI
-           TETAP MENGGUNAKAN ANAK PERTAMA
+           ABSENSI ANAK PERTAMA
         ========================== */
 
-        await loadShortcutNotifications();
+        loadAttendanceForCard(
+            firstChild.id,
+            document.getElementById(
+                'attendanceStatus'
+            ),
+            document.getElementById(
+                'attendanceDot'
+            )
+        );
+
+
+        /* =========================
+           NOTIFIKASI
+        ========================== */
+
+        /*
+         * Notifikasi tidak boleh menahan
+         * tampilan data anak.
+         */
+
+        loadShortcutNotifications();
 
 
         return true;
@@ -509,22 +555,46 @@ async function loadChild() {
         );
 
 
-        document.getElementById(
-            'childName'
-        ).textContent =
-            'Gagal memuat data';
+        const childName =
+            document.getElementById(
+                'childName'
+            );
 
 
-        document.getElementById(
-            'childClass'
-        ).textContent =
-            'Silakan refresh halaman.';
+        const childClass =
+            document.getElementById(
+                'childClass'
+            );
 
 
-        document.getElementById(
-            'childAvatar'
-        ).textContent =
-            '?';
+        const childAvatar =
+            document.getElementById(
+                'childAvatar'
+            );
+
+
+        if (childName) {
+
+            childName.textContent =
+                'Gagal memuat data';
+
+        }
+
+
+        if (childClass) {
+
+            childClass.textContent =
+                'Silakan refresh halaman.';
+
+        }
+
+
+        if (childAvatar) {
+
+            childAvatar.textContent =
+                '?';
+
+        }
 
 
         return false;
@@ -702,6 +772,11 @@ async function loadTodayAttendance() {
             );
 
 
+        if (!statusElement || !dot) {
+            return;
+        }
+
+
         if (!data) {
 
             statusElement.textContent =
@@ -761,10 +836,18 @@ async function loadTodayAttendance() {
         );
 
 
-        document.getElementById(
-            'attendanceStatus'
-        ).textContent =
-            '-';
+        const statusElement =
+            document.getElementById(
+                'attendanceStatus'
+            );
+
+
+        if (statusElement) {
+
+            statusElement.textContent =
+                '-';
+
+        }
 
     }
 
