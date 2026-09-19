@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="id">
 
@@ -701,8 +700,6 @@
     </section>
 
 </main>
-
-
 <!-- =========================
      JAVASCRIPT
 ========================== -->
@@ -945,6 +942,11 @@ async function loadParentProfile() {
 
 async function loadChild() {
 
+    const childCard =
+        document.getElementById(
+            'childCard'
+        );
+
     const childNameElement =
         document.getElementById(
             'childName'
@@ -1008,37 +1010,207 @@ async function loadChild() {
         }
 
 
-        const child =
+        /* =========================
+           ANAK PERTAMA
+        ========================== */
+
+        const firstChild =
             children[0];
 
 
         currentChildId =
-            child.id;
+            firstChild.id;
 
 
-        const namaAnak =
+        const firstName =
             String(
-                child.nama || 'Nama anak'
+                firstChild.nama ||
+                'Nama anak'
             ).trim();
 
 
         childNameElement.textContent =
-            namaAnak;
+            firstName;
 
 
         childClassElement.textContent =
-            child.kelas
-                ? `${child.kelas} · TAUD SAQU DARUL IMAN`
+            firstChild.kelas
+                ? `${firstChild.kelas} · TAUD SAQU DARUL IMAN`
                 : 'Kelas belum tersedia';
 
 
         childAvatarElement.textContent =
-            namaAnak
+            firstName
                 .charAt(0)
                 .toUpperCase();
 
 
         await loadTodayAttendance();
+
+
+        /* =========================
+           ANAK KEDUA DAN SETERUSNYA
+        ========================== */
+
+        for (
+            let i = 1;
+            i < children.length;
+            i++
+        ) {
+
+            const child =
+                children[i];
+
+
+            /* Buat salinan card anak pertama */
+
+            const newCard =
+                childCard.cloneNode(true);
+
+
+            newCard.id =
+                `childCard-${i}`;
+
+
+            /* =========================
+               CARI ELEMENT DI CARD BARU
+            ========================== */
+
+            const nameElement =
+                newCard.querySelector(
+                    '#childName'
+                );
+
+            const classElement =
+                newCard.querySelector(
+                    '#childClass'
+                );
+
+            const avatarElement =
+                newCard.querySelector(
+                    '#childAvatar'
+                );
+
+            const attendanceStatusElement =
+                newCard.querySelector(
+                    '#attendanceStatus'
+                );
+
+            const attendanceDotElement =
+                newCard.querySelector(
+                    '#attendanceDot'
+                );
+
+
+            /* =========================
+               UBAH ID AGAR TIDAK DUPLIKAT
+            ========================== */
+
+            if (nameElement) {
+
+                nameElement.id =
+                    `childName-${i}`;
+
+            }
+
+
+            if (classElement) {
+
+                classElement.id =
+                    `childClass-${i}`;
+
+            }
+
+
+            if (avatarElement) {
+
+                avatarElement.id =
+                    `childAvatar-${i}`;
+
+            }
+
+
+            if (attendanceStatusElement) {
+
+                attendanceStatusElement.id =
+                    `attendanceStatus-${i}`;
+
+            }
+
+
+            if (attendanceDotElement) {
+
+                attendanceDotElement.id =
+                    `attendanceDot-${i}`;
+
+            }
+
+
+            /* =========================
+               DATA ANAK
+            ========================== */
+
+            const namaAnak =
+                String(
+                    child.nama ||
+                    'Nama anak'
+                ).trim();
+
+
+            if (nameElement) {
+
+                nameElement.textContent =
+                    namaAnak;
+
+            }
+
+
+            if (classElement) {
+
+                classElement.textContent =
+                    child.kelas
+                        ? `${child.kelas} · TAUD SAQU DARUL IMAN`
+                        : 'Kelas belum tersedia';
+
+            }
+
+
+            if (avatarElement) {
+
+                avatarElement.textContent =
+                    namaAnak
+                        .charAt(0)
+                        .toUpperCase();
+
+            }
+
+/* =========================
+   TAMPILKAN CARD
+========================= */
+
+childCard.parentNode.appendChild(
+    newCard
+);
+
+
+/* =========================
+   ABSENSI ANAK KEDUA
+========================= */
+
+await loadAttendanceForCard(
+    child.id,
+    attendanceStatusElement,
+    attendanceDotElement
+);
+
+        }
+
+
+        /* =========================
+           NOTIFIKASI
+           TETAP MENGGUNAKAN
+           ANAK PERTAMA
+        ========================== */
 
         await loadShortcutNotifications();
 
@@ -1073,6 +1245,121 @@ async function loadChild() {
 }
 
 
+/* =========================
+   ATTENDANCE UNTUK CARD ANAK
+========================= */
+
+async function loadAttendanceForCard(
+    childId,
+    statusElement,
+    dotElement
+) {
+
+    if (
+        !childId ||
+        !statusElement ||
+        !dotElement
+    ) {
+        return;
+    }
+
+
+    const today =
+        getToday();
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from('attendance')
+                .select(
+                    'status, keterangan'
+                )
+                .eq(
+                    'child_id',
+                    childId
+                )
+                .eq(
+                    'tanggal',
+                    today
+                )
+                .maybeSingle();
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        if (!data) {
+
+            statusElement.textContent =
+                'Belum diisi';
+
+            dotElement.style.background =
+                '#B0AAA3';
+
+            return;
+
+        }
+
+
+        statusElement.textContent =
+            getAttendanceLabel(
+                data.status
+            );
+
+
+        if (
+            data.status ===
+            'hadir'
+        ) {
+
+            dotElement.style.background =
+                '#43A047';
+
+        } else if (
+            data.status ===
+            'izin'
+        ) {
+
+            dotElement.style.background =
+                '#E0A100';
+
+        } else if (
+            data.status ===
+            'sakit'
+        ) {
+
+            dotElement.style.background =
+                '#E67E22';
+
+        } else {
+
+            dotElement.style.background =
+                '#C0392B';
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            'Gagal memuat absensi anak:',
+            error
+        );
+
+
+        statusElement.textContent =
+            '-';
+
+    }
+
+}
 /* =========================
    TODAY ATTENDANCE
 ========================= */
@@ -1119,6 +1406,7 @@ async function loadTodayAttendance() {
             document.getElementById(
                 'attendanceStatus'
             );
+
 
         const dot =
             document.getElementById(
@@ -1266,6 +1554,7 @@ async function getReadNotificationIds(
             error
         );
 
+
         return new Set();
 
     }
@@ -1353,6 +1642,7 @@ async function loadCommunicationBadge() {
             error
         );
 
+
         setBadge(
             'komunikasiBadge',
             0
@@ -1421,6 +1711,7 @@ async function loadAnnouncementBadge() {
             error
         );
 
+
         setBadge(
             'pengumumanBadge',
             0
@@ -1448,6 +1739,30 @@ async function loadLearningBadge() {
             getToday();
 
 
+        const readKey =
+            `learning_read_${currentChildId}_${today}`;
+
+
+        const alreadyRead =
+            localStorage.getItem(
+                readKey
+            );
+
+
+        if (
+            alreadyRead === 'true'
+        ) {
+
+            setBadge(
+                'pembelajaranBadge',
+                0
+            );
+
+            return;
+
+        }
+
+
         const {
             data,
             error
@@ -1464,7 +1779,8 @@ async function loadLearningBadge() {
                 .eq(
                     'tanggal',
                     today
-                );
+                )
+                .maybeSingle();
 
 
         if (error) {
@@ -1472,24 +1788,9 @@ async function loadLearningBadge() {
         }
 
 
-        const readIds =
-            await getReadNotificationIds(
-                'pembelajaran'
-            );
-
-
-        const unread =
-            (data || []).filter(
-                item =>
-                    !readIds.has(
-                        item.id
-                    )
-            );
-
-
         setBadge(
             'pembelajaranBadge',
-            unread.length
+            data ? 1 : 0
         );
 
 
@@ -1498,11 +1799,6 @@ async function loadLearningBadge() {
         console.error(
             'Gagal memuat notifikasi pembelajaran:',
             error
-        );
-
-        setBadge(
-            'pembelajaranBadge',
-            0
         );
 
     }
@@ -1533,6 +1829,7 @@ async function markNotificationsAsRead(
         const rows =
             referenceIds.map(
                 referenceId => ({
+
                     user_id:
                         currentAuthUserId,
 
@@ -1541,16 +1838,10 @@ async function markNotificationsAsRead(
 
                     reference_id:
                         referenceId
+
                 })
             );
 
-
-        /*
-         * INSERT SAJA.
-         *
-         * Tidak memakai UPDATE/upsert supaya
-         * policy RLS tetap sederhana.
-         */
 
         const {
             error
@@ -1559,11 +1850,6 @@ async function markNotificationsAsRead(
                 .from('notification_reads')
                 .insert(rows);
 
-
-        /*
-         * Jika sebagian data sudah ada,
-         * abaikan error duplicate.
-         */
 
         if (
             error &&
@@ -1689,86 +1975,41 @@ async function markShortcutAsRead(
         }
 
 
-        /* =========================
-   PEMBELAJARAN HARI INI
-========================= */
+        /* =====================
+           PEMBELAJARAN
+        ====================== */
 
-async function loadLearningBadge() {
+        if (
+            notificationType ===
+            'pembelajaran'
+        ) {
 
-    if (!currentChildId) {
-        return;
-    }
+            const today =
+                getToday();
 
-    try {
 
-        const today = getToday();
+            const readKey =
+                `learning_read_${currentChildId}_${today}`;
 
-        /* 
-           Cek apakah pembelajaran hari ini
-           sudah pernah dibuka di perangkat ini.
-        */
 
-        const readKey =
-            `learning_read_${currentChildId}_${today}`;
+            localStorage.setItem(
+                readKey,
+                'true'
+            );
 
-        const alreadyRead =
-            localStorage.getItem(readKey);
-
-        /* Kalau sudah dibaca, jangan tampilkan badge */
-
-        if (alreadyRead === 'true') {
 
             setBadge(
                 'pembelajaranBadge',
                 0
             );
 
+
+            updateTopNotification();
+
             return;
 
         }
 
-
-        /* Cek apakah laporan pembelajaran hari ini ada */
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from('daily_reports')
-                .select('id')
-                .eq(
-                    'child_id',
-                    currentChildId
-                )
-                .eq(
-                    'tanggal',
-                    today
-                )
-                .maybeSingle();
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        setBadge(
-            'pembelajaranBadge',
-            data ? 1 : 0
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            'Gagal memuat notifikasi pembelajaran:',
-            error
-        );
-
-    }
-
-}
 
         await markNotificationsAsRead(
             notificationType,
@@ -1776,10 +2017,9 @@ async function loadLearningBadge() {
         );
 
 
-        /*
-         * Langsung hilangkan badge
-         * setelah berhasil diproses.
-         */
+        /* =========================
+           HILANGKAN BADGE
+        ========================== */
 
         if (
             notificationType ===
@@ -1854,10 +2094,6 @@ document
                         shortcut.dataset
                             .notificationType;
 
-                    /*
-                     * Jangan await.
-                     * Halaman tetap langsung terbuka.
-                     */
 
                     markShortcutAsRead(
                         type
@@ -1881,10 +2117,12 @@ function updateTopNotification() {
             'komunikasiBadge'
         );
 
+
     const pengumumanBadge =
         document.getElementById(
             'pengumumanBadge'
         );
+
 
     const pembelajaranBadge =
         document.getElementById(
@@ -1949,6 +2187,7 @@ function setBadge(
                 ? '99+'
                 : count;
 
+
         badge.classList.add(
             'show'
         );
@@ -1957,6 +2196,7 @@ function setBadge(
 
         badge.textContent =
             '';
+
 
         badge.classList.remove(
             'show'
@@ -2091,7 +2331,5 @@ async function initDashboard() {
 initDashboard();
 
 </script>
-
 </body>
 </html>
-```
