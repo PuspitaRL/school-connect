@@ -482,85 +482,86 @@
         }
     }
 </style>
-
+```
 
 </head>
 
 <body>
 
-
+```
 <!-- SIDEBAR -->
 
 <aside class="sidebar" id="sidebar">
 
-        <div class="sidebar-logo">
+    <div class="sidebar-logo">
 
-            <img src="images/logo.png" alt="Logo TAUD SAQU DARUL IMAN">
+        <img src="images/logo.png" alt="Logo TAUD SAQU DARUL IMAN">
 
-            <div>
-                <strong>TAUD SAQU</strong>
-                <span>DARUL IMAN</span>
-            </div>
-
+        <div>
+            <strong>TAUD SAQU</strong>
+            <span>DARUL IMAN</span>
         </div>
 
-        <nav class="sidebar-menu">
+    </div>
 
-            <a href="parent-dashboard.html" class="menu-item">
-                <span>🏠</span>
-                Dashboard
-            </a>
+    <nav class="sidebar-menu">
 
-            <a href="child.html" class="menu-item">
-                <span>👧</span>
-                Anak Saya
-            </a>
+        <a href="parent-dashboard.html" class="menu-item">
+            <span>⌂</span>
+            Dashboard
+        </a>
 
-            <a href="buku-penghubung.html" class="menu-item active ">
-                <span>📖</span>
-                Buku Penghubung
-            </a>
+        <a href="child.html" class="menu-item">
+            <span>👧</span>
+            Anak Saya
+        </a>
 
-            <a href="perkembangan.html" class="menu-item">
-                <span>📊</span>
-                Pembelajaran hari Ini
-            </a>
+        <a href="buku-penghubung.html" class="menu-item active">
+            <span>📖</span>
+            Buku Penghubung
+        </a>
 
-            <a href="bintang-prestasi.html" class="menu-item">
-                <span>⭐</span>
-                Bintang Prestasi
-            </a>
+        <a href="perkembangan.html" class="menu-item">
+            <span>📊</span>
+            Pembalajaran hari ini
+        </a>
 
-            <a href="absensi.html" class="menu-item">
-                <span>📅</span>
-                Absensi
-            </a>
+        <a href="bintang-prestasi.html" class="menu-item">
+            <span>⭐</span>
+            Bintang Prestasi
+        </a>
 
-            <a href="pengumuman.html" class="menu-item">
-                <span>📢</span>
-                Pengumuman
-            </a>
+        <a href="absensi.html" class="menu-item">
+            <span>📅</span>
+            Absensi
+        </a>
 
-            <a href="komunikasi.html" class="menu-item">
-                <span>💬</span>
-                Komunikasi
-            </a>
+        <a href="pengumuman.html" class="menu-item">
+            <span>📢</span>
+            Pengumuman
+        </a>
 
-            <div class="menu-divider"></div>
+        <a href="komunikasi.html" class="menu-item">
+            <span>💬</span>
+            Komunikasi
+        </a>
 
-            <a href="pengaturan.html" class="menu-item">
-                <span>⚙</span>
-                Pengaturan
-            </a>
+        <div class="menu-divider"></div>
 
-            <a href="index.html" class="menu-item logout">
-                <span>↪</span>
-                Keluar
-            </a>
+        <a href="pengaturan.html" class="menu-item">
+            <span>⚙</span>
+            Pengaturan
+        </a>
 
-        </nav>
+        <a href="index.html" class="menu-item logout">
+            <span>↪</span>
+            Keluar
+        </a>
 
-    </aside>
+    </nav>
+
+</aside>
+
 
 <!-- MAIN -->
 
@@ -661,17 +662,33 @@
 
                 <div class="selected-child-info">
 
-                    <span>Anak Saya</span>
+    <span>Anak Saya</span>
 
-                    <strong id="childName">
-                        Memuat...
-                    </strong>
+    <select
+        id="childSelector"
+        style="
+            border: none;
+            background: transparent;
+            padding: 0;
+            margin: 2px 0;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            cursor: pointer;
+            outline: none;
+        "
+    >
+        <option value="">
+            Memuat...
+        </option>
+    </select>
 
-                    <small id="childClass">
-                        -
-                    </small>
+    <small id="childClass">
+        -
+    </small>
 
-                </div>
+</div>
 
             </div>
 
@@ -1086,6 +1103,7 @@
 
     let currentParentId = null;
     let currentChild = null;
+	let childrenData = [];
     let dailyReportChannel = null;
 
 
@@ -1397,125 +1415,202 @@
        LOAD CHILD
     ================================= */
 
-    async function loadChild() {
+   async function loadChild() {
 
-        const {
-            data,
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from('children')
+        .select(
+            'id, nama, kelas, tahun_ajaran'
+        )
+        .eq(
+            'parent_id',
+            currentParentId
+        )
+        .order(
+            'created_at',
+            {
+                ascending: true
+            }
+        );
+
+
+    if (error) {
+
+        console.error(
+            'Gagal mengambil data anak:',
             error
-        } = await supabaseClient
-            .from('children')
-            .select(
-                'id, nama, kelas, tahun_ajaran'
-            )
-            .eq(
-                'parent_id',
-                currentParentId
-            )
-            .order(
-                'created_at',
-                {
-                    ascending: true
-                }
-            );
-
-
-        if (error) {
-
-            console.error(
-                'Gagal mengambil data anak:',
-                error
-            );
-
-            document.getElementById(
-                'childName'
-            ).textContent =
-                'Gagal memuat data';
-
-            return;
-
-        }
-
-
-        if (!data || data.length === 0) {
-
-            document.getElementById(
-                'childName'
-            ).textContent =
-                'Belum ada data anak';
-
-
-            document.getElementById(
-                'childClass'
-            ).textContent =
-                '-';
-
-
-            document.getElementById(
-                'childAvatar'
-            ).textContent =
-                '-';
-
-
-            document.getElementById(
-                'summaryText'
-            ).textContent =
-                'Belum ada anak yang terhubung dengan akun ini.';
-
-
-            document.getElementById(
-                'dailyStatus'
-            ).textContent =
-                'Belum ada';
-
-
-            document.getElementById(
-                'teacherMessage'
-            ).textContent =
-                'Belum ada laporan guru.';
-
-
-            return;
-
-        }
-
-
-        currentChild =
-            data[0];
-
+        );
 
         document.getElementById(
-            'childName'
-        ).textContent =
-            currentChild.nama;
+            'childSelector'
+        ).innerHTML =
+            '<option value="">Gagal memuat data</option>';
+
+        return;
+
+    }
+
+
+    if (!data || data.length === 0) {
+
+        document.getElementById(
+            'childSelector'
+        ).innerHTML =
+            '<option value="">Belum ada data anak</option>';
 
 
         document.getElementById(
             'childClass'
         ).textContent =
-            `Kelas ${currentChild.kelas}`;
+            '-';
 
 
         document.getElementById(
             'childAvatar'
         ).textContent =
-            currentChild.nama
-                .charAt(0)
-                .toUpperCase();
+            '-';
 
 
         document.getElementById(
-            'pageDescription'
+            'summaryText'
         ).textContent =
-            `Pantau aktivitas dan perkembangan ${currentChild.nama} di sekolah.`;
+            'Belum ada anak yang terhubung dengan akun ini.';
 
 
-        await loadDailyReport();
+        document.getElementById(
+            'dailyStatus'
+        ).textContent =
+            'Belum ada';
 
-        subscribeToDailyReport();
+
+        document.getElementById(
+            'teacherMessage'
+        ).textContent =
+            'Belum ada laporan guru.';
+
+
+        return;
 
     }
 
 
+    /* ================================
+       SIMPAN SEMUA DATA ANAK
+    ================================= */
+
+    childrenData = data;
+
+
+    /* ================================
+       ISI DROPDOWN ANAK
+    ================================= */
+
+    const childSelector =
+        document.getElementById(
+            'childSelector'
+        );
+
+
+    childSelector.innerHTML = '';
+
+
+    childrenData.forEach(
+        child => {
+
+            const option =
+                document.createElement(
+                    'option'
+                );
+
+            option.value =
+                child.id;
+
+            option.textContent =
+                child.nama;
+
+            childSelector.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    /* ================================
+       ANAK PERTAMA SEBAGAI DEFAULT
+    ================================= */
+
+    currentChild =
+        childrenData[0];
+
+
+    childSelector.value =
+        currentChild.id;
+
+    await updateSelectedChild();
+
+}
+
+/* ================================
+   UPDATE ANAK TERPILIH
+================================= */
+
+async function updateSelectedChild() {
+
+    if (!currentChild) {
+        return;
+    }
+
+
+    document.getElementById(
+        'childClass'
+    ).textContent =
+        `Kelas ${currentChild.kelas}`;
+
+
+    document.getElementById(
+        'childAvatar'
+    ).textContent =
+        currentChild.nama
+            .charAt(0)
+            .toUpperCase();
+
+
+    document.getElementById(
+        'pageDescription'
+    ).textContent =
+        `Pantau aktivitas dan perkembangan ${currentChild.nama} di sekolah.`;
+
+
+    await loadDailyReport();
+
+    subscribeToDailyReport();
+
+}
+document.getElementById(
+    'childSelector'
+).addEventListener(
+    'change',
+    async function () {
+
+        const selectedId =
+            this.value;
+
+
+        currentChild =
+            childrenData.find(
+                child =>
+                    child.id === selectedId
+            ) || null;
+
+
+        await updateSelectedChild();
+
+    }
+);
     /* ================================
        LOAD LAPORAN HARI INI
     ================================= */
@@ -1971,5 +2066,7 @@
     initPage();
 
 </script>
+```
+
 </body>
 </html>
