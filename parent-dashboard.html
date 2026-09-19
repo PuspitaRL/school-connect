@@ -214,29 +214,34 @@ async function loadParentProfile() {
    LOAD CHILD
 ========================= */
 
+/* =========================
+   LOAD CHILD
+========================= */
+
 async function loadChild() {
 
-    const originalCard =
+    const childCard =
         document.getElementById(
             'childCard'
         );
 
-    if (!originalCard) {
-
-        console.error(
-            'childCard tidak ditemukan.'
+    const childNameElement =
+        document.getElementById(
+            'childName'
         );
 
-        return false;
+    const childClassElement =
+        document.getElementById(
+            'childClass'
+        );
 
-    }
+    const childAvatarElement =
+        document.getElementById(
+            'childAvatar'
+        );
 
 
     try {
-
-        /*
-         * AMBIL SEMUA ANAK
-         */
 
         const {
             data: children,
@@ -245,7 +250,7 @@ async function loadChild() {
             await supabaseClient
                 .from('children')
                 .select(
-                    'id, nama, kelas, tahun_ajaran, tanggal_lahir, parent_id'
+                    'id, nama, kelas, tahun_ajaran, tanggal_lahir'
                 )
                 .eq(
                     'parent_id',
@@ -264,115 +269,66 @@ async function loadChild() {
         }
 
 
-        console.log(
-            'DATA ANAK:',
-            children
-        );
-
-
-        /*
-         * TIDAK ADA ANAK
-         */
-
         if (
             !children ||
             children.length === 0
         ) {
 
-            const childName =
-                document.getElementById(
-                    'childName'
-                );
+            childNameElement.textContent =
+                'Belum ada data anak';
 
-            const childClass =
-                document.getElementById(
-                    'childClass'
-                );
+            childClassElement.textContent =
+                'Data siswa belum terhubung.';
 
-            const childAvatar =
-                document.getElementById(
-                    'childAvatar'
-                );
-
-            if (childName) {
-                childName.textContent =
-                    'Belum ada data anak';
-            }
-
-            if (childClass) {
-                childClass.textContent =
-                    'Data siswa belum terhubung.';
-            }
-
-            if (childAvatar) {
-                childAvatar.textContent =
-                    '?';
-            }
+            childAvatarElement.textContent =
+                '?';
 
             return false;
 
         }
 
 
-        /*
-         * ==================================
-         * SIMPAN CONTAINER KARTU
-         * ==================================
-         */
-
-        const cardContainer =
-            originalCard.parentElement;
-
-
-        /*
-         * ==================================
-         * HAPUS KARTU HASIL RENDER LAMA
-         * ==================================
-         *
-         * Kita pertahankan kartu asli
-         * sebagai template.
-         */
-
-        const oldCards =
-            cardContainer.querySelectorAll(
-                '.child-card'
-            );
-
-        oldCards.forEach(
-            (card, index) => {
-
-                if (index > 0) {
-                    card.remove();
-                }
-
-            }
-        );
-
-
-        /*
-         * ==================================
-         * ANAK PERTAMA
-         * ==================================
-         */
+        /* =========================
+           ANAK PERTAMA
+        ========================== */
 
         const firstChild =
             children[0];
+
 
         currentChildId =
             firstChild.id;
 
 
-        setChildData(
-            originalCard,
-            firstChild
-        );
+        const firstName =
+            String(
+                firstChild.nama ||
+                'Nama anak'
+            ).trim();
 
 
-        /*
-         * ==================================
-         * ANAK KEDUA, KETIGA, DST
-         * ==================================
-         */
+        childNameElement.textContent =
+            firstName;
+
+
+        childClassElement.textContent =
+            firstChild.kelas
+                ? `${firstChild.kelas} · TAUD SAQU DARUL IMAN`
+                : 'Kelas belum tersedia';
+
+
+        childAvatarElement.textContent =
+            firstName
+                .charAt(0)
+                .toUpperCase();
+
+
+        await loadTodayAttendance();
+
+
+        /* =========================
+           ANAK KEDUA DAN SETERUSNYA
+        ========================== */
 
         for (
             let i = 1;
@@ -384,26 +340,19 @@ async function loadChild() {
                 children[i];
 
 
-            /*
-             * Buat kartu baru
-             * dari kartu asli.
-             */
+            /* Buat salinan card anak pertama */
 
             const newCard =
-                originalCard.cloneNode(
-                    true
-                );
+                childCard.cloneNode(true);
 
 
-            newCard.removeAttribute(
-                'id'
-            );
+            newCard.id =
+                `childCard-${i}`;
 
 
-            /*
-             * Hapus ID dari elemen
-             * di dalam kartu clone.
-             */
+            /* =========================
+               CARI ELEMENT DI CARD BARU
+            ========================== */
 
             const nameElement =
                 newCard.querySelector(
@@ -420,104 +369,129 @@ async function loadChild() {
                     '#childAvatar'
                 );
 
-            const statusElement =
+            const attendanceStatusElement =
                 newCard.querySelector(
                     '#attendanceStatus'
                 );
 
-            const dotElement =
+            const attendanceDotElement =
                 newCard.querySelector(
                     '#attendanceDot'
                 );
 
 
+            /* =========================
+               UBAH ID AGAR TIDAK DUPLIKAT
+            ========================== */
+
             if (nameElement) {
-                nameElement.removeAttribute(
-                    'id'
-                );
+
+                nameElement.id =
+                    `childName-${i}`;
+
             }
+
 
             if (classElement) {
-                classElement.removeAttribute(
-                    'id'
-                );
+
+                classElement.id =
+                    `childClass-${i}`;
+
             }
+
 
             if (avatarElement) {
-                avatarElement.removeAttribute(
-                    'id'
-                );
-            }
 
-            if (statusElement) {
-                statusElement.removeAttribute(
-                    'id'
-                );
-            }
+                avatarElement.id =
+                    `childAvatar-${i}`;
 
-            if (dotElement) {
-                dotElement.removeAttribute(
-                    'id'
-                );
             }
 
 
-            /*
-             * Isi data anak.
-             */
+            if (attendanceStatusElement) {
 
-            setChildData(
-                newCard,
-                child
-            );
+                attendanceStatusElement.id =
+                    `attendanceStatus-${i}`;
+
+            }
 
 
-            /*
-             * Tambahkan kartu ke halaman.
-             */
+            if (attendanceDotElement) {
 
-            cardContainer.appendChild(
-                newCard
-            );
+                attendanceDotElement.id =
+                    `attendanceDot-${i}`;
+
+            }
 
 
-            /*
-             * Absensi anak tersebut.
-             */
+            /* =========================
+               DATA ANAK
+            ========================== */
 
-            loadAttendanceForCard(
+            const namaAnak =
+                String(
+                    child.nama ||
+                    'Nama anak'
+                ).trim();
+
+
+            if (nameElement) {
+
+                nameElement.textContent =
+                    namaAnak;
+
+            }
+
+
+            if (classElement) {
+
+                classElement.textContent =
+                    child.kelas
+                        ? `${child.kelas} · TAUD SAQU DARUL IMAN`
+                        : 'Kelas belum tersedia';
+
+            }
+
+
+            if (avatarElement) {
+
+                avatarElement.textContent =
+                    namaAnak
+                        .charAt(0)
+                        .toUpperCase();
+
+            }
+
+
+            /* =========================
+               ABSENSI ANAK KEDUA
+            ========================== */
+
+            await loadAttendanceForCard(
                 child.id,
-                statusElement,
-                dotElement
+                attendanceStatusElement,
+                attendanceDotElement
+            );
+
+
+            /* =========================
+               TAMPILKAN CARD
+            ========================== */
+
+            childCard.parentNode.appendChild(
+                newCard
             );
 
         }
 
 
-        /*
-         * ==================================
-         * ABSENSI ANAK PERTAMA
-         * ==================================
-         */
+        /* =========================
+           NOTIFIKASI
+           TETAP MENGGUNAKAN
+           ANAK PERTAMA
+        ========================== */
 
-        loadAttendanceForCard(
-            firstChild.id,
-            document.getElementById(
-                'attendanceStatus'
-            ),
-            document.getElementById(
-                'attendanceDot'
-            )
-        );
-
-
-        /*
-         * ==================================
-         * NOTIFIKASI
-         * ==================================
-         */
-
-        loadShortcutNotifications();
+        await loadShortcutNotifications();
 
 
         return true;
@@ -531,42 +505,16 @@ async function loadChild() {
         );
 
 
-        const childName =
-            document.getElementById(
-                'childName'
-            );
-
-        const childClass =
-            document.getElementById(
-                'childClass'
-            );
-
-        const childAvatar =
-            document.getElementById(
-                'childAvatar'
-            );
+        childNameElement.textContent =
+            'Gagal memuat data';
 
 
-        if (childName) {
+        childClassElement.textContent =
+            'Silakan refresh halaman.';
 
-            childName.textContent =
-                'Gagal memuat data';
 
-        }
-
-        if (childClass) {
-
-            childClass.textContent =
-                'Silakan refresh halaman.';
-
-        }
-
-        if (childAvatar) {
-
-            childAvatar.textContent =
-                '?';
-
-        }
+        childAvatarElement.textContent =
+            '?';
 
 
         return false;
@@ -577,90 +525,19 @@ async function loadChild() {
 
 
 /* =========================
-   SET DATA ANAK KE KARTU
-========================= */
-
-function setChildData(
-    card,
-    child
-) {
-
-    const nameElement =
-        card.querySelector(
-            '#childName'
-        ) ||
-        card.querySelector(
-            '[id^="childName"]'
-        );
-
-    const classElement =
-        card.querySelector(
-            '#childClass'
-        ) ||
-        card.querySelector(
-            '[id^="childClass"]'
-        );
-
-    const avatarElement =
-        card.querySelector(
-            '#childAvatar'
-        ) ||
-        card.querySelector(
-            '[id^="childAvatar"]'
-        );
-
-
-    const namaAnak =
-        String(
-            child.nama ||
-            'Nama anak'
-        ).trim();
-
-
-    if (nameElement) {
-
-        nameElement.textContent =
-            namaAnak;
-
-    }
-
-
-    if (classElement) {
-
-        classElement.textContent =
-            child.kelas
-                ? `${child.kelas} · TAUD SAQU DARUL IMAN`
-                : 'Kelas belum tersedia';
-
-    }
-
-
-    if (avatarElement) {
-
-        avatarElement.textContent =
-            namaAnak
-                .charAt(0)
-                .toUpperCase();
-
-    }
-
-}
-
-
-/* =========================
-   ATTENDANCE UNTUK SETIAP ANAK
+   ATTENDANCE UNTUK CARD ANAK
 ========================= */
 
 async function loadAttendanceForCard(
     childId,
     statusElement,
-    dot
+    dotElement
 ) {
 
     if (
         !childId ||
         !statusElement ||
-        !dot
+        !dotElement
     ) {
         return;
     }
@@ -702,7 +579,7 @@ async function loadAttendanceForCard(
             statusElement.textContent =
                 'Belum diisi';
 
-            dot.style.background =
+            dotElement.style.background =
                 '#B0AAA3';
 
             return;
@@ -717,29 +594,32 @@ async function loadAttendanceForCard(
 
 
         if (
-            data.status === 'hadir'
+            data.status ===
+            'hadir'
         ) {
 
-            dot.style.background =
+            dotElement.style.background =
                 '#43A047';
 
         } else if (
-            data.status === 'izin'
+            data.status ===
+            'izin'
         ) {
 
-            dot.style.background =
+            dotElement.style.background =
                 '#E0A100';
 
         } else if (
-            data.status === 'sakit'
+            data.status ===
+            'sakit'
         ) {
 
-            dot.style.background =
+            dotElement.style.background =
                 '#E67E22';
 
         } else {
 
-            dot.style.background =
+            dotElement.style.background =
                 '#C0392B';
 
         }
@@ -748,9 +628,10 @@ async function loadAttendanceForCard(
     } catch (error) {
 
         console.error(
-            'Gagal memuat absensi:',
+            'Gagal memuat absensi anak:',
             error
         );
+
 
         statusElement.textContent =
             '-';
