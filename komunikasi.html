@@ -192,77 +192,56 @@
 
 <body>
 
-    <aside class="sidebar" id="sidebar">
+    <aside class="sidebar">
 
         <div class="sidebar-logo">
-
-            <img src="images/logo.png" alt="Logo TAUD SAQU DARUL IMAN">
-
-            <div>
-                <strong>TAUD SAQU</strong>
-                <span>DARUL IMAN</span>
-            </div>
-
+            <img src="images/logo.png" alt="Logo">
         </div>
 
         <nav class="sidebar-menu">
 
             <a href="parent-dashboard.html" class="menu-item">
-                <span>🏠</span>
-                Dashboard
+                ⌂ Dashboard
             </a>
 
             <a href="child.html" class="menu-item">
-                <span>👧</span>
-                Anak Saya
+                👧 Anak Saya
             </a>
 
             <a href="buku-penghubung.html" class="menu-item">
-                <span>📖</span>
-                Buku Penghubung
+                📖 Buku Penghubung
             </a>
 
             <a href="perkembangan.html" class="menu-item">
-                <span>📊</span>
-                Pembelajaran hari Ini
+                📊 Pembelajaran hari Ini
             </a>
 
             <a href="bintang-prestasi.html" class="menu-item">
-                <span>⭐</span>
-                Bintang Prestasi
+                ⭐ Bintang Prestasi
             </a>
 
             <a href="absensi.html" class="menu-item">
-                <span>📅</span>
-                Absensi
+                📅 Absensi
             </a>
 
             <a href="pengumuman.html" class="menu-item">
-                <span>📢</span>
-                Pengumuman
+                📢 Pengumuman
             </a>
 
             <a href="komunikasi.html" class="menu-item active">
-                <span>💬</span>
-                Komunikasi
+                💬 Komunikasi
             </a>
 
-            <div class="menu-divider"></div>
-
             <a href="pengaturan.html" class="menu-item">
-                <span>⚙</span>
-                Pengaturan
+                ⚙ Pengaturan
             </a>
 
             <a href="index.html" class="menu-item logout">
-                <span>↪</span>
-                Keluar
+                ↪ Keluar
             </a>
 
         </nav>
-
     </aside>
-
 
 
     <main class="main-content">
@@ -354,12 +333,14 @@
                         Untuk anak
                     </label>
 
-                    <div
-                        id="childInfo"
-                        class="child-info loading"
-                    >
-                        Memuat data anak...
-                    </div>
+                    <select
+    id="childInfo"
+    class="child-info"
+>
+    <option value="">
+        Memuat data anak...
+    </option>
+</select>
 
                 </div>
 
@@ -463,9 +444,9 @@
         const sendNote =
             document.querySelector('#sendNote');
 
-
+        
         let currentChild = null;
-
+		let childrenData = [];
 
         /* =========================================
            AMBIL ORANG TUA YANG SEDANG LOGIN
@@ -518,80 +499,107 @@
 
         async function loadCurrentChild() {
 
-            try {
+    try {
 
-                const parent =
-                    await getCurrentParent();
+        const parent =
+            await getCurrentParent();
 
+        const {
+            data: children,
+            error
+        } = await supabaseClient
+            .from('children')
+            .select('id, nama, kelas')
+            .eq('parent_id', parent.id)
+            .order('nama');
 
-                const {
-                    data: children,
-                    error
-                } = await supabaseClient
-                    .from('children')
-                    .select('id, nama, kelas')
-                    .eq('parent_id', parent.id)
-                    .order('nama');
+        if (error) {
 
+            console.error(error);
 
-                if (error) {
+            childInfo.innerHTML = `
+                <option value="">
+                    Gagal memuat data anak.
+                </option>
+            `;
 
-                    console.error(error);
-
-                    childInfo.classList.add('loading');
-
-                    childInfo.textContent =
-                        'Gagal memuat data anak.';
-
-                    return null;
-
-                }
-
-
-                if (!children || children.length === 0) {
-
-                    childInfo.classList.add('loading');
-
-                    childInfo.textContent =
-                        'Belum ada data anak yang terhubung dengan akun ini.';
-
-                    return null;
-
-                }
-
-
-                /*
-                 * Untuk saat ini akun orang tua diasumsikan
-                 * memiliki satu anak.
-                 */
-
-                currentChild = children[0];
-
-
-                childInfo.classList.remove('loading');
-
-                childInfo.textContent =
-                    `${currentChild.nama} — ${currentChild.kelas}`;
-
-
-                return currentChild;
-
-            } catch (error) {
-
-                console.error(error);
-
-                childInfo.classList.add('loading');
-
-                childInfo.textContent =
-                    error.message;
-
-                return null;
-
-            }
+            return null;
 
         }
 
+        if (!children || children.length === 0) {
 
+            childInfo.innerHTML = `
+                <option value="">
+                    Belum ada data anak.
+                </option>
+            `;
+
+            return null;
+
+        } childrenData = children;
+
+        /* =========================
+           TAMPILKAN SEMUA ANAK
+        ========================== */
+
+        childInfo.innerHTML = '';
+
+        children.forEach(child => {
+
+            const option =
+                document.createElement('option');
+
+            option.value = child.id;
+
+            option.textContent =
+                `${child.nama} — ${child.kelas || 'Kelas belum tersedia'}`;
+
+            childInfo.appendChild(option);
+
+        });
+
+        /* =========================
+           ANAK PERTAMA SEBAGAI DEFAULT
+        ========================== */
+
+        currentChild = children[0];
+
+        childInfo.value =
+            currentChild.id;
+
+        return currentChild;
+
+    } catch (error) {
+
+        console.error(error);
+
+        childInfo.innerHTML = `
+            <option value="">
+                ${error.message}
+            </option>
+        `;
+
+        return null;
+
+    }
+
+}
+childInfo.addEventListener(
+    'change',
+    () => {
+
+        const selectedChildId =
+            childInfo.value;
+
+        currentChild =
+            childrenData.find(
+                child =>
+                    child.id === selectedChildId
+            ) || null;
+
+    }
+);
         /* =========================================
            LOAD RIWAYAT KOMUNIKASI
         ========================================= */
@@ -866,7 +874,6 @@
         ========================================= */
 
         loadCurrentChild();
-
         loadNotes();
 
     </script>
