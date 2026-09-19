@@ -493,7 +493,7 @@
         <nav class="sidebar-menu">
 
             <a href="parent-dashboard.html" class="menu-item">
-                <span>🏠</span>
+                <span>⌂</span>
                 Dashboard
             </a>
 
@@ -642,44 +642,59 @@
 
             <!-- CHILD -->
 
-            <div class="child-selector">
+<div class="child-selector">
 
-                <div class="selected-child">
+    <div class="selected-child">
 
-                    <div class="selected-child-avatar" id="childAvatar">
-                        -
-                    </div>
+        <div class="selected-child-avatar" id="childAvatar">
+            -
+        </div>
 
-                    <div class="selected-child-info">
+        <div class="selected-child-info">
 
-                        <span>Anak Saya</span>
+            <span>Anak Saya</span>
 
-                        <strong id="childName">
-                            Memuat...
-                        </strong>
+            <select
+                id="childSelector"
+                style="
+                    border: none;
+                    background: transparent;
+                    padding: 0;
+                    margin: 2px 0;
+                    font-family: inherit;
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: var(--text);
+                    cursor: pointer;
+                    outline: none;
+                "
+            >
+                <option value="">
+                    Memuat...
+                </option>
+            </select>
 
-                        <small id="childClass">
-                            -
-                        </small>
+            <small id="childClass">
+                -
+            </small>
 
-                    </div>
+        </div>
 
-                </div>
+    </div>
 
-                <div class="attendance-percentage">
+    <div class="attendance-percentage">
 
-                    <span>
-                        Persentase Kehadiran
-                    </span>
+        <span>
+            Persentase Kehadiran
+        </span>
 
-                    <strong id="attendancePercentage">
-                        0%
-                    </strong>
+        <strong id="attendancePercentage">
+            0%
+        </strong>
 
-                </div>
+    </div>
 
-            </div>
-
+</div>
 
             <!-- SUMMARY -->
 
@@ -862,6 +877,7 @@
 
         let currentParentId = null;
         let currentChild = null;
+		let childrenData = [];
 
 
         /* ================================
@@ -996,76 +1012,189 @@
            LOAD CHILD
         ================================= */
 
-        async function loadChild() {
+       async function loadChild() {
 
-            const { data, error } = await supabaseClient
-                .from('children')
-                .select('id, nama, kelas, tahun_ajaran')
-                .eq('parent_id', currentParentId)
-                .order('created_at', {
-                    ascending: true
-                });
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from('children')
+        .select('id, nama, kelas, tahun_ajaran')
+        .eq('parent_id', currentParentId)
+        .order('created_at', {
+            ascending: true
+        });
 
-            if (error) {
+    if (error) {
 
-                console.error('Gagal mengambil data anak:', error);
+        console.error(
+            'Gagal mengambil data anak:',
+            error
+        );
 
-                document.getElementById('childName').textContent =
-                    'Gagal memuat data';
+        document.getElementById(
+            'childSelector'
+        ).innerHTML = `
+            <option value="">
+                Gagal memuat data
+            </option>
+        `;
 
-                return;
+        return;
 
-            }
-
-
-            if (!data || data.length === 0) {
-
-                document.getElementById('childName').textContent =
-                    'Belum ada data anak';
-
-                document.getElementById('childClass').textContent =
-                    '-';
-
-                document.getElementById('childAvatar').textContent =
-                    '-';
-
-                document.getElementById('attendanceList').innerHTML = `
-                    <div class="empty-state">
-                        Belum ada data anak yang terhubung dengan akun ini.
-                    </div>
-                `;
-
-                return;
-
-            }
+    }
 
 
-            currentChild = data[0];
+    if (!data || data.length === 0) {
+
+        document.getElementById(
+            'childSelector'
+        ).innerHTML = `
+            <option value="">
+                Belum ada data anak
+            </option>
+        `;
+
+        document.getElementById(
+            'childClass'
+        ).textContent = '-';
+
+        document.getElementById(
+            'childAvatar'
+        ).textContent = '-';
+
+        document.getElementById(
+            'attendanceList'
+        ).innerHTML = `
+            <div class="empty-state">
+                Belum ada data anak yang terhubung dengan akun ini.
+            </div>
+        `;
+
+        return;
+
+    }
 
 
-            document.getElementById('childName').textContent =
-                currentChild.nama;
+    /* ================================
+       SIMPAN SEMUA ANAK
+    ================================= */
 
-            document.getElementById('childClass').textContent =
-                `Kelas ${currentChild.kelas}`;
-
-            document.getElementById('childAvatar').textContent =
-                currentChild.nama.charAt(0).toUpperCase();
-
-            document.getElementById('pageDescription').textContent =
-                `Pantau kehadiran ${currentChild.nama} di sekolah.`;
-
-            document.getElementById('summaryDescription').textContent =
-                `Rekap kehadiran ${currentChild.nama} pada tahun ajaran berjalan.`;
-
-            document.getElementById('periodText').textContent =
-                `Tahun ajaran ${currentChild.tahun_ajaran}`;
+    childrenData = data;
 
 
-            await loadAttendance();
+    /* ================================
+       TAMPILKAN SEMUA ANAK DI DROPDOWN
+    ================================= */
 
-        }
+    const childSelector =
+        document.getElementById(
+            'childSelector'
+        );
 
+    childSelector.innerHTML = '';
+
+
+    childrenData.forEach(child => {
+
+        const option =
+            document.createElement('option');
+
+        option.value = child.id;
+
+        option.textContent =
+            child.nama;
+
+        childSelector.appendChild(
+            option
+        );
+
+    });
+
+
+    /* ================================
+       ANAK PERTAMA SEBAGAI DEFAULT
+    ================================= */
+
+    currentChild =
+        childrenData[0];
+
+    childSelector.value =
+        currentChild.id;
+
+
+    await updateSelectedChild();
+
+}
+/* ================================
+   UPDATE SELECTED CHILD
+================================= */
+async function updateSelectedChild() {
+
+    if (!currentChild) {
+        return;
+    }
+
+
+    document.getElementById(
+        'childClass'
+    ).textContent =
+        `Kelas ${currentChild.kelas}`;
+
+
+    document.getElementById(
+        'childAvatar'
+    ).textContent =
+        currentChild.nama
+            .charAt(0)
+            .toUpperCase();
+
+
+    document.getElementById(
+        'pageDescription'
+    ).textContent =
+        `Pantau kehadiran ${currentChild.nama} di sekolah.`;
+
+
+    document.getElementById(
+        'summaryDescription'
+    ).textContent =
+        `Rekap kehadiran ${currentChild.nama} pada tahun ajaran berjalan.`;
+
+
+    document.getElementById(
+        'periodText'
+    ).textContent =
+        `Tahun ajaran ${currentChild.tahun_ajaran}`;
+
+
+    await loadAttendance();
+
+}
+
+/* ================================
+   GANTI ANAK
+================================= */
+document.getElementById(
+    'childSelector'
+).addEventListener(
+    'change',
+    async function () {
+
+        const selectedId =
+            this.value;
+
+        currentChild =
+            childrenData.find(
+                child =>
+                    child.id === selectedId
+            ) || null;
+
+
+        await updateSelectedChild();
+
+    }
+);
 
         /* ================================
            LOAD ATTENDANCE
