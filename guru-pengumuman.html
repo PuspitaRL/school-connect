@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -217,7 +217,25 @@
             overflow-wrap: anywhere;
         }
 
-        .btn-delete {
+        
+        
+.btn-edit {
+    flex-shrink: 0;
+    border: 1px solid #ead8c2;
+    background: #fffaf3;
+    color: var(--orange-dark);
+    padding: 8px 11px;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn-edit:hover {
+    background: #fff2df;
+}
+.btn-delete {
             flex-shrink: 0;
             border: 1px solid #f0d6d2;
             background: #fff8f7;
@@ -228,12 +246,15 @@
             font-size: 12px;
             cursor: pointer;
             transition: 0.2s ease;
-        }
-
+			
         .btn-delete:hover {
             background: #fdecea;
         }
-
+		.announcement-actions {
+			display: flex;
+			gap: 7px;
+			flex-shrink: 0;
+		}
         .empty-state {
             background: var(--white);
             border: 1px dashed var(--border);
@@ -282,7 +303,7 @@
                 flex-direction: column;
             }
 
-            .btn-delete {
+            .announcement-actions {
                 align-self: flex-start;
             }
 
@@ -315,81 +336,74 @@
 
     <aside class="sidebar">
 
-    <div class="sidebar-logo">
+        <div class="sidebar-logo">
+            <img src="images/logo.png" alt="Logo">
 
-        <img
-            src="images/logo.png"
-            alt="Logo TAUD SAQU DARUL IMAN"
-        >
-
-        <div>
-            <strong>TAUD SAQU</strong>
-            <span>DARUL IMAN</span>
+            <div>
+                <strong>School Connect</strong>
+                <small>TAUD SAQU DARUL IMAN</small>
+            </div>
         </div>
 
-    </div>
+        <nav class="sidebar-menu">
 
-    <nav class="sidebar-menu">
+            <a href="guru-dashboard.html" class="menu-item">
+                <span>🏠</span>
+                Dashboard
+            </a>
 
-        <a href="guru-dashboard.html" class="menu-item">
-            <span>🏠</span>
-            Dashboard
-        </a>
+            <a href="guru-child.html" class="menu-item">
+                <span>👧</span>
+                Siswa
+            </a>
 
-        <a href="guru-child.html" class="menu-item">
-            <span>👧</span>
-            Siswa
-        </a>
+            <a href="guru-buku-penghubung.html" class="menu-item">
+                <span>📖</span>
+                Buku Penghubung
+            </a>
 
-        <a href="guru-buku-penghubung.html" class="menu-item">
-            <span>📖</span>
-            Buku Penghubung
-        </a>
+            <a href="guru-perkembangan.html" class="menu-item">
+                <span>📊</span>
+                Pembelajaran hari Ini
+            </a>
 
-        <a href="guru-perkembangan.html" class="menu-item">
-            <span>📊</span>
-            Pembelajaran hari Ini
-        </a>
+            <a href="guru-bintang-prestasi.html" class="menu-item">
+                <span>⭐</span>
+                Bintang Prestasi
+            </a>
 
-        <a href="guru-bintang-prestasi.html" class="menu-item">
-            <span>⭐</span>
-            Bintang Prestasi
-        </a>
+            <a href="guru-absensi.html" class="menu-item">
+                <span>📅</span>
+                Absensi
+            </a>
 
-        <a href="guru-absensi.html" class="menu-item">
-            <span>📅</span>
-            Absensi
-        </a>
+            <a href="guru-pengumuman.html" class="menu-item active">
+                <span>📢</span>
+                Pengumuman
+            </a>
 
-        <a href="guru-pengumuman.html" class="menu-item active">
-            <span>📢</span>
-            Pengumuman
-        </a>
+            <a href="guru-komunikasi.html" class="menu-item">
+                <span>💬</span>
+                Komunikasi
+            </a>
 
-        <a href="guru-komunikasi.html" class="menu-item">
-            <span>💬</span>
-            Komunikasi
-        </a>
+            <a href="pengaturan.html" class="menu-item">
+                <span>⚙️</span>
+                Pengaturan
+            </a>
 
-        <div class="menu-divider"></div>
+        </nav>
 
-        <a href="guru-pengaturan.html" class="menu-item">
-            <span>⚙</span>
-            Pengaturan
-        </a>
+        <div class="sidebar-bottom">
 
-       <div class="sidebar-bottom">
+            <a href="index.html" class="menu-item logout-item">
+                <span>↪</span>
+                Keluar
+            </a>
 
-        <a href="index.html" class="menu-item">
-            <span>↪</span>
-            Keluar
-        </a>
+        </div>
 
-    </div>
-
-    </nav>
-
-</aside>
+    </aside>
 
 
     <!-- =========================
@@ -602,7 +616,7 @@
 <script>
 
     let currentGuruId = null;
-
+	let editingAnnouncementId = null;
 
     /* =========================
        FORMAT TANGGAL
@@ -776,6 +790,7 @@
                 created_at,
                 guru_id
             `)
+			.eq('guru_id', currentGuruId)
             .order('created_at', {
                 ascending: false
             });
@@ -853,13 +868,25 @@
 
                             </div>
 
-                            <button
-                                type="button"
-                                class="btn-delete"
-                                onclick="deleteAnnouncement('${announcement.id}')"
-                            >
-                                🗑 Hapus
-                            </button>
+                            <div class="announcement-actions">
+
+    <button
+        type="button"
+        class="btn-edit"
+        onclick="editAnnouncement('${announcement.id}')"
+    >
+        ✏️ Edit
+    </button>
+
+    <button
+        type="button"
+        class="btn-delete"
+        onclick="deleteAnnouncement('${announcement.id}')"
+    >
+        🗑 Hapus
+    </button>
+
+</div>
 
                         </div>
 
@@ -873,60 +900,67 @@
     }
 
 
-    /* =========================
-       TAMBAH PENGUMUMAN
-    ========================== */
+   /* =========================
+   TAMBAH / EDIT PENGUMUMAN
+========================== */
 
-    document
-        .getElementById('announcementForm')
-        .addEventListener(
-            'submit',
-            async function (e) {
+document
+    .getElementById('announcementForm')
+    .addEventListener(
+        'submit',
+        async function (e) {
 
-                e.preventDefault();
-
-
-                const judul =
-                    document
-                        .getElementById('judul')
-                        .value
-                        .trim();
+            e.preventDefault();
 
 
-                const isi =
-                    document
-                        .getElementById('isi')
-                        .value
-                        .trim();
+            const judul =
+                document
+                    .getElementById('judul')
+                    .value
+                    .trim();
 
 
-                const submitButton =
-                    document.getElementById(
-                        'submitButton'
-                    );
+            const isi =
+                document
+                    .getElementById('isi')
+                    .value
+                    .trim();
 
 
-                if (!judul || !isi) {
-
-                    alert(
-                        'Judul dan isi pengumuman wajib diisi.'
-                    );
-
-                    return;
-                }
+            const submitButton =
+                document.getElementById(
+                    'submitButton'
+                );
 
 
-                if (!currentGuruId) {
+            if (!judul || !isi) {
 
-                    alert(
-                        'Profil Guru belum siap.'
-                    );
+                alert(
+                    'Judul dan isi pengumuman wajib diisi.'
+                );
 
-                    return;
-                }
+                return;
+            }
 
 
-                submitButton.disabled = true;
+            if (!currentGuruId) {
+
+                alert(
+                    'Profil Guru belum siap.'
+                );
+
+                return;
+            }
+
+
+            submitButton.disabled = true;
+
+
+            /* =========================
+               MODE EDIT
+            ========================== */
+
+            if (editingAnnouncementId) {
 
                 submitButton.textContent =
                     'Menyimpan...';
@@ -936,25 +970,30 @@
                     error
                 } = await supabaseClient
                     .from('announcements')
-                    .insert([
-                        {
-                            judul: judul,
-                            isi: isi,
-                            guru_id: currentGuruId
-                        }
-                    ]);
+                    .update({
+                        judul: judul,
+                        isi: isi
+                    })
+                    .eq(
+                        'id',
+                        editingAnnouncementId
+                    )
+                    .eq(
+                        'guru_id',
+                        currentGuruId
+                    );
 
 
                 if (error) {
 
                     console.error(
-                        'Gagal menambah pengumuman:',
+                        'Gagal mengedit pengumuman:',
                         error
                     );
 
 
                     alert(
-                        'Gagal menambahkan pengumuman: ' +
+                        'Gagal mengedit pengumuman: ' +
                         error.message
                     );
 
@@ -962,10 +1001,13 @@
                     submitButton.disabled = false;
 
                     submitButton.textContent =
-                        '+ Tambah Pengumuman';
+                        '💾 Simpan Perubahan';
 
                     return;
                 }
+
+
+                editingAnnouncementId = null;
 
 
                 document
@@ -973,6 +1015,18 @@
                         'announcementForm'
                     )
                     .reset();
+
+
+                document.querySelector(
+                    '.announcement-form-card h2'
+                ).textContent =
+                    'Buat Pengumuman';
+
+
+                document.querySelector(
+                    '.announcement-form-card > p'
+                ).textContent =
+                    'Pengumuman yang dibuat akan dapat dilihat oleh orang tua.';
 
 
                 submitButton.disabled = false;
@@ -985,13 +1039,166 @@
 
 
                 alert(
-                    'Pengumuman berhasil ditambahkan.'
+                    'Pengumuman berhasil diperbarui.'
                 );
 
+
+                return;
             }
+
+
+            /* =========================
+               MODE TAMBAH
+            ========================== */
+
+            submitButton.textContent =
+                'Menyimpan...';
+
+
+            const {
+                error
+            } = await supabaseClient
+                .from('announcements')
+                .insert([
+                    {
+                        judul: judul,
+                        isi: isi,
+                        guru_id: currentGuruId
+                    }
+                ]);
+
+
+            if (error) {
+
+                console.error(
+                    'Gagal menambah pengumuman:',
+                    error
+                );
+
+
+                alert(
+                    'Gagal menambahkan pengumuman: ' +
+                    error.message
+                );
+
+
+                submitButton.disabled = false;
+
+                submitButton.textContent =
+                    '+ Tambah Pengumuman';
+
+                return;
+            }
+
+
+            document
+                .getElementById(
+                    'announcementForm'
+                )
+                .reset();
+
+
+            submitButton.disabled = false;
+
+            submitButton.textContent =
+                '+ Tambah Pengumuman';
+
+
+            await loadAnnouncements();
+
+
+            alert(
+                'Pengumuman berhasil ditambahkan.'
+            );
+
+        }
+    );
+
+/* =========================
+   EDIT PENGUMUMAN
+========================== */
+
+async function editAnnouncement(id) {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from('announcements')
+        .select(`
+            id,
+            judul,
+            isi,
+            guru_id
+        `)
+        .eq('id', id)
+        .eq('guru_id', currentGuruId)
+        .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            'Gagal mengambil pengumuman:',
+            error
         );
 
+        alert(
+            'Gagal mengambil data pengumuman: ' +
+            error.message
+        );
 
+        return;
+    }
+
+
+    if (!data) {
+
+        alert(
+            'Pengumuman tidak ditemukan atau bukan milik Anda.'
+        );
+
+        return;
+    }
+
+
+    editingAnnouncementId = data.id;
+
+
+    document.getElementById('judul').value =
+        data.judul || '';
+
+
+    document.getElementById('isi').value =
+        data.isi || '';
+
+
+    document.querySelector(
+        '.announcement-form-card h2'
+    ).textContent =
+        'Edit Pengumuman';
+
+
+    document.querySelector(
+        '.announcement-form-card > p'
+    ).textContent =
+        'Ubah informasi pengumuman kemudian simpan perubahan.';
+
+
+    document.getElementById(
+        'submitButton'
+    ).textContent =
+        '💾 Simpan Perubahan';
+
+
+    document.getElementById(
+        'announcementForm'
+    ).scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+
+}
     /* =========================
        HAPUS PENGUMUMAN
     ========================== */
@@ -1009,11 +1216,12 @@
 
 
         const {
-            error
-        } = await supabaseClient
-            .from('announcements')
-            .delete()
-            .eq('id', id);
+    error
+} = await supabaseClient
+    .from('announcements')
+    .delete()
+    .eq('id', id)
+    .eq('guru_id', currentGuruId);
 
 
         if (error) {
@@ -1166,4 +1374,4 @@
 
 </body>
 </html>
-
+```
