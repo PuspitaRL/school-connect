@@ -336,20 +336,18 @@
     <aside class="sidebar" id="sidebar">
 
         <div class="sidebar-logo">
-
             <img src="images/logo.png" alt="Logo TAUD SAQU DARUL IMAN">
 
             <div>
                 <strong>TAUD SAQU</strong>
                 <span>DARUL IMAN</span>
             </div>
-
         </div>
 
         <nav class="sidebar-menu">
 
             <a href="parent-dashboard.html" class="menu-item">
-                <span>🏠</span>
+                <span>⌂</span>
                 Dashboard
             </a>
 
@@ -368,7 +366,7 @@
                 Pembelajaran hari Ini
             </a>
 
-            <a href="bintang-prestasi.html" class="menu-item  active">
+            <a href="bintang-prestasi.html" class="menu-item active">
                 <span>⭐</span>
                 Bintang Prestasi
             </a>
@@ -385,7 +383,7 @@
 
             <a href="komunikasi.html" class="menu-item">
                 <span>💬</span>
-                Komunikasi
+                komunikasi
             </a>
 
             <div class="menu-divider"></div>
@@ -465,41 +463,56 @@
 
             <!-- CHILD -->
 
-            <div class="child-selector">
+<div class="child-selector">
 
-                <div class="selected-child">
+    <div class="selected-child">
 
-                    <div class="selected-child-avatar" id="childAvatar">
-                        S
-                    </div>
+        <div class="selected-child-avatar" id="childAvatar">
+            -
+        </div>
 
-                    <div class="selected-child-info">
+        <div class="selected-child-info">
 
-                        <span>Anak Saya</span>
+            <span>Anak Saya</span>
 
-                        <strong id="childName">
-                            Memuat...
-                        </strong>
+            <select
+                id="childSelector"
+                style="
+                    border: none;
+                    background: transparent;
+                    padding: 0;
+                    margin: 2px 0;
+                    font-family: inherit;
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: var(--text);
+                    cursor: pointer;
+                    outline: none; "
+            >
+                <option value="">
+                    Memuat...
+                </option>
+            </select>
 
-                        <small id="childClass">
-                            Memuat kelas...
-                        </small>
+            <small id="childClass">
+                -
+            </small>
 
-                    </div>
+        </div>
 
-                </div>
+    </div>
 
-                <div class="star-summary">
+    <div class="star-summary">
 
-                    <span>Bintang Hari Ini</span>
+        <span>Bintang Hari Ini</span>
 
-                    <strong>
-                        <span class="star-count">0 / 4</span> ⭐
-                    </strong>
+        <strong>
+            <span class="star-count">0 / 4</span> ⭐
+        </strong>
 
-                </div>
+    </div>
 
-            </div>
+</div>
 
 
             <!-- INTRO -->
@@ -730,7 +743,8 @@
         let currentParentId = null;
         let currentChild = null;
         let currentAchievement = null;
-
+		let childrenData = [];
+		
         const checkboxes =
             document.querySelectorAll(
                 '.achievement-checkbox input'
@@ -830,49 +844,169 @@
            LOAD CHILD
         ================================= */
 
-        async function loadChild() {
+       async function loadChild() {
 
-            const {
-                data,
-                error
-            } = await supabaseClient
-                .from('children')
-                .select('id, nama, kelas, tahun_ajaran')
-                .eq('parent_id', currentParentId)
-                .order('nama', { ascending: true })
-                .limit(1);
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from('children')
+        .select('id, nama, kelas, tahun_ajaran')
+        .eq('parent_id', currentParentId)
+        .order('nama', {
+            ascending: true
+        });
 
-            if (error) {
+    if (error) {
 
-                console.error('Gagal mengambil data anak:', error);
+        console.error(
+            'Gagal mengambil data anak:',
+            error
+        );
 
-                alert('Data anak gagal dimuat.');
-                return false;
-            }
+        document.getElementById(
+            'childSelector'
+        ).innerHTML = `
+            <option value="">
+                Gagal memuat data
+            </option>
+        `;
 
-            if (!data || data.length === 0) {
+        return false;
 
-                alert('Data anak belum ditemukan.');
-                return false;
-            }
-
-            currentChild = data[0];
-
-            document.querySelector('#childName').textContent =
-                currentChild.nama;
-
-            document.querySelector('#childClass').textContent =
-                `Kelas ${currentChild.kelas}`;
-
-            document.querySelector('#childAvatar').textContent =
-                currentChild.nama
-                    .charAt(0)
-                    .toUpperCase();
-
-            return true;
-        }
+    }
 
 
+    if (!data || data.length === 0) {
+
+        document.getElementById(
+            'childSelector'
+        ).innerHTML = `
+            <option value="">
+                Belum ada data anak
+            </option>
+        `;
+
+        document.getElementById(
+            'childClass'
+        ).textContent = '-';
+
+        document.getElementById(
+            'childAvatar'
+        ).textContent = '-';
+
+        return false;
+
+    }
+
+
+    /* ================================
+       SIMPAN SEMUA ANAK
+    ================================= */
+
+    childrenData = data;
+
+
+    /* ================================
+       TAMPILKAN SEMUA ANAK
+    ================================= */
+
+    const childSelector =
+        document.getElementById(
+            'childSelector'
+        );
+
+    childSelector.innerHTML = '';
+
+
+    childrenData.forEach(child => {
+
+        const option =
+            document.createElement('option');
+
+        option.value = child.id;
+
+        option.textContent =
+            child.nama;
+
+        childSelector.appendChild(
+            option
+        );
+
+    });
+
+
+    /* ================================
+       ANAK PERTAMA SEBAGAI DEFAULT
+    ================================= */
+
+    currentChild =
+        childrenData[0];
+
+    childSelector.value =
+        currentChild.id;
+
+
+    await updateSelectedChild();
+
+    return true;
+
+}
+/* ================================
+   UPDATE SELECTED CHILD
+================================= */
+
+async function updateSelectedChild() {
+
+    if (!currentChild) {
+        return;
+    }
+
+
+    document.getElementById(
+        'childClass'
+    ).textContent =
+        `Kelas ${currentChild.kelas}`;
+
+
+    document.getElementById(
+        'childAvatar'
+    ).textContent =
+        currentChild.nama
+            .charAt(0)
+            .toUpperCase();
+
+
+    currentAchievement = null;
+
+
+    await loadAchievement();
+
+}
+/* ================================
+   GANTI ANAK
+================================= */
+
+document.getElementById(
+    'childSelector'
+).addEventListener(
+    'change',
+    async function () {
+
+        const selectedId =
+            this.value;
+
+        currentChild =
+            childrenData.find(
+                child =>
+                    child.id === selectedId
+            ) || null;
+
+
+        await updateSelectedChild();
+
+    }
+);
         /* ================================
            LOAD ACHIEVEMENT HARI INI
         ================================= */
@@ -1102,15 +1236,11 @@
             }
 
             const childLoaded =
-                await loadChild();
+    await loadChild();
 
-            if (!childLoaded) {
-                return;
-            }
-
-            await loadAchievement();
-        }
-
+if (!childLoaded) {
+    return;
+}
 
         init();
 
