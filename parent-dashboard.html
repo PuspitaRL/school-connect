@@ -4,6 +4,7 @@
 
 <script>
 
+
 /* =========================
    MOBILE MENU
 ========================= */
@@ -14,12 +15,15 @@ const menuToggle =
 const sidebar =
     document.querySelector('#sidebar');
 
+
 if (menuToggle && sidebar) {
 
     menuToggle.addEventListener(
         'click',
         () => {
+
             sidebar.classList.toggle('show');
+
         }
     );
 
@@ -35,6 +39,7 @@ const profileButton =
 
 const profileDropdown =
     document.querySelector('#profileDropdown');
+
 
 if (
     profileButton &&
@@ -52,13 +57,18 @@ if (
         }
     );
 
+
     document.addEventListener(
         'click',
         (event) => {
 
             if (
-                !profileDropdown.contains(event.target) &&
-                !profileButton.contains(event.target)
+                !profileDropdown.contains(
+                    event.target
+                ) &&
+                !profileButton.contains(
+                    event.target
+                )
             ) {
 
                 profileDropdown.classList.remove(
@@ -96,6 +106,7 @@ async function loadParentProfile() {
         } =
             await supabaseClient.auth.getUser();
 
+
         if (
             authError ||
             !authData ||
@@ -109,8 +120,10 @@ async function loadParentProfile() {
 
         }
 
+
         currentAuthUserId =
             authData.user.id;
+
 
         const {
             data: profile,
@@ -127,9 +140,11 @@ async function loadParentProfile() {
                 )
                 .maybeSingle();
 
+
         if (profileError) {
             throw profileError;
         }
+
 
         if (!profile) {
 
@@ -143,6 +158,7 @@ async function loadParentProfile() {
             return false;
 
         }
+
 
         if (
             profile.role !==
@@ -160,22 +176,27 @@ async function loadParentProfile() {
 
         }
 
+
         currentParentId =
             profile.id;
+
 
         const nama =
             profile.nama ||
             'Ayah/Bunda';
+
 
         document.getElementById(
             'profileName'
         ).textContent =
             nama;
 
+
         document.getElementById(
             'profileRole'
         ).textContent =
             'Orang Tua';
+
 
         document.getElementById(
             'profileAvatar'
@@ -185,12 +206,15 @@ async function loadParentProfile() {
                 .charAt(0)
                 .toUpperCase();
 
+
         document.getElementById(
             'welcomeTitle'
         ).textContent =
             `Selamat datang, ${nama} 👋`;
 
+
         return true;
+
 
     } catch (error) {
 
@@ -639,8 +663,6 @@ async function loadAttendanceForCard(
     }
 
 }
-
-
 /* =========================
    TODAY ATTENDANCE
 ========================= */
@@ -688,18 +710,11 @@ async function loadTodayAttendance() {
                 'attendanceStatus'
             );
 
+
         const dot =
             document.getElementById(
                 'attendanceDot'
             );
-
-
-        if (
-            !statusElement ||
-            !dot
-        ) {
-            return;
-        }
 
 
         if (!data) {
@@ -722,21 +737,24 @@ async function loadTodayAttendance() {
 
 
         if (
-            data.status === 'hadir'
+            data.status ===
+            'hadir'
         ) {
 
             dot.style.background =
                 '#43A047';
 
         } else if (
-            data.status === 'izin'
+            data.status ===
+            'izin'
         ) {
 
             dot.style.background =
                 '#E0A100';
 
         } else if (
-            data.status === 'sakit'
+            data.status ===
+            'sakit'
         ) {
 
             dot.style.background =
@@ -758,18 +776,10 @@ async function loadTodayAttendance() {
         );
 
 
-        const statusElement =
-            document.getElementById(
-                'attendanceStatus'
-            );
-
-
-        if (statusElement) {
-
-            statusElement.textContent =
-                '-';
-
-        }
+        document.getElementById(
+            'attendanceStatus'
+        ).textContent =
+            '-';
 
     }
 
@@ -782,24 +792,13 @@ async function loadTodayAttendance() {
 
 async function loadShortcutNotifications() {
 
-    try {
+    await loadCommunicationBadge();
 
-        await loadCommunicationBadge();
+    await loadAnnouncementBadge();
 
-        await loadAnnouncementBadge();
+    await loadLearningBadge();
 
-        await loadLearningBadge();
-
-        updateTopNotification();
-
-    } catch (error) {
-
-        console.error(
-            'Gagal memuat notifikasi:',
-            error
-        );
-
-    }
+    updateTopNotification();
 
 }
 
@@ -1193,6 +1192,10 @@ async function markShortcutAsRead(
         let referenceIds = [];
 
 
+        /* =====================
+           KOMUNIKASI
+        ====================== */
+
         if (
             notificationType ===
             'komunikasi'
@@ -1242,6 +1245,10 @@ async function markShortcutAsRead(
         }
 
 
+        /* =====================
+           PENGUMUMAN
+        ====================== */
+
         if (
             notificationType ===
             'pengumuman'
@@ -1270,6 +1277,10 @@ async function markShortcutAsRead(
 
         }
 
+
+        /* =====================
+           PEMBELAJARAN
+        ====================== */
 
         if (
             notificationType ===
@@ -1308,6 +1319,10 @@ async function markShortcutAsRead(
             referenceIds
         );
 
+
+        /* =========================
+           HILANGKAN BADGE
+        ========================== */
 
         if (
             notificationType ===
