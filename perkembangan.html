@@ -356,138 +356,64 @@ async function loadParentProfile() {
 
 
 async function loadLearning() {
-
     const container = document.getElementById('learningContainer');
     const today = getToday();
 
     try {
-
-        // Ambil anak milik orang tua yang sedang login
-        const {
-            data: children,
-            error: childrenError
-        } = await supabaseClient
+        // 1. Ambil kelas anak
+        const { data: children, error: childrenError } = await supabaseClient
             .from('children')
-            .select('nama, kelas')
+            .select('kelas')
             .eq('parent_id', currentParentId);
 
-        if (childrenError) {
-            console.error('Gagal mengambil data anak:', childrenError);
-            throw childrenError;
-        }
+        if (childrenError) throw childrenError;
 
-        if (!children || children.length === 0) {
-
-            container.innerHTML = `
-                <div class="learning-card">
-                    <div class="empty-state">
-                        <div class="icon">📚</div>
-                        <strong>Data anak belum ditemukan.</strong>
-                        <p>Silakan hubungi pihak sekolah.</p>
-                    </div>
-                </div>
-            `;
-
-            return;
-        }
-
-
-        // Ambil kelas yang unik
         const uniqueClasses = [
             ...new Set(
-                children
-                    .map(child => child.kelas)
+                (children || [])
+                    .map(child => child.kelas?.trim())
                     .filter(Boolean)
-                    .map(kelas => kelas.trim())
             )
         ];
 
-
         if (uniqueClasses.length === 0) {
-
             container.innerHTML = `
-                <div class="learning-card">
-                    <div class="empty-state">
-                        <div class="icon">📚</div>
-                        <strong>Kelas anak belum tersedia.</strong>
-                        <p>Silakan hubungi pihak sekolah.</p>
-                    </div>
+                <div class="empty-state">
+                    <p>Belum ada data kelas anak.</p>
                 </div>
             `;
-
             return;
         }
 
+        // 2. Ambil semua pembelajaran hari ini untuk kelas anak
+        const { data: lessons, error: lessonError } = await supabaseClient
+            .from('daily_lessons')
+            .select(`
+                id,
+                tanggal,
+                kegiatan_belajar,
+                murajaah_rumah,
+                guru_id,
+                kelas
+            `)
+            .eq('tanggal', today)
+            .in('kelas', uniqueClasses);
 
-        // ============================================================
-        // AMBIL PEMBELAJARAN UNTUK SETIAP KELAS
-        // Query dijalankan bersamaan agar tidak lambat.
-        // Alif 'Ula dan Alif Tsani tetap terpisah.
-        // ============================================================
+        if (lessonError) throw lessonError;
 
-        const lessonResults = await Promise.all(
-
-            uniqueClasses.map(async (kelas) => {
-
-                const {
-                    data,
-                    error
-                } = await supabaseClient
-                    .from('daily_lessons')
-                    .select(`
-                        id,
-                        tanggal,
-                        kegiatan_belajar,
-                        murajaah_rumah,
-                        guru_id,
-                        kelas
-                    `)
-                    .eq('tanggal', today)
-                    .eq('kelas', kelas)
-                    .maybeSingle();
-
-                if (error) {
-                    console.error(
-                        `Gagal mengambil pembelajaran kelas ${kelas}:`,
-                        error
-                    );
-                    throw error;
-                }
-
-                return data;
-
-            })
-
-        );
-
-
-        const allLessons = lessonResults.filter(Boolean);
-
-
-        // Belum ada pembelajaran
-        if (allLessons.length === 0) {
-
+        if (!lessons || lessons.length === 0) {
             container.innerHTML = `
-                <div class="learning-card">
-                    <div class="empty-state">
-                        <div class="icon">📚</div>
-                        <strong>Belum ada pembelajaran hari ini.</strong>
-                        <p>Informasi akan tampil setelah Guru mengisinya.</p>
-                    </div>
+                <div class="empty-state">
+                    <p>Belum ada pembelajaran hari ini.</p>
                 </div>
             `;
-
             return;
         }
 
-
-        // ============================================================
-        // AMBIL SEMUA GURU SEKALIGUS
-        // ============================================================
-
+        // 3. Ambil nama guru sekaligus
         const teacherIds = [
             ...new Set(
-                allLessons
+                lessons
                     .map(lesson => lesson.guru_id)
                     .filter(Boolean)
             )
@@ -495,134 +421,72 @@ async function loadLearning() {
 
         let teachersMap = {};
 
-
         if (teacherIds.length > 0) {
-
-            const {
-                data: teachers,
-                error: teachersError
-            } = await supabaseClient
+            const { data: teachers, error: teacherError } = await supabaseClient
                 .from('users')
                 .select('id, nama')
                 .in('id', teacherIds);
 
-            if (teachersError) {
-                console.error(
-                    'Gagal mengambil data guru:',
-                    teachersError
-                );
-                throw teachersError;
-            }
+            if (teacherError) throw teacherError;
 
             (teachers || []).forEach(teacher => {
-
                 teachersMap[teacher.id] = teacher.nama;
-
             });
-
         }
 
-
-        // ============================================================
-        // TAMPILKAN DATA
-        // ============================================================
-
+        // 4. Tampilkan
         let html = '';
 
-
-        for (const data of allLessons) {
-
-            const teacherName =
-                data.guru_id
-                    ? teachersMap[data.guru_id] || ''
-                    : '';
-
+        lessons.forEach(data => {
+            const teacherName = data.guru_id
+                ? (teachersMap[data.guru_id] || '')
+                : '';
 
             html += `
-
-                <section class="learning-card">
-
-                    <div class="date-title">
-                        📅 ${formatDate(data.tanggal)}
-                    </div>
-
-                    <div style="
-                        display: inline-block;
-                        background: var(--orange-light);
-                        color: var(--orange-dark);
-                        padding: 6px 12px;
-                        border-radius: 20px;
-                        font-size: 13px;
-                        font-weight: 600;
-                        margin-bottom: 18px;
-                    ">
-                        Kelas ${escapeHtml(data.kelas)}
-                    </div>
-
-                    <h2 class="section-title">
-                        📚 Kegiatan Belajar Hari Ini
-                    </h2>
-
-                    <div class="lesson-content">
-                        ${escapeHtml(data.kegiatan_belajar)}
-                    </div>
-
-                    ${
-                        teacherName
-                        ? `
-                            <div class="teacher-info">
-                                Dicatat oleh ${escapeHtml(teacherName)}
-                            </div>
-                        `
-                        : ''
-                    }
-
-                </section>
-
-
-                <section class="learning-card pr-card">
+                <div class="learning-card">
 
                     <div class="date-title">
-                        🏡 Murajaah di Rumah
+                        ${formatDate(data.tanggal)}
                     </div>
 
-                    <p class="pr-note">
-                        Catatan informasi dari Guru untuk dilanjutkan bersama Ayah & Bunda.
-                    </p>
+                    <div class="section-title">
+                        Pembelajaran Hari Ini
+                    </div>
 
                     <div class="lesson-content">
-                        ${
-                            data.murajaah_rumah
-                            ? escapeHtml(data.murajaah_rumah)
-                            : 'Belum ada catatan murojaah di rumah.'
-                        }
+                        ${escapeHtml(data.kegiatan_belajar || 'Belum ada informasi pembelajaran.')}
                     </div>
 
-                </section>
+                    <div class="pr-card">
+                        <div class="section-title">
+                            Murajaah di Rumah
+                        </div>
 
+                        <div class="pr-note">
+                            ${escapeHtml(data.murajaah_rumah || 'Tidak ada tugas murajaah hari ini.')}
+                        </div>
+                    </div>
+
+                    <div class="teacher-info">
+                        <strong>Kelas:</strong> ${escapeHtml(data.kelas)}
+                        ${teacherName ? ` · <strong>Guru:</strong> ${escapeHtml(teacherName)}` : ''}
+                    </div>
+
+                </div>
             `;
-
-        }
-
+        });
 
         container.innerHTML = html;
 
-
     } catch (error) {
-
         console.error('Error loadLearning:', error);
 
         container.innerHTML = `
-            <div class="learning-card">
-                <div class="empty-state">
-                    <div class="icon">⚠️</div>
-                    <strong>Pembelajaran belum dapat dimuat.</strong>
-                    <p>Silakan coba lagi beberapa saat.</p>
-                </div>
+            <div class="empty-state">
+                <p>Gagal memuat pembelajaran hari ini.</p>
             </div>
         `;
     }
-
 }
 
 function escapeHtml(value) {
