@@ -268,7 +268,6 @@
 
 let currentParentId = null;
 
-
 function formatDate(dateString) {
 
     const date = new Date(dateString + 'T00:00:00');
@@ -298,7 +297,7 @@ function getToday() {
 }
 
 
- function loadParentProfile() {
+async function loadParentProfile() {
 
     const {
         data: authData,
@@ -363,10 +362,7 @@ async function loadLearning() {
 
     try {
 
-        // ============================================================
-        // 1. AMBIL SEMUA ANAK MILIK ORANG TUA
-        // ============================================================
-
+        // Ambil anak milik orang tua yang sedang login
         const {
             data: children,
             error: childrenError
@@ -376,10 +372,7 @@ async function loadLearning() {
             .eq('parent_id', currentParentId);
 
         if (childrenError) {
-            console.error(
-                'Gagal mengambil data anak:',
-                childrenError
-            );
+            console.error('Gagal mengambil data anak:', childrenError);
             throw childrenError;
         }
 
@@ -399,10 +392,7 @@ async function loadLearning() {
         }
 
 
-        // ============================================================
-        // 2. AMBIL KELAS ANAK
-        // ============================================================
-
+        // Ambil kelas yang unik
         const uniqueClasses = [
             ...new Set(
                 children
@@ -411,8 +401,6 @@ async function loadLearning() {
                     .map(kelas => kelas.trim())
             )
         ];
-
-        console.log('Kelas anak:', uniqueClasses);
 
 
         if (uniqueClasses.length === 0) {
@@ -432,64 +420,51 @@ async function loadLearning() {
 
 
         // ============================================================
-        // 3. AMBIL SEMUA PEMBELAJARAN HARI INI
-        //
-        // Tidak difilter kelas di Supabase.
-        // Jadi kita menghindari masalah pencocokan .in().
-        // Data hari ini biasanya hanya sedikit.
+        // AMBIL PEMBELAJARAN UNTUK SETIAP KELAS
+        // Query dijalankan bersamaan agar tidak lambat.
+        // Alif 'Ula dan Alif Tsani tetap terpisah.
         // ============================================================
 
-        const {
-            data: lessons,
-            error: lessonsError
-        } = await supabaseClient
-            .from('daily_lessons')
-            .select(`
-                id,
-                tanggal,
-                kegiatan_belajar,
-                murajaah_rumah,
-                guru_id,
-                kelas
-            `)
-            .eq('tanggal', today)
-            .order('kelas', { ascending: true });
+        const lessonResults = await Promise.all(
 
-        if (lessonsError) {
+            uniqueClasses.map(async (kelas) => {
 
-            console.error(
-                'Gagal mengambil pembelajaran:',
-                lessonsError
-            );
+                const {
+                    data,
+                    error
+                } = await supabaseClient
+                    .from('daily_lessons')
+                    .select(`
+                        id,
+                        tanggal,
+                        kegiatan_belajar,
+                        murajaah_rumah,
+                        guru_id,
+                        kelas
+                    `)
+                    .eq('tanggal', today)
+                    .eq('kelas', kelas)
+                    .maybeSingle();
 
-            throw lessonsError;
-        }
+                if (error) {
+                    console.error(
+                        `Gagal mengambil pembelajaran kelas ${kelas}:`,
+                        error
+                    );
+                    throw error;
+                }
 
+                return data;
 
-        // ============================================================
-        // 4. FILTER SESUAI KELAS ANAK
-        // ============================================================
+            })
 
-        const allLessons = (lessons || []).filter(lesson => {
-
-            if (!lesson.kelas) return false;
-
-            const lessonClass = lesson.kelas.trim();
-
-            return uniqueClasses.some(childClass =>
-                childClass === lessonClass
-            );
-
-        });
+        );
 
 
-        console.log('Pembelajaran yang cocok:', allLessons);
+        const allLessons = lessonResults.filter(Boolean);
 
 
-        // ============================================================
-        // 5. BELUM ADA PEMBELAJARAN
-        // ============================================================
-
+        // Belum ada pembelajaran
         if (allLessons.length === 0) {
 
             container.innerHTML = `
@@ -507,7 +482,7 @@ async function loadLearning() {
 
 
         // ============================================================
-        // 6. AMBIL SEMUA GURU SEKALIGUS
+        // AMBIL SEMUA GURU SEKALIGUS
         // ============================================================
 
         const teacherIds = [
@@ -532,15 +507,12 @@ async function loadLearning() {
                 .in('id', teacherIds);
 
             if (teachersError) {
-
                 console.error(
                     'Gagal mengambil data guru:',
                     teachersError
                 );
-
                 throw teachersError;
             }
-
 
             (teachers || []).forEach(teacher => {
 
@@ -552,7 +524,7 @@ async function loadLearning() {
 
 
         // ============================================================
-        // 7. TAMPILKAN DATA
+        // TAMPILKAN DATA
         // ============================================================
 
         let html = '';
@@ -638,10 +610,7 @@ async function loadLearning() {
 
     } catch (error) {
 
-        console.error(
-            'Error loadLearning:',
-            error
-        );
+        console.error('Error loadLearning:', error);
 
         container.innerHTML = `
             <div class="learning-card">
@@ -652,46 +621,38 @@ async function loadLearning() {
                 </div>
             </div>
         `;
-
     }
 
 }
 
+function escapeHtml(value) {
 
-/*
- * ============================================================
- * MENU MOBILE
- * ============================================================
- */
+    if (!value) return '';
+
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+}
+
 
 const menuToggle = document.querySelector('.menu-toggle');
-
 const sidebar = document.querySelector('.sidebar');
-
 
 if (menuToggle && sidebar) {
 
     menuToggle.addEventListener('click', () => {
-
         sidebar.classList.toggle('show');
-
     });
 
 }
 
 
-/*
- * ============================================================
- * PROFILE DROPDOWN
- * ============================================================
- */
-
-const profileButton =
-    document.querySelector('#profileButton');
-
-const profileDropdown =
-    document.querySelector('#profileDropdown');
-
+const profileButton = document.querySelector('#profileButton');
+const profileDropdown = document.querySelector('#profileDropdown');
 
 if (profileButton && profileDropdown) {
 
@@ -703,7 +664,6 @@ if (profileButton && profileDropdown) {
 
     });
 
-
     document.addEventListener('click', () => {
 
         profileDropdown.classList.remove('show');
@@ -713,16 +673,9 @@ if (profileButton && profileDropdown) {
 }
 
 
-/*
- * ============================================================
- * INITIALIZATION
- * ============================================================
- */
-
 async function init() {
 
-    const profileLoaded =
-        await loadParentProfile();
+    const profileLoaded = await loadParentProfile();
 
     if (!profileLoaded) return;
 
