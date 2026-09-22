@@ -360,31 +360,39 @@ async function loadLearning() {
     const today = getToday();
 
     try {
+        // Ambil anak milik orang tua yang sedang login
         const { data: children, error: childrenError } = await supabaseClient
             .from('children')
-            .select('kelas')
+            .select('nama, kelas')
             .eq('parent_id', currentParentId);
 
-        if (childrenError) throw childrenError;
+        if (childrenError) {
+            console.error('Error children:', childrenError);
+            throw childrenError;
+        }
 
-        const uniqueClasses = [
-            ...new Set(
-                (children || [])
-                    .map(child => child.kelas?.trim())
-                    .filter(Boolean)
-            )
-        ];
-
-        if (uniqueClasses.length === 0) {
+        if (!children || children.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
-                    <p>Belum ada data kelas anak.</p>
+                    <div class="icon">📚</div>
+                    Belum ada data anak.
                 </div>
             `;
             return;
         }
 
-        const { data: lessons, error: lessonError } = await supabaseClient
+        // Kelas yang dimiliki anak orang tua ini
+        const childClasses = [
+            ...new Set(
+                children
+                    .map(child => child.kelas)
+                    .filter(Boolean)
+                    .map(kelas => kelas.trim().toLowerCase())
+            )
+        ];
+
+        // Ambil SEMUA pembelajaran hari ini
+        const { data: allLessons, error: lessonError } = await supabaseClient
             .from('daily_lessons')
             .select(`
                 id,
@@ -395,19 +403,33 @@ async function loadLearning() {
                 kelas
             `)
             .eq('tanggal', today)
-            .in('kelas', uniqueClasses);
+            .order('kelas', { ascending: true });
 
-        if (lessonError) throw lessonError;
+        if (lessonError) {
+            console.error('Error daily_lessons:', lessonError);
+            throw lessonError;
+        }
 
-        if (!lessons || lessons.length === 0) {
+        // Cocokkan kelas di JavaScript
+        const lessons = (allLessons || []).filter(lesson => {
+            if (!lesson.kelas) return false;
+
+            return childClasses.includes(
+                lesson.kelas.trim().toLowerCase()
+            );
+        });
+
+        if (lessons.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
-                    <p>Belum ada pembelajaran hari ini.</p>
+                    <div class="icon">📚</div>
+                    Belum ada pembelajaran hari ini.
                 </div>
             `;
             return;
         }
 
+        // Ambil nama guru
         const teacherIds = [
             ...new Set(
                 lessons
@@ -419,18 +441,17 @@ async function loadLearning() {
         let teachersMap = {};
 
         if (teacherIds.length > 0) {
-            const { data: teachers, error: teacherError } = await supabaseClient
+            const { data: teachers } = await supabaseClient
                 .from('users')
                 .select('id, nama')
                 .in('id', teacherIds);
-
-            if (teacherError) throw teacherError;
 
             (teachers || []).forEach(teacher => {
                 teachersMap[teacher.id] = teacher.nama;
             });
         }
 
+        // Tampilkan masing-masing kelas
         let html = '';
 
         lessons.forEach(data => {
@@ -450,7 +471,10 @@ async function loadLearning() {
                     </div>
 
                     <div class="lesson-content">
-                        ${escapeHtml(data.kegiatan_belajar || 'Belum ada informasi pembelajaran.')}
+                        ${escapeHtml(
+                            data.kegiatan_belajar ||
+                            'Belum ada informasi pembelajaran.'
+                        )}
                     </div>
 
                     <div class="pr-card">
@@ -459,13 +483,22 @@ async function loadLearning() {
                         </div>
 
                         <div class="pr-note">
-                            ${escapeHtml(data.murajaah_rumah || 'Tidak ada tugas murajaah hari ini.')}
+                            ${escapeHtml(
+                                data.murajaah_rumah ||
+                                'Tidak ada tugas murajaah hari ini.'
+                            )}
                         </div>
                     </div>
 
                     <div class="teacher-info">
-                        <strong>Kelas:</strong> ${escapeHtml(data.kelas)}
-                        ${teacherName ? ` · <strong>Guru:</strong> ${escapeHtml(teacherName)}` : ''}
+                        <strong>Kelas:</strong>
+                        ${escapeHtml(data.kelas)}
+
+                        ${
+                            teacherName
+                                ? ` · <strong>Guru:</strong> ${escapeHtml(teacherName)}`
+                                : ''
+                        }
                     </div>
 
                 </div>
@@ -479,7 +512,8 @@ async function loadLearning() {
 
         container.innerHTML = `
             <div class="empty-state">
-                <p>Gagal memuat pembelajaran hari ini.</p>
+                <div class="icon">⚠️</div>
+                Gagal memuat pembelajaran hari ini.
             </div>
         `;
     }
