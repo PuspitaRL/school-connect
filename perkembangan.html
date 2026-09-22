@@ -365,7 +365,9 @@ async function loadLearning() {
             .from('children')
             .select('kelas')
             .eq('parent_id', currentParentId);
-
+console.log('CURRENT PARENT ID:', currentParentId);
+console.log('CHILDREN:', children);
+console.log('CHILDREN ERROR:', childrenError);
         if (childrenError) throw childrenError;
 
         const uniqueClasses = [
@@ -387,7 +389,11 @@ async function loadLearning() {
 
         // 2. Ambil semua pembelajaran hari ini untuk kelas anak
         const { data: lessons, error: lessonError } = await supabaseClient
-            .from('daily_lessons')
+            console.log('TODAY:', today);
+console.log('UNIQUE CLASSES:', uniqueClasses);
+console.log('LESSONS:', lessons);
+console.log('LESSON ERROR:', lessonError);
+			.from('daily_lessons')
             .select(`
                 id,
                 tanggal,
