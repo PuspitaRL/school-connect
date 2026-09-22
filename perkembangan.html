@@ -360,14 +360,11 @@ async function loadLearning() {
     const today = getToday();
 
     try {
-        // 1. Ambil kelas anak
         const { data: children, error: childrenError } = await supabaseClient
             .from('children')
             .select('kelas')
             .eq('parent_id', currentParentId);
-console.log('CURRENT PARENT ID:', currentParentId);
-console.log('CHILDREN:', children);
-console.log('CHILDREN ERROR:', childrenError);
+
         if (childrenError) throw childrenError;
 
         const uniqueClasses = [
@@ -387,13 +384,8 @@ console.log('CHILDREN ERROR:', childrenError);
             return;
         }
 
-        // 2. Ambil semua pembelajaran hari ini untuk kelas anak
         const { data: lessons, error: lessonError } = await supabaseClient
-            console.log('TODAY:', today);
-console.log('UNIQUE CLASSES:', uniqueClasses);
-console.log('LESSONS:', lessons);
-console.log('LESSON ERROR:', lessonError);
-			.from('daily_lessons')
+            .from('daily_lessons')
             .select(`
                 id,
                 tanggal,
@@ -416,7 +408,6 @@ console.log('LESSON ERROR:', lessonError);
             return;
         }
 
-        // 3. Ambil nama guru sekaligus
         const teacherIds = [
             ...new Set(
                 lessons
@@ -440,7 +431,6 @@ console.log('LESSON ERROR:', lessonError);
             });
         }
 
-        // 4. Tampilkan
         let html = '';
 
         lessons.forEach(data => {
