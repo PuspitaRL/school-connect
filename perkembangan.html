@@ -1,3 +1,42 @@
+Iya, kalau setelah perbaikan tadi loading jadi lama banget, kemungkinan masalahnya bukan di tampilan HTML-nya, tapi di query Supabase atau cara halaman menunggu data.
+
+Kalau ini halaman Pembelajaran Hari Ini, aku curiga ada salah satu dari ini:
+
+Query mengambil terlalu banyak data dari daily_lessons.
+Query dilakukan berulang kali karena ada loadData() / fetch() yang terpanggil lebih dari sekali.
+Ada query yang menunggu query lain padahal sebenarnya tidak perlu.
+Filter kelas belum diterapkan sejak awal, jadi Supabase mengambil semua data dulu baru difilter di JavaScript.
+Ada masalah pada relasi guru_id / users, sehingga request menunggu cukup lama.
+Kalau kita tadi menambahkan logika untuk membedakan Alif Tsaniyah dan Alif 'Ula, mungkin query-nya sekarang melakukan pengecekan tambahan untuk setiap data.
+
+Kalau kamu mau, 
+kirim kode HTML Pembelajaran Hari Ini yang sekarang setelah diperbaiki tadi. Aku bisa cek bagian yang bikin lambat dan 
+langsung aku optimalkan tanpa mengubah tampilan atau fungsi lainnya.
+
+Aku akan fokus hanya pada:
+
+mempercepat query Supabase,
+menghindari fetch berulang,
+memastikan filter kelas dilakukan di database,
+dan menjaga Alif Tsaniyah ≠ Alif 'Ula.
+
+Jadi bukan kita ubah desainnya lagi.
+
+lanjut
+
+Siap. Kita lanjut dari halaman Pembelajaran Hari Ini.
+
+Tapi aku perlu melihat kode versi terakhir yang sekarang sedang kamu pakai, karena kode lengkapnya tidak ada di pesan ini. Kalau aku menebak bagian yang harus diubah, justru berisiko bikin masalah baru.
+
+Kirim/tempel kode HTML Pembelajaran Hari Ini yang sekarang — yang setelah perbaikan Alif Tsaniyah & Alif 'Ula tadi.
+
+Nanti aku:
+
+cari penyebab loading lama,
+optimalkan query Supabase,
+pastikan Alif Tsaniyah dan Alif 'Ula tetap punya data masing-masing,
+tidak mengubah tampilan dan fungsi lain,
+lalu kirim balik kode lengkap yang sudah diperbaiki supaya kamu tinggal replace.
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -292,7 +331,7 @@ function getToday() {
 
     const day = String(now.getDate()).padStart(2, '0');
 
-    return `${year}-${month}-${day}`;
+    return ${year}-${month}-${day};
 
 }
 
@@ -378,7 +417,7 @@ async function loadLearning() {
 
         if (!children || children.length === 0) {
 
-            container.innerHTML = `
+            container.innerHTML = 
                 <div class="learning-card">
                     <div class="empty-state">
                         <div class="icon">📚</div>
@@ -386,7 +425,7 @@ async function loadLearning() {
                         <p>Silakan hubungi pihak sekolah.</p>
                     </div>
                 </div>
-            `;
+            ;
 
             return;
         }
@@ -402,7 +441,7 @@ async function loadLearning() {
 
         if (uniqueClasses.length === 0) {
 
-            container.innerHTML = `
+            container.innerHTML = 
                 <div class="learning-card">
                     <div class="empty-state">
                         <div class="icon">📚</div>
@@ -410,7 +449,7 @@ async function loadLearning() {
                         <p>Silakan hubungi pihak sekolah.</p>
                     </div>
                 </div>
-            `;
+            ;
 
             return;
         }
@@ -425,21 +464,21 @@ async function loadLearning() {
                 error
             } = await supabaseClient
                 .from('daily_lessons')
-                .select(`
+                .select(
                     id,
                     tanggal,
                     kegiatan_belajar,
                     murajaah_rumah,
                     guru_id,
                     kelas
-                `)
+                )
                 .eq('tanggal', today)
                 .eq('kelas', kelas)
                 .maybeSingle();
 
             if (error) {
                 console.error(
-                    `Gagal mengambil pembelajaran kelas ${kelas}:`,
+                    Gagal mengambil pembelajaran kelas ${kelas}:,
                     error
                 );
                 throw error;
@@ -453,7 +492,7 @@ async function loadLearning() {
         // Belum ada pembelajaran
         if (allLessons.length === 0) {
 
-            container.innerHTML = `
+            container.innerHTML = 
                 <div class="learning-card">
                     <div class="empty-state">
                         <div class="icon">📚</div>
@@ -461,7 +500,7 @@ async function loadLearning() {
                         <p>Informasi akan tampil setelah Guru mengisinya.</p>
                     </div>
                 </div>
-            `;
+            ;
 
             return;
         }
@@ -487,7 +526,7 @@ async function loadLearning() {
                 }
             }
 
-            html += `
+            html += 
 
                 <section class="learning-card">
 
@@ -518,11 +557,11 @@ async function loadLearning() {
 
                     ${
                         teacherName
-                        ? `
+                        ? 
                             <div class="teacher-info">
                                 Dicatat oleh ${escapeHtml(teacherName)}
                             </div>
-                        `
+                        
                         : ''
                     }
 
@@ -549,7 +588,7 @@ async function loadLearning() {
 
                 </section>
 
-            `;
+            ;
         }
 
         container.innerHTML = html;
@@ -558,7 +597,7 @@ async function loadLearning() {
 
         console.error('Error loadLearning:', error);
 
-        container.innerHTML = `
+        container.innerHTML = 
             <div class="learning-card">
                 <div class="empty-state">
                     <div class="icon">⚠️</div>
@@ -566,7 +605,7 @@ async function loadLearning() {
                     <p>Silakan coba lagi beberapa saat.</p>
                 </div>
             </div>
-        `;
+        ;
     }
 }
 
@@ -635,3 +674,839 @@ init();
 
 </body>
 </html>
+
+Nah, aku sudah ketemu bagian yang memang membuat halaman ini terasa lambat.
+
+Penyebab utamanya
+
+Kode sekarang melakukan query seperti ini:
+
+Kalau punya 2 anak di kelas berbeda → query daily_lessons 2 kali secara berurutan
+Setelah itu setiap pembelajaran melakukan query users lagi untuk mencari nama guru
+Jadi kalau ada 2 kelas, minimal ada beberapa request Supabase yang harus selesai satu per satu.
+
+Aku ubah menjadi:
+
+1 query untuk semua kelas anak sekaligus
+→ 1 query untuk semua guru sekaligus
+
+Jadi Alif Tsaniyah dan Alif 'Ula tetap dipisahkan berdasarkan kolom kelas, tetapi tidak perlu mengambil datanya satu per satu.
+
+Aku tidak mengubah tampilan, menu, struktur kartu, atau fungsi lainnya.
+
+Ganti kode kamu dengan ini:
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pembelajaran Hari Ini - School Connect</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <style>
+        .learning-page {
+            max-width: 1000px;
+        }
+
+        .page-intro {
+            background: var(--orange-light);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .page-intro .eyebrow {
+            color: var(--orange-dark);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .page-intro h1 {
+            margin: 0 0 7px;
+            font-size: 26px;
+            color: var(--text);
+        }
+
+        .page-intro p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .learning-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .date-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--orange-dark);
+            font-weight: 600;
+            margin-bottom: 22px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin: 0 0 18px;
+            color: var(--text);
+        }
+
+        .lesson-content {
+            white-space: pre-line;
+            line-height: 1.8;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .pr-card {
+            background: #fffaf3;
+            border: 1px solid #f1dfc7;
+        }
+
+        .pr-note {
+            font-size: 13px;
+            color: var(--text-light);
+            margin: -8px 0 18px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 45px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state .icon {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        .teacher-info {
+            margin-top: 22px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .learning-card {
+                padding: 18px;
+            }
+
+            .page-intro {
+                padding: 20px;
+            }
+
+            .page-intro h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+    <div class="sidebar-logo">
+        <img src="images/logo.png" alt="Darul Iman">
+    </div>
+
+    <nav class="sidebar-menu">
+
+        <a href="parent-dashboard.html" class="menu-item">
+            <span>🏠</span>
+            Dashboard
+        </a>
+
+        <a href="child.html" class="menu-item">
+            <span>👧</span>
+            Anak
+        </a>
+
+        <a href="buku-penghubung.html" class="menu-item">
+            <span>📖</span>
+            Buku Penghubung
+        </a>
+
+        <a href="perkembangan.html" class="menu-item active">
+            <span>📚</span>
+            Pembelajaran Hari Ini
+        </a>
+
+        <a href="bintang-prestasi.html" class="menu-item">
+            <span>⭐</span>
+            Bintang Prestasi
+        </a>
+
+        <a href="absensi.html" class="menu-item">
+            <span>📅</span>
+            Absensi
+        </a>
+
+        <a href="pengumuman.html" class="menu-item">
+            <span>📢</span>
+            Pengumuman
+        </a>
+
+        <a href="komunikasi.html" class="menu-item">
+            <span>💬</span>
+            Komunikasi
+        </a>
+
+        <a href="pengaturan.html" class="menu-item">
+            <span>⚙️</span>
+            Pengaturan
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+        <a href="index.html" class="menu-item">
+            <span>↪</span>
+            Keluar
+        </a>
+    </div>
+
+</aside>
+
+<main class="main-content">
+
+    <header class="topbar">
+
+        <button class="menu-toggle" type="button">☰</button>
+
+        <div class="topbar-right">
+
+            <button class="notification-btn" type="button">
+                🔔
+            </button>
+
+            <div class="profile-wrapper">
+
+                <button class="profile-mini" id="profileButton" type="button">
+
+                    <div class="profile-avatar" id="parentAvatar">
+                        A
+                    </div>
+
+                    <div class="profile-info">
+                        <strong id="parentName">Ayah/Bunda</strong>
+                        <span>Orang Tua</span>
+                    </div>
+
+                    <span class="profile-arrow">⌄</span>
+
+                </button>
+
+                <div class="profile-dropdown" id="profileDropdown">
+
+                    <a href="pengaturan.html">
+                        ⚙ Pengaturan
+                    </a>
+
+                    <a href="index.html" class="dropdown-logout">
+                        ↪ Keluar
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <div class="content learning-page">
+
+        <section class="page-intro">
+
+            <div class="eyebrow">
+                📚 INFORMASI PEMBELAJARAN
+            </div>
+
+            <h1>Pembelajaran Hari Ini</h1>
+
+            <p>
+                Informasi kegiatan belajar dan murojaah yang dapat dilanjutkan di rumah.
+            </p>
+
+        </section>
+
+
+        <div id="learningContainer">
+
+            <div class="empty-state">
+                <div class="icon">📚</div>
+                Memuat pembelajaran hari ini...
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+
+<script>
+
+let currentParentId = null;
+
+
+function formatDate(dateString) {
+
+    const date = new Date(dateString + 'T00:00:00');
+
+    return new Intl.DateTimeFormat('id-ID', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    }).format(date);
+
+}
+
+
+function getToday() {
+
+    const now = new Date();
+
+    const year = now.getFullYear();
+
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+
+    const day = String(now.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+async function loadParentProfile() {
+
+    const {
+        data: authData,
+        error: authError
+    } = await supabaseClient.auth.getUser();
+
+    if (authError || !authData.user) {
+
+        window.location.href = 'login.html';
+
+        return false;
+
+    }
+
+    const {
+        data: profile,
+        error: profileError
+    } = await supabaseClient
+        .from('users')
+        .select('id, nama, role')
+        .eq('auth_id', authData.user.id)
+        .maybeSingle();
+
+    if (profileError || !profile) {
+
+        alert('Profil pengguna tidak ditemukan.');
+
+        window.location.href = 'login.html';
+
+        return false;
+
+    }
+
+    if (profile.role !== 'orang_tua') {
+
+        alert('Halaman ini hanya dapat diakses oleh Orang Tua.');
+
+        window.location.href = 'login.html';
+
+        return false;
+
+    }
+
+    currentParentId = profile.id;
+
+    const name = profile.nama || 'Ayah/Bunda';
+
+    document.getElementById('parentName').textContent = name;
+
+    document.getElementById('parentAvatar').textContent =
+        name.charAt(0).toUpperCase();
+
+    return true;
+
+}
+
+
+async function loadLearning() {
+
+    const container = document.getElementById('learningContainer');
+
+    const today = getToday();
+
+    try {
+
+        /*
+         * ============================================================
+         * 1. AMBIL SEMUA ANAK MILIK ORANG TUA
+         * ============================================================
+         */
+
+        const {
+            data: children,
+            error: childrenError
+        } = await supabaseClient
+            .from('children')
+            .select('nama, kelas')
+            .eq('parent_id', currentParentId);
+
+        if (childrenError) {
+
+            console.error(
+                'Gagal mengambil data anak:',
+                childrenError
+            );
+
+            throw childrenError;
+
+        }
+
+
+        if (!children || children.length === 0) {
+
+            container.innerHTML = `
+                <div class="learning-card">
+                    <div class="empty-state">
+                        <div class="icon">📚</div>
+                        <strong>Data anak belum ditemukan.</strong>
+                        <p>Silakan hubungi pihak sekolah.</p>
+                    </div>
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        /*
+         * ============================================================
+         * 2. AMBIL KELAS UNIK
+         *
+         * Contoh:
+         * Alif Tsaniyah
+         * Alif 'Ula
+         *
+         * Keduanya tetap dianggap kelas yang berbeda.
+         * ============================================================
+         */
+
+        const uniqueClasses = [
+            ...new Set(
+                children
+                    .map(child => child.kelas)
+                    .filter(kelas => kelas && kelas.trim() !== '')
+                    .map(kelas => kelas.trim())
+            )
+        ];
+
+
+        if (uniqueClasses.length === 0) {
+
+            container.innerHTML = `
+                <div class="learning-card">
+                    <div class="empty-state">
+                        <div class="icon">📚</div>
+                        <strong>Kelas anak belum tersedia.</strong>
+                        <p>Silakan hubungi pihak sekolah.</p>
+                    </div>
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        /*
+         * ============================================================
+         * 3. AMBIL SEMUA PEMBELAJARAN DALAM SATU QUERY
+         *
+         * SEBELUMNYA:
+         *
+         * for (const kelas of uniqueClasses) {
+         *     await query...
+         * }
+         *
+         * Kalau ada 2 kelas berarti 2 request berurutan.
+         *
+         * SEKARANG:
+         *
+         * Satu request untuk seluruh kelas.
+         * ============================================================
+         */
+
+        const {
+            data: allLessons,
+            error: lessonsError
+        } = await supabaseClient
+            .from('daily_lessons')
+            .select(`
+                id,
+                tanggal,
+                kegiatan_belajar,
+                murajaah_rumah,
+                guru_id,
+                kelas
+            `)
+            .eq('tanggal', today)
+            .in('kelas', uniqueClasses)
+            .order('kelas', { ascending: true });
+
+        if (lessonsError) {
+
+            console.error(
+                'Gagal mengambil pembelajaran:',
+                lessonsError
+            );
+
+            throw lessonsError;
+
+        }
+
+
+        /*
+         * ============================================================
+         * 4. BELUM ADA PEMBELAJARAN
+         * ============================================================
+         */
+
+        if (!allLessons || allLessons.length === 0) {
+
+            container.innerHTML = `
+                <div class="learning-card">
+                    <div class="empty-state">
+                        <div class="icon">📚</div>
+                        <strong>Belum ada pembelajaran hari ini.</strong>
+                        <p>Informasi akan tampil setelah Guru mengisinya.</p>
+                    </div>
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        /*
+         * ============================================================
+         * 5. AMBIL SEMUA ID GURU SEKALIGUS
+         *
+         * Ini juga menghindari query satu per satu.
+         * ============================================================
+         */
+
+        const teacherIds = [
+            ...new Set(
+                allLessons
+                    .map(lesson => lesson.guru_id)
+                    .filter(Boolean)
+            )
+        ];
+
+
+        let teachersMap = {};
+
+
+        if (teacherIds.length > 0) {
+
+            const {
+                data: teachers,
+                error: teachersError
+            } = await supabaseClient
+                .from('users')
+                .select('id, nama')
+                .in('id', teacherIds);
+
+
+            if (teachersError) {
+
+                console.error(
+                    'Gagal mengambil data guru:',
+                    teachersError
+                );
+
+                throw teachersError;
+
+            }
+
+
+            /*
+             * Ubah data guru menjadi object agar
+             * pencarian nama guru tidak perlu query lagi.
+             */
+
+            if (teachers) {
+
+                teachers.forEach(teacher => {
+
+                    teachersMap[teacher.id] = teacher.nama;
+
+                });
+
+            }
+
+        }
+
+
+        /*
+         * ============================================================
+         * 6. TAMPILKAN SEMUA PEMBELAJARAN
+         * ============================================================
+         */
+
+        let html = '';
+
+
+        for (const data of allLessons) {
+
+            const teacherName =
+                data.guru_id
+                    ? teachersMap[data.guru_id] || ''
+                    : '';
+
+
+            html += `
+
+                <section class="learning-card">
+
+                    <div class="date-title">
+                        📅 ${formatDate(data.tanggal)}
+                    </div>
+
+                    <div style="
+                        display: inline-block;
+                        background: var(--orange-light);
+                        color: var(--orange-dark);
+                        padding: 6px 12px;
+                        border-radius: 20px;
+                        font-size: 13px;
+                        font-weight: 600;
+                        margin-bottom: 18px;
+                    ">
+                        Kelas ${escapeHtml(data.kelas)}
+                    </div>
+
+                    <h2 class="section-title">
+                        📚 Kegiatan Belajar Hari Ini
+                    </h2>
+
+                    <div class="lesson-content">
+                        ${escapeHtml(data.kegiatan_belajar)}
+                    </div>
+
+                    ${
+                        teacherName
+                        ? `
+                            <div class="teacher-info">
+                                Dicatat oleh ${escapeHtml(teacherName)}
+                            </div>
+                        `
+                        : ''
+                    }
+
+                </section>
+
+
+                <section class="learning-card pr-card">
+
+                    <div class="date-title">
+                        🏡 Murajaah di Rumah
+                    </div>
+
+                    <p class="pr-note">
+                        Catatan informasi dari Guru untuk dilanjutkan bersama Ayah & Bunda.
+                    </p>
+
+                    <div class="lesson-content">
+                        ${
+                            data.murajaah_rumah
+                            ? escapeHtml(data.murajaah_rumah)
+                            : 'Belum ada catatan murojaah di rumah.'
+                        }
+                    </div>
+
+                </section>
+
+            `;
+
+        }
+
+
+        container.innerHTML = html;
+
+
+    } catch (error) {
+
+        console.error(
+            'Error loadLearning:',
+            error
+        );
+
+        container.innerHTML = `
+            <div class="learning-card">
+                <div class="empty-state">
+                    <div class="icon">⚠️</div>
+                    <strong>Pembelajaran belum dapat dimuat.</strong>
+                    <p>Silakan coba lagi beberapa saat.</p>
+                </div>
+            </div>
+        `;
+
+    }
+
+}
+
+
+function escapeHtml(value) {
+
+    if (!value) return '';
+
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+}
+
+
+/*
+ * ============================================================
+ * MENU MOBILE
+ * ============================================================
+ */
+
+const menuToggle = document.querySelector('.menu-toggle');
+
+const sidebar = document.querySelector('.sidebar');
+
+
+if (menuToggle && sidebar) {
+
+    menuToggle.addEventListener('click', () => {
+
+        sidebar.classList.toggle('show');
+
+    });
+
+}
+
+
+/*
+ * ============================================================
+ * PROFILE DROPDOWN
+ * ============================================================
+ */
+
+const profileButton =
+    document.querySelector('#profileButton');
+
+const profileDropdown =
+    document.querySelector('#profileDropdown');
+
+
+if (profileButton && profileDropdown) {
+
+    profileButton.addEventListener('click', (e) => {
+
+        e.stopPropagation();
+
+        profileDropdown.classList.toggle('show');
+
+    });
+
+
+    document.addEventListener('click', () => {
+
+        profileDropdown.classList.remove('show');
+
+    });
+
+}
+
+
+/*
+ * ============================================================
+ * INITIALIZATION
+ * ============================================================
+ */
+
+async function init() {
+
+    const profileLoaded =
+        await loadParentProfile();
+
+    if (!profileLoaded) return;
+
+    await loadLearning();
+
+}
+
+
+init();
+
+</script>
+
+</body>
+</html>
+Yang berubah hanya bagian loading datanya
+
+Sebelumnya kalau orang tua punya:
+
+Anak 1 → Alif Tsaniyah
+Anak 2 → Alif 'Ula
+
+maka kode melakukan:
+
+query Alif Tsaniyah
+↓ tunggu selesai
+query Alif 'Ula
+↓ tunggu selesai
+query Guru 1
+↓ tunggu
+query Guru 2
+
+Sekarang:
+
+query semua kelas sekaligus
+        ↓
+query semua guru sekaligus
+        ↓
+tampilkan
+
+Jadi Alif Tsaniyah tetap tidak akan mengambil data Alif 'Ula, karena filter tetap menggunakan:
+
+.eq('tanggal', today)
+.in('kelas', uniqueClasses)
+
+Yang penting juga: jangan ubah struktur tabel daily_lessons lagi dulu. Kita tes versi ini terlebih dahulu.
+
+Kalau setelah ini masih terasa lambat, berarti bottleneck-nya kemungkinan bukan lagi JavaScript ini, tetapi RLS/index Supabase atau supabase.js, dan kita bisa cek bagian itu berikutnya.
