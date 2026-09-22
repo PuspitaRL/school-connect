@@ -360,39 +360,7 @@ async function loadLearning() {
     const today = getToday();
 
     try {
-        // Ambil anak milik orang tua yang sedang login
-        const { data: children, error: childrenError } = await supabaseClient
-            .from('children')
-            .select('nama, kelas')
-            .eq('parent_id', currentParentId);
-
-        if (childrenError) {
-            console.error('Error children:', childrenError);
-            throw childrenError;
-        }
-
-        if (!children || children.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="icon">📚</div>
-                    Belum ada data anak.
-                </div>
-            `;
-            return;
-        }
-
-        // Kelas yang dimiliki anak orang tua ini
-        const childClasses = [
-            ...new Set(
-                children
-                    .map(child => child.kelas)
-                    .filter(Boolean)
-                    .map(kelas => kelas.trim().toLowerCase())
-            )
-        ];
-
-        // Ambil SEMUA pembelajaran hari ini
-        const { data: allLessons, error: lessonError } = await supabaseClient
+        const { data: lessons, error } = await supabaseClient
             .from('daily_lessons')
             .select(`
                 id,
@@ -405,21 +373,13 @@ async function loadLearning() {
             .eq('tanggal', today)
             .order('kelas', { ascending: true });
 
-        if (lessonError) {
-            console.error('Error daily_lessons:', lessonError);
-            throw lessonError;
-        }
+        console.log('TANGGAL:', today);
+        console.log('DATA DAILY LESSONS:', lessons);
+        console.log('ERROR DAILY LESSONS:', error);
 
-        // Cocokkan kelas di JavaScript
-        const lessons = (allLessons || []).filter(lesson => {
-            if (!lesson.kelas) return false;
+        if (error) throw error;
 
-            return childClasses.includes(
-                lesson.kelas.trim().toLowerCase()
-            );
-        });
-
-        if (lessons.length === 0) {
+        if (!lessons || lessons.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
                     <div class="icon">📚</div>
@@ -429,11 +389,10 @@ async function loadLearning() {
             return;
         }
 
-        // Ambil nama guru
         const teacherIds = [
             ...new Set(
                 lessons
-                    .map(lesson => lesson.guru_id)
+                    .map(item => item.guru_id)
                     .filter(Boolean)
             )
         ];
@@ -441,20 +400,23 @@ async function loadLearning() {
         let teachersMap = {};
 
         if (teacherIds.length > 0) {
-            const { data: teachers } = await supabaseClient
-                .from('users')
-                .select('id, nama')
-                .in('id', teacherIds);
+            const { data: teachers, error: teacherError } =
+                await supabaseClient
+                    .from('users')
+                    .select('id, nama')
+                    .in('id', teacherIds);
+
+            if (teacherError) throw teacherError;
 
             (teachers || []).forEach(teacher => {
                 teachersMap[teacher.id] = teacher.nama;
             });
         }
 
-        // Tampilkan masing-masing kelas
         let html = '';
 
         lessons.forEach(data => {
+
             const teacherName = data.guru_id
                 ? (teachersMap[data.guru_id] || '')
                 : '';
@@ -508,7 +470,7 @@ async function loadLearning() {
         container.innerHTML = html;
 
     } catch (error) {
-        console.error('Error loadLearning:', error);
+        console.error('ERROR LOAD LEARNING:', error);
 
         container.innerHTML = `
             <div class="empty-state">
