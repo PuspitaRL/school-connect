@@ -298,7 +298,7 @@ function getToday() {
 }
 
 
-async function loadParentProfile() {
+ function loadParentProfile() {
 
     const {
         data: authData,
@@ -356,19 +356,16 @@ async function loadParentProfile() {
 }
 
 
-async function loadLearning() {
+ async function loadLearning() {
 
     const container = document.getElementById('learningContainer');
-
     const today = getToday();
 
     try {
 
-        /*
-         * ============================================================
-         * 1. AMBIL SEMUA ANAK MILIK ORANG TUA
-         * ============================================================
-         */
+        // ============================================================
+        // 1. AMBIL SEMUA ANAK MILIK ORANG TUA
+        // ============================================================
 
         const {
             data: children,
@@ -379,16 +376,12 @@ async function loadLearning() {
             .eq('parent_id', currentParentId);
 
         if (childrenError) {
-
             console.error(
                 'Gagal mengambil data anak:',
                 childrenError
             );
-
             throw childrenError;
-
         }
-
 
         if (!children || children.length === 0) {
 
@@ -403,30 +396,23 @@ async function loadLearning() {
             `;
 
             return;
-
         }
 
 
-        /*
-         * ============================================================
-         * 2. AMBIL KELAS UNIK
-         *
-         * Contoh:
-         * Alif Tsaniyah
-         * Alif 'Ula
-         *
-         * Keduanya tetap dianggap kelas yang berbeda.
-         * ============================================================
-         */
+        // ============================================================
+        // 2. AMBIL KELAS ANAK
+        // ============================================================
 
         const uniqueClasses = [
             ...new Set(
                 children
                     .map(child => child.kelas)
-                    .filter(kelas => kelas && kelas.trim() !== '')
+                    .filter(Boolean)
                     .map(kelas => kelas.trim())
             )
         ];
+
+        console.log('Kelas anak:', uniqueClasses);
 
 
         if (uniqueClasses.length === 0) {
@@ -442,30 +428,19 @@ async function loadLearning() {
             `;
 
             return;
-
         }
 
 
-        /*
-         * ============================================================
-         * 3. AMBIL SEMUA PEMBELAJARAN DALAM SATU QUERY
-         *
-         * SEBELUMNYA:
-         *
-         * for (const kelas of uniqueClasses) {
-         *     await query...
-         * }
-         *
-         * Kalau ada 2 kelas berarti 2 request berurutan.
-         *
-         * SEKARANG:
-         *
-         * Satu request untuk seluruh kelas.
-         * ============================================================
-         */
+        // ============================================================
+        // 3. AMBIL SEMUA PEMBELAJARAN HARI INI
+        //
+        // Tidak difilter kelas di Supabase.
+        // Jadi kita menghindari masalah pencocokan .in().
+        // Data hari ini biasanya hanya sedikit.
+        // ============================================================
 
         const {
-            data: allLessons,
+            data: lessons,
             error: lessonsError
         } = await supabaseClient
             .from('daily_lessons')
@@ -478,7 +453,6 @@ async function loadLearning() {
                 kelas
             `)
             .eq('tanggal', today)
-            .in('kelas', uniqueClasses)
             .order('kelas', { ascending: true });
 
         if (lessonsError) {
@@ -489,17 +463,34 @@ async function loadLearning() {
             );
 
             throw lessonsError;
-
         }
 
 
-        /*
-         * ============================================================
-         * 4. BELUM ADA PEMBELAJARAN
-         * ============================================================
-         */
+        // ============================================================
+        // 4. FILTER SESUAI KELAS ANAK
+        // ============================================================
 
-        if (!allLessons || allLessons.length === 0) {
+        const allLessons = (lessons || []).filter(lesson => {
+
+            if (!lesson.kelas) return false;
+
+            const lessonClass = lesson.kelas.trim();
+
+            return uniqueClasses.some(childClass =>
+                childClass === lessonClass
+            );
+
+        });
+
+
+        console.log('Pembelajaran yang cocok:', allLessons);
+
+
+        // ============================================================
+        // 5. BELUM ADA PEMBELAJARAN
+        // ============================================================
+
+        if (allLessons.length === 0) {
 
             container.innerHTML = `
                 <div class="learning-card">
@@ -512,17 +503,12 @@ async function loadLearning() {
             `;
 
             return;
-
         }
 
 
-        /*
-         * ============================================================
-         * 5. AMBIL SEMUA ID GURU SEKALIGUS
-         *
-         * Ini juga menghindari query satu per satu.
-         * ============================================================
-         */
+        // ============================================================
+        // 6. AMBIL SEMUA GURU SEKALIGUS
+        // ============================================================
 
         const teacherIds = [
             ...new Set(
@@ -531,7 +517,6 @@ async function loadLearning() {
                     .filter(Boolean)
             )
         ];
-
 
         let teachersMap = {};
 
@@ -546,7 +531,6 @@ async function loadLearning() {
                 .select('id, nama')
                 .in('id', teacherIds);
 
-
             if (teachersError) {
 
                 console.error(
@@ -555,33 +539,21 @@ async function loadLearning() {
                 );
 
                 throw teachersError;
-
             }
 
 
-            /*
-             * Ubah data guru menjadi object agar
-             * pencarian nama guru tidak perlu query lagi.
-             */
+            (teachers || []).forEach(teacher => {
 
-            if (teachers) {
+                teachersMap[teacher.id] = teacher.nama;
 
-                teachers.forEach(teacher => {
-
-                    teachersMap[teacher.id] = teacher.nama;
-
-                });
-
-            }
+            });
 
         }
 
 
-        /*
-         * ============================================================
-         * 6. TAMPILKAN SEMUA PEMBELAJARAN
-         * ============================================================
-         */
+        // ============================================================
+        // 7. TAMPILKAN DATA
+        // ============================================================
 
         let html = '';
 
@@ -685,7 +657,6 @@ async function loadLearning() {
 
 }
 
-
 function escapeHtml(value) {
 
     if (!value) return '';
@@ -779,36 +750,3 @@ init();
 
 </body>
 </html>
-Yang berubah hanya bagian loading datanya
-
-Sebelumnya kalau orang tua punya:
-
-Anak 1 → Alif Tsaniyah
-Anak 2 → Alif 'Ula
-
-maka kode melakukan:
-
-query Alif Tsaniyah
-↓ tunggu selesai
-query Alif 'Ula
-↓ tunggu selesai
-query Guru 1
-↓ tunggu
-query Guru 2
-
-Sekarang:
-
-query semua kelas sekaligus
-        ↓
-query semua guru sekaligus
-        ↓
-tampilkan
-
-Jadi Alif Tsaniyah tetap tidak akan mengambil data Alif 'Ula, karena filter tetap menggunakan:
-
-.eq('tanggal', today)
-.in('kelas', uniqueClasses)
-
-Yang penting juga: jangan ubah struktur tabel daily_lessons lagi dulu. Kita tes versi ini terlebih dahulu.
-
-Kalau setelah ini masih terasa lambat, berarti bottleneck-nya kemungkinan bukan lagi JavaScript ini, tetapi RLS/index Supabase atau supabase.js, dan kita bisa cek bagian itu berikutnya.
