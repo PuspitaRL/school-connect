@@ -1007,21 +1007,45 @@ document.getElementById(
 
     }
 );
+/* ================================
+   TANGGAL OPERASIONAL BINTANG PRESTASI
+   Hari baru dimulai pukul 08.00 WIB
+================================= */
+
+function getAchievementDate() {
+
+    const now = new Date();
+
+    const jakartaTime =
+        new Date(
+            now.toLocaleString('en-US', {
+                timeZone: 'Asia/Jakarta'
+            })
+        );
+
+    /*
+       Jika masih sebelum jam 08.00,
+       berarti masih menggunakan tanggal kemarin.
+    */
+
+    if (jakartaTime.getHours() < 8) {
+        jakartaTime.setDate(
+            jakartaTime.getDate() - 1
+        );
+    }
+
+    return [
+        jakartaTime.getFullYear(),
+        String(jakartaTime.getMonth() + 1).padStart(2, '0'),
+        String(jakartaTime.getDate()).padStart(2, '0')
+    ].join('-');
+}
         /* ================================
            LOAD ACHIEVEMENT HARI INI
         ================================= */
 
         async function loadAchievement() {
-
-            const today =
-                new Date()
-                    .toLocaleDateString(
-                        'en-CA',
-                        {
-                            timeZone: 'Asia/Jakarta'
-                        }
-                    );
-
+const today = getAchievementDate();
             const {
                 data,
                 error
@@ -1083,14 +1107,7 @@ document.getElementById(
                 return;
             }
 
-            const today =
-                new Date()
-                    .toLocaleDateString(
-                        'en-CA',
-                        {
-                            timeZone: 'Asia/Jakarta'
-                        }
-                    );
+           const today = getAchievementDate();
 
             const payload = {
 
