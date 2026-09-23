@@ -75,13 +75,27 @@
             border: 1px solid #f1dfc7;
         }
 
-       .pr-note {
-		font-size: 13px;
-		color: var(--text-light);
-		margin: -8px 0 18px;
-		white-space: pre-line;
-		line-height: 1.8;
-        }
+      .pr-note {
+    font-size: 13px;
+    color: var(--text-light);
+    margin: -8px 0 18px;
+    line-height: 1.8;
+}
+
+.pr-note .murajaah-intro {
+    margin-bottom: 8px;
+}
+
+.pr-note .murajaah-item {
+    display: block;
+    margin: 5px 0;
+    padding-left: 4px;
+}
+
+.pr-note .murajaah-note {
+    display: block;
+    margin-top: 12px;
+}
 
         .empty-state {
             text-align: center;
@@ -544,12 +558,9 @@ async function loadLearning() {
 
                         <div class="pr-note">
 
-                            ${escapeHtml(
-                                data.murajaah_rumah ||
-                                'Tidak ada tugas murajaah hari ini.'
-                            )}
+    ${formatMurajaah(data.murajaah_rumah)}
 
-                        </div>
+</div>
 
                     </div>
 
@@ -658,7 +669,44 @@ if (profileButton && profileDropdown) {
     });
 
 }
+function formatMurajaah(text) {
 
+    if (!text) {
+        return 'Tidak ada tugas murajaah hari ini.';
+    }
+
+    const parts = String(text)
+        .split('•')
+        .map(item => item.trim())
+        .filter(Boolean);
+
+    if (parts.length <= 1) {
+        return escapeHtml(text).replace(/\n/g, '<br>');
+    }
+
+    const intro = parts[0];
+
+    const items = parts.slice(1);
+
+    let html = `
+        <span class="murajaah-intro">
+            ${escapeHtml(intro)}
+        </span>
+    `;
+
+    items.forEach(item => {
+
+        html += `
+            <span class="murajaah-item">
+                • ${escapeHtml(item)}
+            </span>
+        `;
+
+    });
+
+    return html;
+
+}
 
 async function init() {
 
