@@ -1,268 +1,260 @@
 <!DOCTYPE html>
-
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
-<title>Pembelajaran Hari Ini - School Connect</title>
+    <title>Pembelajaran Hari Ini - School Connect</title>
 
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 
-<style>
-    .learning-page {
-        max-width: 1000px;
-    }
-
-    .page-intro {
-        background: var(--orange-light);
-        border-radius: 18px;
-        padding: 25px;
-        margin-bottom: 25px;
-    }
-
-    .page-intro .eyebrow {
-        color: var(--orange-dark);
-        font-size: 13px;
-        font-weight: 600;
-        margin-bottom: 7px;
-    }
-
-    .page-intro h1 {
-        margin: 0 0 7px;
-        font-size: 26px;
-        color: var(--text);
-    }
-
-    .page-intro p {
-        margin: 0;
-        color: var(--text-light);
-        font-size: 14px;
-    }
-
-    .learning-card {
-        background: var(--white);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 25px;
-        margin-bottom: 20px;
-    }
-
-    .date-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: var(--orange-dark);
-        font-weight: 600;
-        margin-bottom: 22px;
-    }
-
-    .section-title {
-        font-size: 18px;
-        margin: 0 0 18px;
-        color: var(--text);
-    }
-
-    .lesson-content {
-        white-space: pre-line;
-        line-height: 1.8;
-        color: var(--text);
-        font-size: 14px;
-    }
-
-    .pr-card {
-        background: #fffaf3;
-        border: 1px solid #f1dfc7;
-    }
-
-    .pr-note {
-        font-size: 13px;
-        color: var(--text-light);
-        margin: -8px 0 18px;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 45px 20px;
-        color: var(--text-light);
-    }
-
-    .empty-state .icon {
-        font-size: 38px;
-        margin-bottom: 12px;
-    }
-
-    .teacher-info {
-        margin-top: 22px;
-        padding-top: 15px;
-        border-top: 1px solid var(--border);
-        color: var(--text-light);
-        font-size: 12px;
-    }
-
-    @media (max-width: 600px) {
-        .learning-card {
-            padding: 18px;
+    <style>
+        .learning-page {
+            max-width: 1000px;
         }
 
         .page-intro {
-            padding: 20px;
+            background: var(--orange-light);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .page-intro .eyebrow {
+            color: var(--orange-dark);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 7px;
         }
 
         .page-intro h1 {
-            font-size: 22px;
+            margin: 0 0 7px;
+            font-size: 26px;
+            color: var(--text);
         }
-    }
-</style>
-```
 
+        .page-intro p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .learning-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .date-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--orange-dark);
+            font-weight: 600;
+            margin-bottom: 22px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin: 0 0 18px;
+            color: var(--text);
+        }
+
+        .lesson-content {
+            white-space: pre-line;
+            line-height: 1.8;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .pr-card {
+            background: #fffaf3;
+            border: 1px solid #f1dfc7;
+        }
+
+        .pr-note {
+            font-size: 13px;
+            color: var(--text-light);
+            margin: -8px 0 18px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 45px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state .icon {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        .teacher-info {
+            margin-top: 22px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .learning-card {
+                padding: 18px;
+            }
+
+            .page-intro {
+                padding: 20px;
+            }
+
+            .page-intro h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
 <aside class="sidebar">
 
-```
-<div class="sidebar-logo">
-    <img src="images/logo.png" alt="Darul Iman">
-</div>
+    <div class="sidebar-logo">
+        <img src="images/logo.png" alt="Darul Iman">
+    </div>
 
-<nav class="sidebar-menu">
+    <nav class="sidebar-menu">
 
-    <a href="parent-dashboard.html" class="menu-item">
-        <span>🏠</span>
-        Dashboard
-    </a>
+        <a href="parent-dashboard.html" class="menu-item">
+            <span>🏠</span>
+            Dashboard
+        </a>
 
-    <a href="child.html" class="menu-item">
-        <span>👧</span>
-        Anak
-    </a>
+        <a href="child.html" class="menu-item">
+            <span>👧</span>
+            Anak
+        </a>
 
-    <a href="buku-penghubung.html" class="menu-item">
-        <span>📖</span>
-        Buku Penghubung
-    </a>
+        <a href="buku-penghubung.html" class="menu-item">
+            <span>📖</span>
+            Buku Penghubung
+        </a>
 
-    <a href="perkembangan.html" class="menu-item active">
-        <span>📚</span>
-        Pembelajaran Hari Ini
-    </a>
+        <a href="perkembangan.html" class="menu-item active">
+            <span>📚</span>
+            Pembelajaran Hari Ini
+        </a>
 
-    <a href="bintang-prestasi.html" class="menu-item">
-        <span>⭐</span>
-        Bintang Prestasi
-    </a>
+        <a href="bintang-prestasi.html" class="menu-item">
+            <span>⭐</span>
+            Bintang Prestasi
+        </a>
 
-    <a href="absensi.html" class="menu-item">
-        <span>📅</span>
-        Absensi
-    </a>
+        <a href="absensi.html" class="menu-item">
+            <span>📅</span>
+            Absensi
+        </a>
 
-    <a href="pengumuman.html" class="menu-item">
-        <span>📢</span>
-        Pengumuman
-    </a>
+        <a href="pengumuman.html" class="menu-item">
+            <span>📢</span>
+            Pengumuman
+        </a>
 
-    <a href="komunikasi.html" class="menu-item">
-        <span>💬</span>
-        Komunikasi
-    </a>
+        <a href="komunikasi.html" class="menu-item">
+            <span>💬</span>
+            Komunikasi
+        </a>
 
-    <a href="pengaturan.html" class="menu-item">
-        <span>⚙️</span>
-        Pengaturan
-    </a>
+        <a href="pengaturan.html" class="menu-item">
+            <span>⚙️</span>
+            Pengaturan
+        </a>
 
-</nav>
+    </nav>
 
-<div class="sidebar-bottom">
-    <a href="index.html" class="menu-item">
-        <span>↪</span>
-        Keluar
-    </a>
-</div>
-```
+    <div class="sidebar-bottom">
+        <a href="index.html" class="menu-item">
+            <span>↪</span>
+            Keluar
+        </a>
+    </div>
 
 </aside>
 
 <main class="main-content">
 
-```
-<header class="topbar">
+    <header class="topbar">
 
-    <button class="menu-toggle" type="button">☰</button>
+        <button class="menu-toggle" type="button">☰</button>
 
-    <div class="topbar-right">
+        <div class="topbar-right">
 
-        <button class="notification-btn" type="button">
-            🔔
-        </button>
-
-        <div class="profile-wrapper">
-
-            <button class="profile-mini" id="profileButton" type="button">
-
-                <div class="profile-avatar" id="parentAvatar">
-                    A
-                </div>
-
-                <div class="profile-info">
-                    <strong id="parentName">Ayah/Bunda</strong>
-                    <span>Orang Tua</span>
-                </div>
-
-                <span class="profile-arrow">⌄</span>
-
+            <button class="notification-btn" type="button">
+                🔔
             </button>
 
-            <div class="profile-dropdown" id="profileDropdown">
+            <div class="profile-wrapper">
 
-                <a href="pengaturan.html">
-                    ⚙ Pengaturan
-                </a>
+                <button class="profile-mini" id="profileButton" type="button">
 
-                <a href="index.html" class="dropdown-logout">
-                    ↪ Keluar
-                </a>
+                    <div class="profile-avatar" id="parentAvatar">
+                        A
+                    </div>
+
+                    <div class="profile-info">
+                        <strong id="parentName">Ayah/Bunda</strong>
+                        <span>Orang Tua</span>
+                    </div>
+
+                    <span class="profile-arrow">⌄</span>
+
+                </button>
+
+                <div class="profile-dropdown" id="profileDropdown">
+
+                    <a href="pengaturan.html">
+                        ⚙ Pengaturan
+                    </a>
+
+                    <a href="index.html" class="dropdown-logout">
+                        ↪ Keluar
+                    </a>
+
+                </div>
 
             </div>
 
         </div>
 
-    </div>
+    </header>
 
-</header>
+    <div class="content learning-page">
 
-<div class="content learning-page">
+        <section class="page-intro">
 
-    <section class="page-intro">
+            <div class="eyebrow">
+                📚 INFORMASI PEMBELAJARAN
+            </div>
 
-        <div class="eyebrow">
-            📚 INFORMASI PEMBELAJARAN
+            <h1>Pembelajaran Hari Ini</h1>
+
+            <p>
+                Informasi kegiatan belajar dan murojaah yang dapat dilanjutkan di rumah.
+            </p>
+
+        </section>
+
+        <div id="learningContainer">
+
+            <div class="empty-state">
+                <div class="icon">📚</div>
+                Memuat pembelajaran hari ini...
+            </div>
+
         </div>
 
-        <h1>Pembelajaran Hari Ini</h1>
-
-        <p>
-            Informasi kegiatan belajar dan murojaah yang dapat dilanjutkan di rumah.
-        </p>
-
-    </section>
-
-    <div id="learningContainer">
-
-        <div class="empty-state">
-            <div class="icon">📚</div>
-            Memuat pembelajaran hari ini...
-        </div>
-
     </div>
-
-</div>
-```
 
 </main>
 
@@ -379,12 +371,8 @@ async function loadLearning() {
 
         /*
          * AMBIL DATA PEMBELAJARAN HARI INI
-         * LANGSUNG DARI daily_lessons
          */
-        const {
-            data: lessons,
-            error: lessonError
-        } = await supabaseClient
+        const lessonQuery = supabaseClient
             .from('daily_lessons')
             .select(`
                 id,
@@ -397,6 +385,32 @@ async function loadLearning() {
             .eq('tanggal', today)
             .order('kelas', { ascending: true });
 
+        /*
+         * BATAS WAKTU 10 DETIK
+         * Supaya tidak loading selamanya jika query bermasalah.
+         */
+        const timeoutPromise = new Promise((_, reject) => {
+
+            setTimeout(() => {
+
+                reject(
+                    new Error(
+                        'Data pembelajaran tidak dapat dimuat. Silakan coba lagi.'
+                    )
+                );
+
+            }, 10000);
+
+        });
+
+        const {
+            data: lessons,
+            error: lessonError
+        } = await Promise.race([
+            lessonQuery,
+            timeoutPromise
+        ]);
+
         console.log('Tanggal:', today);
         console.log('Lessons:', lessons);
         console.log('Lesson Error:', lessonError);
@@ -407,6 +421,9 @@ async function loadLearning() {
 
         }
 
+        /*
+         * JIKA GURU BELUM INPUT DATA HARI INI
+         */
         if (!lessons || lessons.length === 0) {
 
             container.innerHTML = `
@@ -570,79 +587,73 @@ async function loadLearning() {
                     JSON.stringify(error, null, 2)
                 )}</pre>
 
-```
-        </div>
+            </div>
 
-    `;
+        `;
 
-}
-```
+    }
 
 }
+
 
 function escapeHtml(value) {
 
-```
-if (!value) return '';
+    if (!value) return '';
 
-return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-```
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 
 }
+
 
 const menuToggle = document.querySelector('.menu-toggle');
 const sidebar = document.querySelector('.sidebar');
 
 if (menuToggle && sidebar) {
 
-```
-menuToggle.addEventListener('click', () => {
+    menuToggle.addEventListener('click', () => {
 
-    sidebar.classList.toggle('show');
+        sidebar.classList.toggle('show');
 
-});
-```
+    });
 
 }
+
 
 const profileButton = document.querySelector('#profileButton');
 const profileDropdown = document.querySelector('#profileDropdown');
 
 if (profileButton && profileDropdown) {
 
-```
-profileButton.addEventListener('click', (e) => {
+    profileButton.addEventListener('click', (e) => {
 
-    e.stopPropagation();
+        e.stopPropagation();
 
-    profileDropdown.classList.toggle('show');
+        profileDropdown.classList.toggle('show');
 
-});
+    });
 
 
-document.addEventListener('click', () => {
+    document.addEventListener('click', () => {
 
-    profileDropdown.classList.remove('show');
+        profileDropdown.classList.remove('show');
 
-});
-```
+    });
 
 }
 
+
 async function init() {
 
-```
-const profileLoaded = await loadParentProfile();
+    const profileLoaded = await loadParentProfile();
 
-if (!profileLoaded) return;
+    if (!profileLoaded) return;
 
-await loadLearning();
-```
+    await loadLearning();
 
 }
 
