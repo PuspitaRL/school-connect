@@ -1,0 +1,1157 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Anak Saya | TAUD SAQU DARUL IMAN</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="images/logo.png" alt="Logo TAUD SAQU DARUL IMAN">
+
+            <div>
+                <strong>TAUD SAQU</strong>
+                <span>DARUL IMAN</span>
+            </div>
+        </div>
+
+
+        <nav class="sidebar-menu">
+
+            <a href="parent-dashboard.html" class="menu-item">
+                <span>🏠</span>
+                Dashboard
+            </a>
+
+            <a href="child.html" class="menu-item active">
+                <span>👧</span>
+                Anak Saya
+            </a>
+
+            <a href="buku-penghubung.html" class="menu-item">
+                <span>📖</span>
+                Buku Penghubung
+            </a>
+
+            <a href="perkembangan.html" class="menu-item">
+                <span>📊</span>
+                Pembelajaran hari Ini
+            </a>
+
+            <a href="bintang-prestasi.html" class="menu-item">
+                <span>📝</span>
+                Bintang prestasi
+            </a>
+
+            <a href="absensi.html" class="menu-item">
+                <span>📅</span>
+                Absensi
+            </a>
+
+            <a href="pengumuman.html" class="menu-item">
+                <span>📢</span>
+                Pengumuman
+            </a>
+
+            <a href="komunikasi.html" class="menu-item">
+                <span>💬</span>
+                komunikasi
+            </a>
+
+            <div class="menu-divider"></div>
+
+            <a href="pengaturan.html" class="menu-item">
+                <span>⚙</span>
+                Pengaturan
+            </a>
+
+            <a href="index.html" class="menu-item logout">
+                <span>↪</span>
+                Keluar
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <button class="menu-toggle" id="menuToggle">
+                ☰
+            </button>
+
+            <div class="topbar-title">
+                Anak Saya
+            </div>
+
+            <div class="topbar-right">
+
+                <button class="notification">
+                    🔔
+                    <span class="notification-dot"></span>
+                </button>
+
+                <div class="profile-mini">
+
+                    <div class="profile-avatar" id="parentAvatar">
+                        A
+                    </div>
+
+                    <div class="profile-info">
+                        <strong id="parentName">Ayah/Bunda</strong>
+                        <span>Orang Tua</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+        <section class="dashboard-content">
+
+            <div class="welcome-section">
+
+                <p class="greeting">
+                    Informasi Anak
+                </p>
+
+                <h1>
+                    Anak Saya
+                </h1>
+
+                <p>
+                    Informasi dasar dan status pendidikan anak.
+                </p>
+
+            </div>
+
+
+            <!-- DATA ANAK AKAN DITAMPILKAN DI SINI -->
+            <div id="childrenContainer"></div>
+
+
+            <!-- QUICK ACCESS -->
+            <div class="dashboard-card">
+
+                <div class="card-header">
+
+                    <div>
+                        <h3>🚀 Akses Cepat</h3>
+                        <p>
+                            Pilih menu untuk melihat informasi anak.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="quick-menu">
+
+                    <a href="buku-penghubung.html" class="quick-item">
+                        <span>📖</span>
+                        <strong>Buku Penghubung</strong>
+                        <small>Catatan harian</small>
+                    </a>
+
+                    <a href="perkembangan.html" class="quick-item">
+                        <span>📊</span>
+                        <strong>Perkembangan</strong>
+                        <small>Perkembangan anak</small>
+                    </a>
+
+                    <a href="bintang-prestasi.html" class="quick-item">
+                        <span>📝</span>
+                        <strong>Tugas</strong>
+                        <small>Bintang prestasi</small>
+                    </a>
+
+                    <a href="absensi.html" class="quick-item">
+                        <span>📅</span>
+                        <strong>Absensi</strong>
+                        <small>Riwayat kehadiran</small>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+
+
+    <script>
+
+        let currentParent = null;
+        let childrenData = [];
+
+
+        /* =========================
+           MOBILE MENU
+        ========================= */
+
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+
+        if (menuToggle && sidebar) {
+
+            menuToggle.addEventListener("click", function () {
+                sidebar.classList.toggle("show");
+            });
+
+        }
+
+
+        /* =========================
+           INITIAL
+        ========================= */
+
+        function getInitial(nama) {
+
+            if (!nama) {
+                return "-";
+            }
+
+            return nama.trim().charAt(0).toUpperCase();
+        }
+
+
+        /* =========================
+           FORMAT TANGGAL
+        ========================= */
+
+        function formatTanggal(tanggal) {
+
+            if (!tanggal) {
+                return "-";
+            }
+
+            const date = new Date(tanggal + "T00:00:00");
+
+            if (isNaN(date.getTime())) {
+                return "-";
+            }
+
+            return date.toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
+        }
+
+
+        /* =========================
+           HITUNG USIA
+        ========================= */
+
+        function hitungUsia(tanggalLahir) {
+
+            if (!tanggalLahir) {
+                return "-";
+            }
+
+            const lahir = new Date(tanggalLahir + "T00:00:00");
+            const sekarang = new Date();
+
+            if (isNaN(lahir.getTime())) {
+                return "-";
+            }
+
+            let usia =
+                sekarang.getFullYear() -
+                lahir.getFullYear();
+
+            const belumUlangTahun =
+                sekarang.getMonth() < lahir.getMonth() ||
+                (
+                    sekarang.getMonth() === lahir.getMonth() &&
+                    sekarang.getDate() < lahir.getDate()
+                );
+
+            if (belumUlangTahun) {
+                usia--;
+            }
+
+            return usia + " tahun";
+        }
+
+
+        /* =========================
+           TANGGAL HARI INI
+        ========================= */
+
+        function getToday() {
+
+            const now = new Date();
+
+            const year = now.getFullYear();
+
+            const month = String(
+                now.getMonth() + 1
+            ).padStart(2, "0");
+
+            const day = String(
+                now.getDate()
+            ).padStart(2, "0");
+
+            return `${year}-${month}-${day}`;
+        }
+
+
+        /* =========================
+           AWAL BULAN
+        ========================= */
+
+        function getStartOfMonth() {
+
+            const now = new Date();
+
+            const year = now.getFullYear();
+
+            const month = String(
+                now.getMonth() + 1
+            ).padStart(2, "0");
+
+            return `${year}-${month}-01`;
+        }
+
+
+        /* =========================
+           LOAD ORANG TUA
+        ========================= */
+
+        async function loadParent() {
+
+            const {
+                data: authData,
+                error: authError
+            } = await supabaseClient.auth.getUser();
+
+
+            if (authError || !authData.user) {
+
+                window.location.href = "login.html";
+
+                return false;
+            }
+
+
+            const {
+                data: profile,
+                error: profileError
+            } = await supabaseClient
+                .from("users")
+                .select("id, nama, email, role, auth_id")
+                .eq("auth_id", authData.user.id)
+                .maybeSingle();
+
+
+            if (profileError) {
+
+                console.error(
+                    "Gagal mengambil profil:",
+                    profileError
+                );
+
+                alert(
+                    "Profil pengguna tidak dapat dimuat."
+                );
+
+                return false;
+            }
+
+
+            if (!profile) {
+
+                alert(
+                    "Profil pengguna tidak ditemukan."
+                );
+
+                window.location.href = "login.html";
+
+                return false;
+            }
+
+
+            if (profile.role !== "orang_tua") {
+
+                alert(
+                    "Halaman ini hanya dapat diakses oleh Orang Tua."
+                );
+
+                window.location.href = "login.html";
+
+                return false;
+            }
+
+
+            currentParent = profile;
+
+
+            document.getElementById(
+                "parentName"
+            ).textContent =
+                profile.nama || "Ayah/Bunda";
+
+
+            document.getElementById(
+                "parentAvatar"
+            ).textContent =
+                getInitial(profile.nama || "A");
+
+
+            return true;
+        }
+
+
+        /* =========================
+           LOAD DATA ANAK
+        ========================= */
+
+        async function loadChild() {
+
+            const {
+                data: children,
+                error
+            } = await supabaseClient
+                .from("children")
+                .select(`
+                    id,
+                    nama,
+                    kelas,
+                    tahun_ajaran,
+                    tanggal_lahir,
+                    parent_id
+                `)
+                .eq("parent_id", currentParent.id)
+                .order("nama", {
+                    ascending: true
+                });
+
+
+            if (error) {
+
+                console.error(
+                    "Gagal mengambil data anak:",
+                    error
+                );
+
+                document.getElementById(
+                    "childrenContainer"
+                ).innerHTML = `
+                    <div class="dashboard-card">
+                        <p>Data anak tidak dapat dimuat.</p>
+                    </div>
+                `;
+
+                return false;
+            }
+
+
+            if (!children || children.length === 0) {
+
+                document.getElementById(
+                    "childrenContainer"
+                ).innerHTML = `
+                    <div class="dashboard-card">
+                        <p>Belum ada data anak.</p>
+                    </div>
+                `;
+
+                return false;
+            }
+
+
+            childrenData = children;
+
+
+            const container =
+                document.getElementById(
+                    "childrenContainer"
+                );
+
+
+            container.innerHTML = "";
+
+
+            children.forEach(function (child, index) {
+
+                const nama =
+                    child.nama || "-";
+
+                const kelas =
+                    child.kelas || "-";
+
+                const tahun =
+                    child.tahun_ajaran || "-";
+
+                const tanggalLahir =
+                    child.tanggal_lahir;
+
+
+                const childBlock =
+                    document.createElement("div");
+
+
+                childBlock.innerHTML = `
+
+                    <!-- PROFILE CARD -->
+                    <div class="child-profile-card">
+
+                        <div class="large-child-avatar">
+                            ${getInitial(nama)}
+                        </div>
+
+                        <div class="child-profile-info">
+
+                            <span class="small-label">
+                                DATA PESERTA DIDIK
+                            </span>
+
+                            <h2>
+                                ${nama}
+                            </h2>
+
+                            <p>
+                                TAUD SAQU DARUL IMAN
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INFORMATION -->
+                    <div class="child-information">
+
+                        <div class="dashboard-card">
+
+                            <div class="card-header">
+                                <div>
+                                    <h3>👤 Data Anak</h3>
+                                    <p>Informasi peserta didik</p>
+                                </div>
+                            </div>
+
+
+                            <div class="information-list">
+
+                                <div class="information-row">
+                                    <span>Nama Lengkap</span>
+                                    <strong>
+                                        ${nama}
+                                    </strong>
+                                </div>
+
+                                <div class="information-row">
+                                    <span>Kelas</span>
+                                    <strong>
+                                        ${kelas}
+                                    </strong>
+                                </div>
+
+                                <div class="information-row">
+                                    <span>Usia</span>
+                                    <strong>
+                                        ${hitungUsia(tanggalLahir)}
+                                    </strong>
+                                </div>
+
+                                <div class="information-row">
+                                    <span>Tanggal Lahir</span>
+                                    <strong>
+                                        ${formatTanggal(tanggalLahir)}
+                                    </strong>
+                                </div>
+
+                                <div class="information-row">
+                                    <span>Tahun Ajaran</span>
+                                    <strong>
+                                        ${tahun}
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="dashboard-card">
+
+                            <div class="card-header">
+                                <div>
+                                    <h3>📊 Ringkasan</h3>
+                                    <p>Performa dan kehadiran</p>
+                                </div>
+                            </div>
+
+
+                            <!-- KEHADIRAN -->
+
+                            <div class="mini-stat">
+
+                                <div>
+                                    <span>Kehadiran Bulan Ini</span>
+
+                                    <strong id="attendanceTotal-${index}">
+                                        Memuat...
+                                    </strong>
+                                </div>
+
+                                <div class="progress-bar">
+
+                                    <div
+                                        class="progress-fill"
+                                        id="attendanceProgress-${index}"
+                                        style="width: 0%;">
+                                    </div>
+
+                                </div>
+
+                                <small id="attendanceDetail-${index}">
+                                    Memuat...
+                                </small>
+
+                            </div>
+
+
+                            <!-- PERKEMBANGAN -->
+
+                            <div class="mini-stat">
+
+                                <div>
+
+                                    <span>
+                                        Perkembangan
+                                    </span>
+
+                                    <strong id="developmentValue-${index}">
+                                        Memuat...
+                                    </strong>
+
+                                </div>
+
+                                <div class="progress-bar">
+
+                                    <div
+                                        class="progress-fill"
+                                        id="developmentProgress-${index}"
+                                        style="width: 0%;">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- BINTANG PRESTASI -->
+
+                            <div class="mini-stat">
+
+                                <div>
+
+                                    <span>
+                                        Bintang Prestasi
+                                    </span>
+
+                                    <strong id="achievementValue-${index}">
+                                        Memuat...
+                                    </strong>
+
+                                </div>
+
+                                <div class="progress-bar">
+
+                                    <div
+                                        class="progress-fill"
+                                        id="achievementProgress-${index}"
+                                        style="width: 0%;">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(childBlock);
+
+
+                loadAttendance(
+                    child,
+                    index
+                );
+
+                loadDevelopment(
+                    child,
+                    index
+                );
+
+                loadAchievements(
+                    child,
+                    index
+                );
+
+            });
+
+
+            return true;
+        }
+
+
+        /* =========================
+           LOAD ABSENSI BULAN INI
+           SUMBER: attendance
+        ========================= */
+
+        async function loadAttendance(
+            child,
+            index
+        ) {
+
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .from("attendance")
+                .select("id, tanggal, status")
+                .eq("child_id", child.id)
+                .gte("tanggal", getStartOfMonth())
+                .lte("tanggal", getToday())
+                .order("tanggal", {
+                    ascending: true
+                });
+
+
+            if (error) {
+
+                console.error(
+                    "Gagal mengambil absensi:",
+                    error
+                );
+
+                return;
+            }
+
+
+            let hadir = 0;
+            let sakit = 0;
+            let izin = 0;
+            let alpa = 0;
+
+
+            (data || []).forEach(function (item) {
+
+                if (item.status === "hadir") {
+                    hadir++;
+                }
+
+                if (item.status === "sakit") {
+                    sakit++;
+                }
+
+                if (item.status === "izin") {
+                    izin++;
+                }
+
+                if (item.status === "alpa") {
+                    alpa++;
+                }
+
+            });
+
+
+            const total =
+                hadir +
+                sakit +
+                izin +
+                alpa;
+
+
+            document.getElementById(
+                `attendanceTotal-${index}`
+            ).textContent =
+                total + " kali";
+
+
+            document.getElementById(
+                `attendanceDetail-${index}`
+            ).textContent =
+                `Hadir ${hadir} · Sakit ${sakit} · Izin ${izin} · Alpa ${alpa}`;
+
+
+            let percentage = 0;
+
+
+            if (total > 0) {
+
+                percentage =
+                    Math.round(
+                        (hadir / total) * 100
+                    );
+
+            }
+
+
+            document.getElementById(
+                `attendanceProgress-${index}`
+            ).style.width =
+                percentage + "%";
+
+        }
+
+
+        /* =========================
+           NILAI PERKEMBANGAN
+           SUMBER: daily_reports
+        ========================= */
+
+        function nilaiAspek(value) {
+
+            if (!value) {
+                return 0;
+            }
+
+            const text =
+                String(value)
+                    .toLowerCase()
+                    .trim();
+
+
+            if (
+                text.includes("sangat baik") ||
+                text.includes("baik sekali")
+            ) {
+                return 1;
+            }
+
+
+            if (text === "baik") {
+                return 1;
+            }
+
+
+            if (text.includes("baik")) {
+                return 1;
+            }
+
+
+            if (
+                text.includes("cukup") ||
+                text.includes("berkembang")
+            ) {
+                return 0.5;
+            }
+
+
+            return 0;
+        }
+
+
+        async function loadDevelopment(
+            child,
+            index
+        ) {
+
+            const {
+                data: report,
+                error
+            } = await supabaseClient
+                .from("daily_reports")
+                .select(`
+                    id,
+                    tanggal,
+                    adab_berdoa,
+                    murojaah,
+                    hafalan_baru,
+                    memahami_materi,
+                    kemandirian,
+                    interaksi_teman,
+                    adab_kepada_guru,
+                    tanggung_jawab
+                `)
+                .eq("child_id", child.id)
+                .order("tanggal", {
+                    ascending: false
+                })
+                .limit(1)
+                .maybeSingle();
+
+
+            if (error) {
+
+                console.error(
+                    "Gagal mengambil Buku Penghubung:",
+                    error
+                );
+
+                return;
+            }
+
+
+            if (!report) {
+
+                document.getElementById(
+                    `developmentValue-${index}`
+                ).textContent =
+                    "Belum ada";
+
+
+                document.getElementById(
+                    `developmentProgress-${index}`
+                ).style.width =
+                    "0%";
+
+                return;
+            }
+
+
+            const aspects = [
+
+                report.adab_berdoa,
+                report.murojaah,
+                report.hafalan_baru,
+                report.memahami_materi,
+                report.kemandirian,
+                report.interaksi_teman,
+                report.adab_kepada_guru,
+                report.tanggung_jawab
+
+            ];
+
+
+            let score = 0;
+            let filled = 0;
+
+
+            aspects.forEach(function (value) {
+
+                if (
+                    value !== null &&
+                    value !== undefined &&
+                    value !== ""
+                ) {
+
+                    filled++;
+
+                    score += nilaiAspek(value);
+
+                }
+
+            });
+
+
+            if (filled === 0) {
+
+                document.getElementById(
+                    `developmentValue-${index}`
+                ).textContent =
+                    "Belum dinilai";
+
+
+                document.getElementById(
+                    `developmentProgress-${index}`
+                ).style.width =
+                    "0%";
+
+                return;
+            }
+
+
+            const percentage =
+                Math.round(
+                    (score / filled) * 100
+                );
+
+
+            let status =
+                "Perlu Perhatian";
+
+
+            if (percentage >= 75) {
+
+                status =
+                    "Baik";
+
+            } else if (percentage >= 50) {
+
+                status =
+                    "Berkembang";
+
+            }
+
+
+            document.getElementById(
+                `developmentValue-${index}`
+            ).textContent =
+                status;
+
+
+            document.getElementById(
+                `developmentProgress-${index}`
+            ).style.width =
+                percentage + "%";
+
+        }
+
+
+        /* =========================
+           BINTANG PRESTASI
+           SUMBER: achievements
+        ========================= */
+
+        async function loadAchievements(
+            child,
+            index
+        ) {
+
+            const {
+                data: achievement,
+                error
+            } = await supabaseClient
+                .from("achievements")
+                .select(`
+                    id,
+                    tanggal,
+                    murojaah_surat,
+                    mendengarkan_20x,
+                    murojaah_tibyan,
+                    tarbiyah
+                `)
+                .eq("child_id", child.id)
+                .order("tanggal", {
+                    ascending: false
+                })
+                .limit(1)
+                .maybeSingle();
+
+
+            if (error) {
+
+                console.error(
+                    "Gagal mengambil bintang prestasi:",
+                    error
+                );
+
+                return;
+            }
+
+
+            if (!achievement) {
+
+                document.getElementById(
+                    `achievementValue-${index}`
+                ).textContent =
+                    "0/4";
+
+
+                document.getElementById(
+                    `achievementProgress-${index}`
+                ).style.width =
+                    "0%";
+
+                return;
+            }
+
+
+            let completed = 0;
+
+
+            if (achievement.murojaah_surat) {
+                completed++;
+            }
+
+            if (achievement.mendengarkan_20x) {
+                completed++;
+            }
+
+            if (achievement.murojaah_tibyan) {
+                completed++;
+            }
+
+            if (achievement.tarbiyah) {
+                completed++;
+            }
+
+
+            document.getElementById(
+                `achievementValue-${index}`
+            ).textContent =
+                completed + "/4";
+
+
+            document.getElementById(
+                `achievementProgress-${index}`
+            ).style.width =
+                ((completed / 4) * 100) + "%";
+
+        }
+
+
+        /* =========================
+           INIT
+        ========================= */
+
+        async function init() {
+
+            const parentLoaded =
+                await loadParent();
+
+
+            if (!parentLoaded) {
+                return;
+            }
+
+
+            const childLoaded =
+                await loadChild();
+
+
+            if (!childLoaded) {
+                return;
+            }
+
+
+            console.log(
+                "Halaman Anak Saya berhasil dimuat."
+            );
+
+        }
+
+
+        init();
+
+    </script>
+
+</body>
+
+</html>
+```
