@@ -29,11 +29,11 @@ loginForm.addEventListener('submit', async (e) => {
 
     if (profile.role === 'orang_tua') {
 
-        window.location.href = 'parent-dashboard.html';
+        window.location.href = 'komunikasi.html';
 
     } else if (profile.role === 'guru') {
 
-        window.location.href = 'guru-dashboard.html';
+        window.location.href = 'guru-komunikasi.html';
 
     } else if (profile.role === 'admin') {
 
