@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Komunikasi Tumbuh Kembang</title>
+    <title>Buku Penghubung | TAUD SAQU DARUL IMAN</title>
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
@@ -199,47 +199,10 @@
         </div>
 
         <nav class="sidebar-menu">
-
-            <a href="parent-dashboard.html" class="menu-item">
-                ⌂ Dashboard
-            </a>
-
-            <a href="child.html" class="menu-item">
-                👧 Anak Saya
-            </a>
-
-            <a href="buku-penghubung.html" class="menu-item">
-                📖 Buku Penghubung
-            </a>
-
-            <a href="perkembangan.html" class="menu-item">
-                📊 Pembelajaran hari Ini
-            </a>
-
-            <a href="bintang-prestasi.html" class="menu-item">
-                ⭐ Bintang Prestasi
-            </a>
-
-            <a href="absensi.html" class="menu-item">
-                📅 Absensi
-            </a>
-
-            <a href="pengumuman.html" class="menu-item">
-                📢 Pengumuman
-            </a>
-
-            <a href="komunikasi.html" class="menu-item active">
-                💬 Komunikasi
-            </a>
-
-            <a href="pengaturan.html" class="menu-item">
-                ⚙ Pengaturan
-            </a>
-
-            <a href="index.html" class="menu-item logout">
-                ↪ Keluar
-            </a>
-
+            <a href="komunikasi.html" class="menu-item active">📖 Buku Penghubung</a>
+            <div class="menu-divider"></div>
+            <a href="pengaturan.html" class="menu-item">⚙ Pengaturan Akun</a>
+            <a href="index.html" class="menu-item logout">↪ Keluar</a>
         </nav>
     </aside>
 
@@ -253,7 +216,7 @@
             </button>
 
             <div class="topbar-title">
-                Komunikasi Tumbuh Kembang
+                Buku Penghubung
             </div>
 
             <div class="profile-wrapper">
@@ -307,12 +270,11 @@
             <div class="communication-header">
 
                 <h1>
-                    Komunikasi Tumbuh Kembang
+                    Buku Penghubung
                 </h1>
 
                 <p>
-                    Ruang berbagi antara orang tua dan guru untuk saling
-                    menyampaikan informasi tentang tumbuh kembang anak.
+                    Sampaikan informasi kepada guru dan baca tanggapan sekolah dalam satu tempat.
                 </p>
 
             </div>
@@ -321,7 +283,7 @@
             <div class="note-form-card">
 
                 <h2>
-                    Bagikan informasi tentang anak
+                    Kirim pesan kepada guru
                 </h2>
 
 
@@ -385,7 +347,7 @@
                 <div class="form-group">
 
                     <label for="noteContent">
-                        Ceritakan kepada guru
+                        Isi pesan
                     </label>
 
                     <textarea
@@ -401,14 +363,14 @@
                     class="send-note"
                     id="sendNote"
                 >
-                    Kirim kepada Guru
+                    Kirim Pesan
                 </button>
 
             </div>
 
 
             <h2 class="note-list-title">
-                Riwayat Komunikasi
+                Riwayat Buku Penghubung
             </h2>
 
 
@@ -430,6 +392,10 @@
 
 
     <script>
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>\"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[char]));
+        }
 
         /* =========================================
            ELEMENT
@@ -684,7 +650,7 @@ childInfo.addEventListener(
                             <div class="note-meta">
 
                                 <span class="note-category">
-                                    ${note.children?.nama || 'Anak'}
+                                    ${escapeHtml(note.children?.nama || 'Anak')}
                                 </span>
 
                                 <span class="note-date">
@@ -695,7 +661,7 @@ childInfo.addEventListener(
 
 
                             <div class="note-content">
-                                ${note.isi}
+                                ${escapeHtml(note.isi)}
                             </div>
 
 
@@ -709,7 +675,7 @@ childInfo.addEventListener(
                                         </strong>
 
                                         <p>
-                                            ${note.tanggapan_guru}
+                                            ${escapeHtml(note.tanggapan_guru)}
                                         </p>
 
                                     </div>

@@ -9,7 +9,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Komunikasi Orang Tua</title>
+    <title>Buku Penghubung | Guru</title>
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
@@ -165,63 +165,10 @@
     </div>
 
     <nav class="sidebar-menu">
-
-        <a href="guru-dashboard.html" class="menu-item">
-            <span>🏠</span>
-            Dashboard
-        </a>
-
-        <a href="guru-child.html" class="menu-item">
-            <span>👧</span>
-            Siswa
-        </a>
-
-        <a href="guru-buku-penghubung.html" class="menu-item">
-            <span>📖</span>
-            Buku Penghubung
-        </a>
-
-        <a href="guru-perkembangan.html" class="menu-item">
-            <span>📊</span>
-            Pembelajaran hari Ini
-        </a>
-
-        <a href="guru-bintang-prestasi.html" class="menu-item">
-            <span>⭐</span>
-            Bintang Prestasi
-        </a>
-
-        <a href="guru-absensi.html" class="menu-item">
-            <span>📅</span>
-            Absensi
-        </a>
-
-        <a href="guru-pengumuman.html" class="menu-item">
-            <span>📢</span>
-            Pengumuman
-        </a>
-
-        <a href="guru-komunikasi.html" class="menu-item active">
-            <span>💬</span>
-            Komunikasi
-        </a>
-
+        <a href="guru-komunikasi.html" class="menu-item active">📖 Buku Penghubung</a>
         <div class="menu-divider"></div>
-
-        <a href="guru-pengaturan.html" class="menu-item">
-            <span>⚙</span>
-            Pengaturan
-        </a>
-
-        <div class="sidebar-bottom">
-
-        <a href="index.html" class="menu-item">
-            <span>↪</span>
-            Keluar
-        </a>
-
-    </div>
-
+        <a href="guru-pengaturan.html" class="menu-item">⚙ Pengaturan Akun</a>
+        <a href="index.html" class="menu-item logout">↪ Keluar</a>
     </nav>
 
 </aside>
@@ -285,12 +232,11 @@
             <div class="communication-header">
 
                 <h1>
-                    Komunikasi Tumbuh Kembang
+                    Buku Penghubung
                 </h1>
 
                 <p>
-                    Informasi dari orang tua mengenai perkembangan
-                    anak di rumah.
+                    Pesan dari orang tua yang menunggu tanggapan guru.
                 </p>
 
             </div>
@@ -314,6 +260,10 @@
 
 
     <script>
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>\"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[char]));
+        }
 
         const messagesList =
             document.querySelector('#messagesList');
@@ -397,9 +347,9 @@
                             <div class="child-name">
 
                                 👧
-                                ${message.children?.nama || 'Anak'}
+                                ${escapeHtml(message.children?.nama || 'Anak')}
                                 —
-                                ${message.children?.kelas || ''}
+                                ${escapeHtml(message.children?.kelas || '')}
 
                             </div>
 
@@ -411,7 +361,7 @@
 
 
                         <div class="message-text">
-                            ${message.isi}
+                            ${escapeHtml(message.isi)}
                         </div>
 
 
@@ -426,7 +376,7 @@
                                     </strong>
 
                                     <p>
-                                        ${message.tanggapan_guru}
+                                        ${escapeHtml(message.tanggapan_guru)}
                                     </p>
 
                                 </div>
@@ -539,26 +489,17 @@
             } = await supabaseClient
                 .from('parent_notes')
                 .update({
-
                     tanggapan_guru: response,
-
                     guru_id: guru.id,
-
                     status: 'ditanggapi'
-
                 })
-                .eq('id', messageId);
+                .eq('id', messageId)
+                .is('tanggapan_guru', null);
 
 
             if (error) {
-
                 console.error(error);
-
-                alert(
-                    'Gagal menyimpan tanggapan: ' +
-                    error.message
-                );
-
+                alert('Gagal menyimpan tanggapan: ' + error.message);
                 return;
             }
 
